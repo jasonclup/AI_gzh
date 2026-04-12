@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+venv/
+.env
+
+# 输出产物（可重新生成）
+output/*.png
+output/*.html
+output/*.log
+
+# 竞品分析数据（体积大，JSON会持续增长）
+wechat-publisher/data/competitor_analysis/*.json
+wechat-publisher/data/low_ai_analysis.json
+
+# AI生成图片（大文件）
+wechat-publisher/images/
+
+# 日志和临时文件
+*.log
+_run_output.log
+_low_ai_output.log
+_gen_test.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+*.swp
+*.swo
+*~
+
+# 敏感信息（绝不入库）
+config.yaml
+*.env
+credentials*
+secrets*
+
+# WorkBuddy内部（本地配置，不含代码）
+.workbuddy/automations/
+.workbuddy/memory/
+.workbuddy/teams/

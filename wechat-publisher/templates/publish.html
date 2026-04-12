@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display:flex;gap:20px;align-items:center;margin-bottom:24px;">
+    <h2 style="font-size:22px;">📤 发布管理</h2>
+    <span class="tag-tech" id="wechatStatus">
+        {{ '✅ 已配置' if wechat_configured else '⚠️ 未配置' }}
+    </span>
+</div>
+
+<!-- 今日统计 -->
+<div class="stats-grid" style="margin-bottom:24px;">
+    <div class="stat-card">
+        <div class="stat-label">今日发布</div>
+        <div class="stat-value blue">{{ stats.today_count }} / {{ stats.target_max }}</div>
+        <div class="stat-sub">目标: {{ stats.target_min }}-{{ stats.target_max }} 篇/天</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">成功数</div>
+        <div class="stat-value green">{{ stats.success_count }}</div>
+        <div class="stat-sub">篇</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">定时任务状态</div>
+        <div class="stat-value blue" id="schedStatus">--</div>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;">
+            <input type="checkbox" class="switch" id="schedSwitch" onchange="toggleSched()">
+            <span style="font-size:13px;color:var(--text-secondary);">自动发布开关</span>
+        </label>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">今日剩余配额</div>
+        <div class="stat-value green" id="remainingQuota">{{ stats.target_max - stats.today_count }}</div>
+        <div class="stat-sub">篇可发</div>
+    </div>
+</div>
+
+<!-- 定时任务信息 -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">⏰ 定时发布计划</div>
+    <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;">
+            <div style="padding:20px;background:var(--bg-dark);border-radius:12px;">
+                <div style="font-size:28px;">🌅</div>
+                <div style="font-size:18px;font-weight:600;margin-top:8px;">08:00</div>
+                <div style="color:var(--text-secondary);font-size:13px;">早间推送</div>
+            </div>
+            <div style="padding:20px;background:var(--bg-dark);border-radius:12px;">
+                <div style="font-size:28px;">☀️</div>
+                <div style="font-size:18px;font-weight:600;margin-top:8px;">12:30</div>
+                <div style="color:var(--text-secondary);font-size:13px;">午间推送</div>
+            </div>
+            <div style="padding:20px;background:var(--bg-dark);border-radius:12px;">
+                <div style="font-size:28px;">🌆</div>
+                <div style="font-size:18px;font-weight:600;margin-top:8px;">18:30</div>
+                <div style="color:var(--text-secondary);font-size:13px;">晚间推送</div>
+            </div>
+        </div>
+        
+        <p style="margin-top:16px;color:var(--text-secondary);font-size:13px;line-height:1.6;">
+            每个时段自动抓取最新热门话题 → AI生成爆款文章 → 自动配图 → 发布到公众号
+        </p>
+    </div>
+</div>
+
+<!-- 发布历史 -->
+<div class="card">
+    <div class="card-header">
+        📋 发布历史记录
+        <button class="btn btn-outline" onclick="location.reload()" style="padding:6px 14px;font-size:13px;">🔄 刷新</button>
+    </div>
+    <div class="card-body" style="padding:0;">
+        {% if history %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>话题/标题</th>
+                    <th>字数</th>
+                    <th>配图</th>
+                    <th>来源</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in history %}
+                <tr>
+                    <td>{{ h.time[:16] }}</td>
+                    <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;">
+                        {{ h.title or h.topic }}
+                    </td>
+                    <td>{{ h.article_word_count or '-' }}</td>
+                    <td>{{ h.get('image_count', '-') or '-' }}</td>
+                    <td><span class="tag-tech">{{ (h.source or h.time_slot) or '-' }}</span></td>
+                    <td>
+                        <span class="status-badge {{ h.status }}">
+                            {{ '✅ 成功' if h.status == 'success' else '❌ 失败' }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>暂无发布记录</p>
+            <button class="btn btn-primary" style="margin-top:12px;" onclick="location.href='/topics'">
+                去创建第一篇文章
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script async function checkSched() {
+    try {
+        const r = await fetch('/api/scheduler/status');
+        const d = await r.json();
+        if (d.success) {
+            document.getElementById('schedStatus').textContent = d.data.running ? '运行中' : '已停止';
+            document.getElementById('schedSwitch').checked = d.data.running;
+        }
+    } catch(e){}
+}
+
+async function toggleSched() {
+    const on = document.getElementById('schedSwitch').checked;
+    try {
+        const r = await fetch(`/api/scheduler/toggle?action=${on ? 'start' : 'stop'}`);
+        const d = await r.json();
+        showToast(d.message);
+        checkSched();
+    } catch(e){ showToast('操作失败','error'); }
+}
+
+checkSched();
+setInterval(checkSched, 30000);
+</script>
+
+{% endblock %}

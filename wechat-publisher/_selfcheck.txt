@@ -1,0 +1,5 @@
+  [PASS] Server alive - status=200
+  [PASS] Topics page HTML - 13334 bytes
+  [PASS] API real-time data - count=20, source='今日头条', time=0.3s, title='78亿变1亿 河南3地曝巨额数据造假'
+
+Total: 3/3 passed

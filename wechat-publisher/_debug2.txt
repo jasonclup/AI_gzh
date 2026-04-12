@@ -1,0 +1,5 @@
+Part1 tail:
+用'深度''影响''格局'等大词包装常规信息", "content_structure": "监管类：事实陈述→背景补充→行业反应→趋势预判；技术类：参数列表→性能对比→应用场景→竞品分析", "image_style": "安全/监管类文章较少配图或仅用官方logo；技术类需要芯片架构图/性能对比雷达图", "best_publish_window": "官方消息发布后的2-4小时内各媒体集中跟进", "ai_article_ratio": "50%", "ai_viral_features": ["AI写的监管影响分析通常不敢给出明确预判", "人写的深度分析会结合地缘政治视角提供独特见解
+
+Rest head:
+"hour": "06",   "collected_at": "2026-04-11T06:04:00+08:00",   "hot_topics": [     {       "topic": "GPT-6代号\"土豆\"曝光：4月14日发布在即",       "heat_level": "极高",       "hot_value": 9500000,       "source": "

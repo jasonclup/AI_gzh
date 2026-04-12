@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display:flex;gap:20px;align-items:center;margin-bottom:24px;">
+    <h2 style="font-size:22px;">✏️ 文章编辑器</h2>
+    <button class="btn btn-outline" onclick="newArticle()">📝 新建</button>
+    <button class="btn btn-warning" onclick="regenerateArticle()" id="btnRegen">🔄 重新生成</button>
+    <span id="wordCount" style="color:var(--text-secondary);font-size:14px;"></span>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <!-- 左侧：文章预览（公众号风格） -->
+    <div class="card" style="position:sticky;top:84px;height:fit-content;">
+        <div class="card-header">
+            📱 文章预览
+            <span style="font-size:12px;color:var(--text-secondary);">公众号样式</span>
+        </div>
+        <div class="card-body">
+            <!-- 封面区 -->
+            <div id="previewCover"
+                 style="background:linear-gradient(135deg,#1e293b,#334155);
+                        border-radius:12px;width:100%;max-width:520px;
+                        aspect-ratio:16/9;
+                        display:flex;align-items:center;
+                        justify-content:center;margin-bottom:24px;
+                        border:1px dashed var(--border);
+                        overflow:hidden;cursor:pointer;"
+                 onclick="previewFullImage(currentArticle ? currentArticle.cover_image : '')">
+                <img id="coverImgEl" src="" alt="" style="
+                    display:none;width:100%;height:100%;
+                    object-fit:contain;border-radius:12px;" />
+                <span id="coverPlaceholder" style="color:var(--text-secondary);">封面图区域</span>
+            </div>
+
+            <!-- 标题 -->
+            <h1 id="previewTitle" style="font-size:22px;font-weight:700;line-height:1.4;margin-bottom:8px;">
+                点击「新建」或从热门话题生成文章
+            </h1>
+
+            <div style="color:var(--text-secondary);font-size:13px;margin-bottom:20px;">
+                <span id="previewAuthor">AI观察者</span> · 
+                <span id="previewTime"></span>
+            </div>
+
+            <!-- 正文 -->
+            <div class="article-preview" id="articlePreviewBody">
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <p>还没有内容</p>
+                    <p style="margin-top:8px;font-size:13px;">
+                        去热门话题页面选择一个话题开始创作吧
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：操作面板 -->
+    <div>
+        <!-- 发布操作 -->
+        <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">🚀 发布操作</div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+                <button class="btn btn-primary btn-lg" onclick="publishArticle(false)"
+                        id="btnSaveDraft" disabled>
+                    💾 保存为草稿
+                </button>
+                <button class="btn btn-success btn-lg" onclick="publishArticle(true)"
+                        id="btnPublish" disabled>
+                    📤 立即发布到公众号
+                </button>
+
+                <!-- 一键配图按钮（异步，不阻塞） -->
+                <div id="genImagesArea" style="display:none;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">
+                    <button class="btn btn-lg" onclick="generateAllImages()"
+                            id="btnGenImages"
+                            style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;width:100%;">
+                        🎨 一键生成配图
+                    </button>
+                    <div id="imgProgress" style="font-size:12px;color:var(--text-secondary);margin-top:6px;display:none;"></div>
+                </div>
+
+                <p style="font-size:12px;color:var(--text-secondary);">
+                    ⚠️ 免费订阅号每天只能群发 1 次，请谨慎使用「立即发布」
+                </p>
+            </div>
+        </div>
+
+        <!-- 文章信息 -->
+        <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">📋 文章信息</div>
+            <div class="card-body" id="articleInfoPanel">
+                <div class="empty-state" style="padding:30px;">
+                    <p>暂无文章数据</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 配图管理（带真实缩略图） -->
+        <div class="card">
+            <div class="card-header">🎨 配图管理</div>
+            <div class="card-body" id="imagePanel">
+                <div class="empty-state" style="padding:30px;">
+                    <p>生成文章后自动显示配图</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 图片放大预览弹窗 -->
+<div class="modal-overlay" id="imgPreviewModal" onclick="closeImgPreview()">
+    <div class="modal" style="max-width:90vw;max-height:90vh;padding:0;background:transparent;" onclick="event.stopPropagation()">
+        <img id="imgPreviewSrc" src="" alt=""
+             style="max-width:100%;max-height:85vh;border-radius:12px;object-fit:contain;" />
+        <div style="text-align:right;margin-top:8px;">
+            <button class="modal-close" onclick="closeImgPreview()">&times;</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentArticle = null;
+
+/* ─── 工具：图片URL ─── */
+function imgUrl(path) {
+    if (!path) return '';
+    // 去掉开头的 ./  或 .\  等相对前缀
+    var cleaned = path.replace(/^\.?[\/\\]/, '');
+    return '/output/images/' + cleaned.split(/[\/\\]/).pop();
+}
+
+// 页面加载：检查是否有从话题页传来的草稿
+window.addEventListener('load', function() {
+    var draft = sessionStorage.getItem('draftArticle');
+    if (!draft) {
+        draft = localStorage.getItem('draftArticleBackup');
+    }
+
+    if (draft) {
+        try {
+            currentArticle = JSON.parse(draft);
+            sessionStorage.removeItem('draftArticle');
+            renderArticle(currentArticle);
+        } catch(e) {
+            console.error('草稿解析失败:', e);
+        }
+    }
+
+    // 兜底：没有草稿时给出可见提示，避免空白页
+    if (!currentArticle) {
+        var bodyEl = document.getElementById('articlePreviewBody');
+        if (bodyEl) {
+            bodyEl.innerHTML = '<div class="preview-image-placeholder" style="margin-top:20px;">未加载到文章草稿，请返回话题页重新生成。</div>';
+        }
+    }
+
+    document.getElementById('previewTime').textContent =
+        new Date().toLocaleDateString('zh-CN', {year:'numeric',month:'long',day:'numeric'});
+});
+
+function renderArticle(article) {
+    currentArticle = article || {};
+
+    // 标题/作者/字数
+    document.getElementById('previewTitle').textContent = currentArticle.title || '';
+    document.getElementById('previewAuthor').textContent = currentArticle.author || 'AI观察者';
+    document.getElementById('wordCount').textContent = '共 ' + (currentArticle.word_count || 0) + ' 字';
+
+    var bodyEl = document.getElementById('articlePreviewBody');
+
+    // 统一段落结构，避免数据结构差异导致左侧空白
+    var paragraphs = Array.isArray(currentArticle.paragraphs) ? currentArticle.paragraphs : [];
+    if (!paragraphs.length && typeof currentArticle.content === 'string') {
+        var blocks = currentArticle.content.split(/\n{2,}/);
+        paragraphs = blocks.filter(function(x){ return x && x.trim(); }).map(function(txt, idx){
+            return { index: idx, text: txt.trim(), needs_image: false, image_path: '', image_hint: '' };
+        });
+    }
+
+    // 若 paragraphs 存在但 text 为空，尝试兼容其它字段名
+    paragraphs = paragraphs.map(function(p, idx){
+        p = p || {};
+        var txt = '';
+        if (typeof p.text === 'string' && p.text.trim()) txt = p.text;
+        else if (typeof p.content === 'string' && p.content.trim()) txt = p.content;
+        else if (typeof p.body === 'string' && p.body.trim()) txt = p.body;
+        else if (typeof p.paragraph === 'string' && p.paragraph.trim()) txt = p.paragraph;
+        return {
+            index: (typeof p.index === 'number' ? p.index : idx),
+            text: txt,
+            needs_image: !!p.needs_image,
+            image_path: p.image_path || '',
+            image_hint: p.image_hint || ''
+        };
+    });
+
+    // 如果段落文本整体为空，再次回退 content
+    var hasText = paragraphs.some(function(p){ return p.text && p.text.trim(); });
+    if (!hasText && typeof currentArticle.content === 'string' && currentArticle.content.trim()) {
+        var fallbackBlocks = currentArticle.content.split(/\n{2,}/);
+        paragraphs = fallbackBlocks.filter(function(x){ return x && x.trim(); }).map(function(txt, idx){
+            return { index: idx, text: txt.trim(), needs_image: false, image_path: '', image_hint: '' };
+        });
+    }
+
+    currentArticle.paragraphs = paragraphs;
+
+    try {
+        if (paragraphs.length > 0) {
+            var _phtml = '';
+            for (var i = 0; i < paragraphs.length; i++) {
+                var p = paragraphs[i] || {};
+                var pText = (typeof p.text === 'string') ? p.text : String(p.text || '');
+                _phtml += '<div class="preview-paragraph" data-index="' + i
+                        + '" ondblclick="editParagraph(' + i + ')" title="双击可编辑此段">';
+                _phtml += escapeHtml(pText).replace(/\n/g, '<br>');
+
+                if (p.needs_image) {
+                    if (p.image_path) {
+                        var _u = imgUrl(String(p.image_path));
+                        var _safePath = String(p.image_path).replace(/\\/g, '/').replace(/'/g, "\\'");
+                        _phtml += '<div style="margin-top:12px;text-align:center;">'
+                                + '<img src="' + _u + '" alt="' + escapeHtml(p.image_hint || '') + '" '
+                                + 'style="max-width:80%;max-height:400px;border-radius:10px;cursor:pointer;object-fit:contain;" '
+                                + 'onclick="event.stopPropagation();previewFullImage(\'' + _safePath + '\')" '
+                                + 'onerror="this.style.display=\'none\'" />'
+                                + '<small style="display:block;color:var(--text-secondary);font-size:11px;margin-top:4px;">'
+                                + escapeHtml(p.image_hint || '') + '</small></div>';
+                    } else {
+                        _phtml += '<div class="preview-image-placeholder">🎨 [配图位置] '
+                                + (p.image_hint ? '<br><small>' + escapeHtml(p.image_hint) + '</small>' : '')
+                                + '</div>';
+                    }
+                }
+
+                _phtml += '</div>';
+            }
+            bodyEl.innerHTML = _phtml;
+        } else {
+            bodyEl.innerHTML = '<div class="preview-image-placeholder">文章无正文内容，请返回重新生成。</div>';
+        }
+    } catch (err) {
+        console.error('正文渲染失败:', err, currentArticle);
+        bodyEl.innerHTML = '<div class="preview-image-placeholder">正文渲染失败，请重试生成。</div>';
+    }
+
+    // 封面图
+    var coverEl = document.getElementById('coverImgEl');
+    var coverPh = document.getElementById('coverPlaceholder');
+    if (currentArticle.cover_image) {
+        coverEl.src = imgUrl(currentArticle.cover_image);
+        coverEl.style.display = 'block';
+        coverPh.style.display = 'none';
+    } else {
+        coverEl.src = '';
+        coverEl.style.display = 'none';
+        coverPh.style.display = '';
+    }
+
+    document.getElementById('btnSaveDraft').disabled = false;
+    document.getElementById('btnPublish').disabled = false;
+
+    document.getElementById('articleInfoPanel').innerHTML =
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;word-wrap:break-word;">'
+        + '<div><div class="stat-label">标题</div><div style="font-size:15px;word-wrap:break-word;">' + escapeHtml(currentArticle.title || '') + '</div></div>'
+        + '<div><div class="stat-label">段落数</div><div style="font-size:18px;color:var(--primary);">' + paragraphs.length + '</div></div>'
+        + '<div><div class="stat-label">字数</div><div style="font-size:18px;color:var(--success);">' + (currentArticle.word_count||0) + '</div></div>'
+        + '<div><div class="stat-label">配图数</div><div style="font-size:18px;color:var(--warning);">' + (currentArticle.image_count||0) + '</div></div>'
+        + '<div style="grid-column:span 2;"><div class="stat-label">摘要</div><div style="font-size:13px;color:var(--text-secondary);word-wrap:break-word;">' + escapeHtml(currentArticle.summary || '暂无') + '</div></div>';
+
+    if (currentArticle.tags && currentArticle.tags.length) {
+        var _tags = '';
+        for (var t=0;t<currentArticle.tags.length;t++) {
+            _tags += '<span class="tag-tech">' + escapeHtml(currentArticle.tags[t]) + '</span> ';
+        }
+        document.getElementById('articleInfoPanel').innerHTML +=
+            '<div style="grid-column:span 2;"><div class="stat-label">标签</div><div style="margin-top:4px;">' + _tags + '</div></div>';
+    }
+    document.getElementById('articleInfoPanel').innerHTML += '</div>';
+
+    // 显示一键配图按钮
+    var genArea = document.getElementById('genImagesArea');
+    if (genArea && currentArticle && currentArticle.paragraphs) {
+        genArea.style.display = '';
+    }
+
+    renderImagePanel(currentArticle);
+}
+
+/* ─── 配图管理面板（真实图片缩略图 + 单张重新生成）─── */
+function renderImagePanel(article) {
+    var imgPara = [];
+    if (article.paragraphs) {
+        for (var pi = 0; pi < article.paragraphs.length; pi++) {
+            if (article.paragraphs[pi].needs_image) imgPara.push(article.paragraphs[pi]);
+        }
+    }
+    var _coverImg = article.cover_image;
+
+    if (!imgPara.length && !_coverImg) {
+        document.getElementById('imagePanel').innerHTML =
+            '<div class="empty-state" style="padding:30px;"><p>生成文章后自动显示配图</p></div>';
+        return;
+    }
+
+    var _html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+
+    // 段落配图
+    if (imgPara.length > 0) {
+        for (var j = 0; j < imgPara.length; j++) {
+            var p = imgPara[j];
+            var _hint = escapeHtml(p.image_hint || '');
+            var _hasImg = !!p.image_path;
+            var _thumbUrl = _hasImg ? imgUrl(p.image_path) : '';
+
+            _html += '<div style="display:flex;align-items:center;gap:12px;padding:10px;'
+                   + 'background:var(--bg-dark);border-radius:8px;">';
+
+            // 缩略图或占位符
+            if (_hasImg) {
+                _html += '<img src="' + _thumbUrl + '" alt="' + _hint + '" '
+                       + 'style="width:80px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;" '
+                       + 'onclick="previewFullImage(\'' + (p.image_path||'').replace(/'/g,"\\'") + '\')" />';
+            } else {
+                _html += '<div style="width:80px;height:56px;background:var(--bg-card-hover);'
+                       + 'border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">🖼️</div>';
+            }
+
+            _html += '<div style="flex:1;min-width:0;">'
+                   + '<div style="font-size:13px;">第'+(p.index+1)+'段配图</div>'
+                   + '<div style="font-size:11px;color:var(--text-secondary);'
+                   + 'overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;'
+                   + '-webkit-box-orient:vertical;line-clamp:2;">' + _hint + '</div>'
+                   + '</div>';
+
+            // 状态 + 单张重生成
+            if (_hasImg) {
+                _html += '<span class="status-badge success" style="margin-right:4px;">已生成</span>';
+            } else {
+                _html += '<span class="status-badge failed" style="margin-right:4px;">待生成</span>';
+            }
+            _html += '<button class="btn btn-outline" style="font-size:11px;padding:4px 10px;" '
+                   + 'onclick="regenerateSingleImage(' + p.index + ')">🔄</button>';
+
+            _html += '</div>';
+        }
+    }
+
+    // 封面图
+    if (_coverImg) {
+        var _cu = imgUrl(_coverImg);
+        _html += '<div style="display:flex;align-items:center;gap:12px;padding:10px;'
+               + 'background:var(--bg-dark);border-radius:8px;border:1px solid var(--primary);">'
+               + '<img src="' + _cu + '" alt="封面图" '
+               + 'style="width:80px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;" '
+               + 'onclick="previewFullImage(\'' + _coverImg.replace(/'/g, "\\\'") + '\')" />'
+               + '<div style="flex:1;"><div style="font-size:13px;">封面图</div>'
+               + '<div style="font-size:11px;color:var(--text-secondary);">公众号封面配图</div></div>'
+               + '<span class="status-badge success">已生成</span></div>';
+    }
+
+    _html += '</div>';
+    document.getElementById('imagePanel').innerHTML = _html;
+}
+
+/* ─── 图片预览弹窗 ─── */
+function previewFullImage(imagePath) {
+    if (!imagePath) return;
+    var el = document.getElementById('imgPreviewModal');
+    var src = document.getElementById('imgPreviewSrc');
+    src.src = imgUrl(imagePath);
+    el.classList.add('show');
+}
+
+function closeImgPreview() {
+    document.getElementById('imgPreviewModal').classList.remove('show');
+}
+
+/* ─── 一键生成全部配图（异步）─── */
+async function generateAllImages() {
+    if (!currentArticle || !currentArticle.paragraphs) { return; }
+    var btn = document.getElementById('btnGenImages');
+    var prog = document.getElementById('imgProgress');
+    btn.disabled = true;
+    btn.textContent = '⏳ 正在生成...';
+    prog.style.display = '';
+    prog.textContent = '正在为文章生成封面和段落配图，请稍候...';
+
+    try {
+        var resp = await fetch('/api/article/generate_images', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ article: currentArticle })
+        });
+        var data = await resp.json();
+
+        if (data.success && data.data) {
+            // 更新当前文章的图片数据
+            if (data.data.cover_image) { currentArticle.cover_image = data.data.cover_image; }
+            if (data.data.paragraphs) {
+                data.data.paragraphs.forEach(function(np, i) {
+                    if (currentArticle.paragraphs[i]) {
+                        currentArticle.paragraphs[i].image_path = np.image_path || currentArticle.paragraphs[i].image_path;
+                        currentArticle.paragraphs[i].image_local = np.image_path || currentArticle.paragraphs[i].image_local;
+                    }
+                });
+            }
+            currentArticle.image_count = data.data.image_count || 0;
+
+            // 重新渲染
+            renderArticle(currentArticle);
+            prog.textContent = '✅ 配图完成！共生成 ' + (currentArticle.image_count||0) + ' 张';
+            setTimeout(function(){ prog.style.display = 'none'; }, 3000);
+        } else {
+            prog.textContent = '❌ 配图失败: ' + (data.error || '未知错误');
+        }
+    } catch(e) {
+        prog.textContent = '❌ 网络错误: ' + e.message;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🎨 一键生成配图';
+    }
+}
+
+/* ─── 重新生成整篇文章 ─── */
+async function regenerateArticle() {
+    if (!currentArticle) {
+        showToast('没有可重新生成的文章', 'error'); return;
+    }
+    if (!confirm('确定要重新生成这篇文章？当前内容将被替换。')) return;
+
+    var btn = document.getElementById('btnRegen');
+    btn.disabled = true;
+    btn.textContent = '⏳ AI 正在重新写作...';
+
+    try {
+        var resp = await fetch('/api/article/generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                topic: currentArticle.original_topic || currentArticle.title,
+                title: currentArticle.title,
+                selected_title: currentArticle.title,
+                extra_context: '',
+                generate_images: true
+            })
+        });
+
+        var data = await resp.json();
+
+        if (data.success) {
+            data.data.original_topic = currentArticle.original_topic || currentArticle.title;
+            currentArticle = data.data;
+            renderArticle(currentArticle);
+            showToast('🔄 文章已重新生成！');
+        } else {
+            showToast(data.error || '重新生成失败', 'error');
+        }
+    } catch(e) {
+        showToast('网络错误', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🔄 重新生成';
+}
+
+/* ─── 重新生成单张配图 ─── */
+async function regenerateSingleImage(paraIndex) {
+    var para = currentArticle.paragraphs[paraIndex];
+    if (!para || !para.needs_image) return;
+
+    var hint = para.image_hint || ('第' + (paraIndex+1) + '段配图');
+    showToast('正在重新生成配图：' + hint.substring(0,20) + '...');
+
+    try {
+        var resp = await fetch('/api/image/regenerate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                prompt: hint,
+                paragraph_index: paraIndex,
+                size: '1080x1920'
+            })
+        });
+
+        var data = await resp.json();
+        if (data.success && data.image_path) {
+            para.image_path = data.image_path;
+            renderArticle(currentArticle);
+            showToast('✅ 配图已更新！');
+        } else {
+            showToast(data.error || '配图重新生成失败', 'error');
+        }
+    } catch(e) {
+        // API不存在时提示用户用整篇重新生成
+        showToast('单张重生成暂不可用，请使用「🔄 重新生成」按钮', 'error');
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function newArticle() {
+    if (confirm('确定要新建一篇文章？当前未保存的内容将丢失。')) {
+        location.href = '/topics';
+    }
+}
+
+function editParagraph(index) {
+    var para = currentArticle.paragraphs[index];
+    var newText = prompt('编辑段落内容：', para.text);
+    if (newText !== null && newText !== para.text) {
+        para.text = newText;
+        renderArticle(currentArticle);
+        showToast('段落已更新');
+    }
+}
+
+async function publishArticle(publishNow) {
+    if (!currentArticle) {
+        showToast('没有可发布的文章', 'error'); return;
+    }
+
+    var confirmMsg = publishNow
+        ? '⚠️ 确定要立即发布到公众号吗？\n免费订阅号每天仅能群发 1 次！'
+        : '确定要保存为草稿吗？';
+
+    if (!confirm(confirmMsg)) return;
+
+    var btn = publishNow ? document.getElementById('btnPublish') : document.getElementById('btnSaveDraft');
+    btn.disabled = true;
+    btn.textContent = publishNow ? '⏳ 发布中...' : '⏳ 保存中...';
+
+    try {
+        const resp = await fetch('/api/publish', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                article: currentArticle,
+                publish_now: publishNow
+            })
+        });
+
+        const data = await resp.json();
+
+        if (data.success) {
+            showToast(publishNow ? '🎉 发布成功！' : '💾 草稿保存成功！');
+            setTimeout(function() { location.href = '/publish'; }, 2000);
+        } else {
+            showToast(data.error || data.message || '操作失败', 'error');
+        }
+    } catch(e) {
+        showToast('网络错误', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = publishNow ? '📤 立即发布到公众号' : '💾 保存为草稿';
+}
+</script>
+
+{% endblock %}
