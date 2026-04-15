@@ -109,12 +109,16 @@ class WeChatPublisher:
     
     def upload_temp_image(self, image_path: str) -> str:
         """
-        上传临时图片素材（3天内有效）
-        返回: URL（可直接嵌入文章 HTML）
+        上传正文配图并返回可嵌入图文消息 HTML 的 URL。
+
+        注意：
+        - 公众号图文正文里的 <img src="..."> 不能使用 media/upload 返回的 media_id
+        - 必须使用 uploadimg 接口，接口成功时返回 url
+        - 该方法名为兼容旧代码暂时保留，实际用途是“上传图文正文图片”
         """
         token = self._get_access_token()
-        url = f"{self.BASE_URL}/cgi-bin/media/upload?access_token={token}&type=image"
-        
+        url = f"{self.BASE_URL}/cgi-bin/media/uploadimg?access_token={token}"
+
         with open(image_path, 'rb') as f:
             files = {
                 'media': (
@@ -124,14 +128,14 @@ class WeChatPublisher:
                 )
             }
             resp = requests.post(url, files=files, timeout=60)
-        
+
         data = resp.json()
-        
+
         if data.get('url'):
-            logger.info(f"临时图片上传成功: {data['url']}")
+            logger.info(f"正文图片上传成功: {data['url']}")
             return data['url']
         else:
-            raise Exception(f"临时图片上传失败: {data}")
+            raise Exception(f"正文图片上传失败: {data}")
     
     # ==================== 文章发布 ====================
     
@@ -161,7 +165,7 @@ class WeChatPublisher:
                 logger.warning(f"封面上传失败: {e}")
         
         # 上传正文中的图片并替换 URL
-        for para in article.get('paragraphs', []):
+        for para in article.get('paragraphs', []) or article.get('sections', []):
             img_path = para.get('image_path')
             if img_path and os.path.exists(img_path):
                 try:
@@ -178,12 +182,16 @@ class WeChatPublisher:
         article_data = {
             "articles": [{
                 "title": article['title'],
-                "author": article.get('author', ''),
+                # 作者名：必须非空才能让原创声明(copyright_stat=1)自动生效
+                # 空字符串会导致"未声明"，需要手动点
+                "author": "往前看的月半子",
                 "digest": article.get('summary', ''),
                 "content": html_content,
                 "thumb_media_id": cover_media_id,
                 "need_open_comment": 1,
                 "only_fans_can_comment": 0,
+                "content_source_url": "",
+                "copyright_stat": 1,  # 1=原创声明
             }]
         }
         
@@ -198,12 +206,18 @@ class WeChatPublisher:
     
     def _build_article_html(self, article: Dict) -> str:
         """构建公众号兼容的富文本 HTML"""
-        paragraphs = article.get('paragraphs', [])
+        paragraphs = article.get('paragraphs', []) or article.get('sections', [])
         
         html_parts = ['<section style="max-width:100%;padding:0 15px;">']
         
         for para in paragraphs:
             text = para['text'].replace('\n', '<br/>')
+            
+            # 将 **粗体** 文本转为带高亮样式的 <strong> 标签
+            import re
+            def _highlight_bold(m):
+                return f'<strong style="color:#c0392b;font-weight:bold;background:linear-gradient(transparent 60%,#ffeaa7 0);">{m.group(1)}</strong>'
+            text = re.sub(r'\*\*(.+?)\*\*', _highlight_bold, text)
             
             # 段落样式
             style = """font-size:16px;
@@ -243,7 +257,13 @@ color:white;padding:25px 20px;border-radius:12px;text-align:center;margin-top:30
     def _save_draft(self, token: str, articles_data: dict) -> Dict:
         """保存为草稿"""
         url = f"{self.BASE_URL}/cgi-bin/draft/add?access_token={token}"
-        resp = requests.post(url, json=articles_data, timeout=30)
+        # 使用 ensure_ascii=False 防止中文字段（标题/摘要/文件名）被转义为 \uXXXX
+        resp = requests.post(
+            url,
+            data=json.dumps(articles_data, ensure_ascii=False).encode('utf-8'),
+            headers={'Content-Type': 'application/json; charset=utf-8'},
+            timeout=30
+        )
         return resp.json()
     
     def _publish_free(self, token: str, media_id: str) -> Dict:

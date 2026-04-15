@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-AI 文章生成模块 v3 — 客观分析版
-- 紧扣话题，分析事件背景、经过、影响
-- 多风格支持：客观分析 / 深度解读 / 热点评论 / 科普讲解
+AI 文章生成模块 v5 — 真人风格反检测版
+- 使用LLM生成（非模板拼装），通过AI检测工具
+- 多风格支持：热点评论 / 深度解读 / 行业观察 / 个人随笔
 - 重点内容自动标记（加粗/高亮）
-- 无需外部AI API，模板引擎毫秒级响应
+- 核心能力：反AI检测（7项约束）
 """
 
+import os
 import json
 import logging
 import random
 import re
 import hashlib
+import time
 from datetime import datetime
 from typing import List, Dict
 
@@ -45,13 +47,65 @@ WRITING_STYLES = {
 
 
 class ArticleGenerator:
-    """文章生成器 v3 — 客观分析 + 多风格 + 重点高亮"""
+    """文章生成器 v5 — 真人风格反检测 + LLM生成"""
 
     def __init__(self, config: dict):
         self.config = config
-        self.style = config.get('ARTICLE_STYLE', 'objective')
-        self.min_paragraphs = config.get('MIN_PARAGRAPHS', 5)
+        self.style = config.get('ARTICLE_STYLE', 'hot_commentary')
+        self.min_paragraphs = config.get('MIN_PARAGRAPHS', 4)
         self.max_paragraphs = config.get('MAX_PARAGRAPHS', 8)
+
+        # LLM 配置（从环境变量或config读取）
+        self.api_key = os.environ.get('OPENAI_API_KEY') or config.get('OPENAI_API_KEY', '')
+        self.base_url = os.environ.get('OPENAI_BASE_URL') or config.get('OPENAI_BASE_URL', 'https://api.openai.com/v1')
+        self.model = config.get('AI_MODEL', 'gpt-4o')
+        self._llm_client = None
+
+    def _get_llm_client(self):
+        """懒加载LLM客户端"""
+        if self._llm_client is None:
+            try:
+                from openai import OpenAI
+                if not self.api_key:
+                    logger.warning("未配置 OPENAI_API_KEY，将回退到模板模式")
+                    return None
+                self._llm_client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+                logger.info(f"LLM客户端已初始化: model={self.model}")
+            except ImportError:
+                logger.warning("openai包未安装，将回退到模板模式")
+                return None
+            except Exception as e:
+                logger.error(f"LLM客户端初始化失败: {e}")
+                return None
+        return self._llm_client
+
+    def _call_llm(self, prompt: str, max_tokens: int = 4000) -> str:
+        """调用LLM生成文本"""
+        client = self._get_llm_client()
+        if not client:
+            raise Exception("LLM客户端不可用，请检查 OPENAI_API_KEY 配置")
+
+        try:
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "你是一位资深公众号写手，擅长用真人口吻写热点评论文章。"},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=max_tokens,
+                temperature=0.85,
+            )
+            text = response.choices[0].message.content.strip()
+            # 去掉可能的markdown代码块标记
+            if text.startswith('```'):
+                lines = text.split('\n')
+                text = '\n'.join(lines[1:] if lines[0].startswith('```') else lines)
+                if text.endswith('```'):
+                    text = text[:-3].strip()
+            return text
+        except Exception as e:
+            logger.error(f"LLM调用失败: {e}")
+            raise
 
     # ─── 开头模板（按风格分类）───
     OPENING_TEMPLATES = {
@@ -215,42 +269,64 @@ class ArticleGenerator:
     }
 
     def generate(self, topic: str, title: str, selected_title: str = None,
-                 extra_context: str = "", author_name: str = "AI观察者",
+                 extra_context: str = "", author_name: str = "往前看的月半子",
                  style: str = None) -> Dict:
-        """生成完整文章"""
-        final_title = selected_title or title
+        """生成完整文章 v5 — 优先使用LLM（反AI检测），回退到模板模式"""
+        # 标题处理
+        if not selected_title and not title:
+            final_title = self._generate_catchy_title(topic)
+        elif not selected_title:
+            final_title = self._generate_catchy_title(title or topic)
+        else:
+            final_title = selected_title
         style = style or self.style
 
-        logger.info(f"开始生成文章: {final_title}, 风格: {style}")
+        logger.info(f"[v5] 开始生成文章: {final_title}, 风格: {style}")
 
-        # 根据话题选择内容填充
-        fillers = self._get_fillers_for_topic(topic)
+        # 尝试使用LLM生成（v5核心）
+        paragraphs_data = []
+        use_llm = True
 
-        # 构建段落
-        paragraphs_data = self._build_paragraphs(topic, final_title, style, fillers, author_name)
+        try:
+            paragraphs_data = self._generate_with_llm(topic, final_title, author_name, style, extra_context)
+            logger.info(f"[v5] LLM文章生成成功: {len(paragraphs_data)}段")
+        except Exception as e:
+            logger.warning(f"[v5] LLM生成失败({e})，回退到模板模式")
+            use_llm = False
+
+        if not use_llm and not paragraphs_data:
+            # 回退到旧模板模式
+            fillers = self._get_fillers_for_topic(topic)
+            paragraphs_data = self._build_paragraphs(topic, final_title, style, fillers, author_name)
 
         # 为每段添加配图提示和高亮标记
+        max_total_images = int(self.config.get('IMAGES_PER_ARTICLE', 3) or 3)
+        max_total_images = max(1, min(max_total_images, 4))
+        max_para_images = max_total_images - 1
+
         for i, para in enumerate(paragraphs_data):
             para['image_hint'] = self._generate_image_hint(topic, para['text'], i, len(paragraphs_data))
-            para['needs_image'] = i < self.config.get('IMAGES_PER_ARTICLE', 4) and i > 0
-            # 提取高亮内容
+            para['needs_image'] = i > 0 and i <= max_para_images
             para['highlights'] = self._extract_highlights(para['text'])
+            if 'index' not in para:
+                para['index'] = i
 
         result = {
             'title': final_title,
             'original_topic': topic,
             'author': author_name,
-            'style': WRITING_STYLES.get(style, WRITING_STYLES['objective'])['name'],
+            'style': WRITING_STYLES.get(style, WRITING_STYLES.get('hot_commentary', {'name':'热点评论'}))['name'],
             'paragraphs': paragraphs_data,
             'word_count': sum(len(p['text']) for p in paragraphs_data),
             'created_at': datetime.now().isoformat(),
             'status': 'draft',
             'tags': self._extract_tags(topic),
             'summary': self._generate_summary(paragraphs_data[:3]),
-            'cover_image_hint': f"封面图：{topic}相关场景，现代科技风格，竖屏构图",
+            'cover_image_hint': f"封面图：{topic}相关写实场景，杂志封面风格",
+            'use_llm': use_llm,
         }
 
-        logger.info(f"文章生成完成: {final_title}, {len(paragraphs_data)}段, {result['word_count']}字")
+        logger.info(f"文章生成完成: {final_title}, {len(paragraphs_data)}段, {result['word_count']}字, LLM={'是' if use_llm else '否'}")
         return result
 
     def _get_content_category(self, topic: str) -> str:
@@ -675,6 +751,113 @@ class ArticleGenerator:
 
         return base
 
+    # ════════════════════════════════════════════════════════
+    # 🔥 v5 核心：LLM文章生成 + 反AI检测系统
+    # ════════════════════════════════════════════════════════
+    
+    def _generate_with_llm(self, topic: str, title: str, author_name: str,
+                           style: str, extra_context: str = "") -> List[Dict]:
+        """使用LLM生成真人风格文章，内置7项反AI检测约束"""
+        
+        prompt = self._build_anti_ai_prompt(topic, title, author_name, style, extra_context)
+        raw_text = self._call_llm(prompt, max_tokens=4000)
+        
+        # 解析LLM输出为结构化段落
+        paragraphs = self._parse_llm_output(raw_text)
+        
+        if not paragraphs:
+            raise Exception("LLM输出解析后无有效段落")
+        
+        return paragraphs
+
+    def _build_anti_ai_prompt(self, topic: str, title: str, author_name: str,
+                              style: str, extra_context: str) -> str:
+        """构建反AI检测prompt — 这是v5的核心"""
+        
+        # 根据风格选择语气
+        style_tones = {
+            'objective': '冷静但有态度的观察者',
+            'deep': '有行业洞察力的深度写手',
+            'hot_commentary': '犀利直接、敢说真话的评论员',
+            'popular_science': '像给朋友科普一样自然',
+        }
+        tone = style_tones.get(style, '犀利直接的评论员')
+
+        prompt = f'''你是一位资深公众号写手"{author_name}"，{tone}。
+现在要写一篇关于「{topic}」的公众号文章。
+
+【核心要求 — 反AI检测（必须严格遵守）】
+
+1️⃣ **禁止模板化表达**：绝对不要用"首先/其次/总之""值得注意的是""总的来说""事件起因/经过/影响"这种教科书式结构。这些是AI的典型特征。
+
+2️⃣ **必须有明确个人态度**：不要中立客观。你要有自己的立场——可以支持、反对、惊讶、讽刺、无奈、兴奋……但绝不能没有情绪。读者看完要知道你的观点是什么。
+
+3️⃣ **段落长短不均**：有些段落可以很长（300字+深入分析），有些段落可以很短（一两句话的感叹或转折）。真实人类写作不是均匀分布的。
+
+4️⃣ **口语化和不完美感**：
+   - 可以用反问句："你觉得呢？""这合理吗？"
+   - 可以用感叹和省略号："说实话...""太离谱了！"
+   - 可以插入语："说句不好听的——""我不怕得罪人说一句"
+   - 偶尔用网络用语但不滥用
+   - 允许句子不完整、思维跳跃（像人说话一样）
+
+5️⃣ **具体细节和数据**：不要只说空泛的分析。如果有具体的数字、时间、人物、案例，就写出来。如果不确定，可以用"据我了解""大概""印象中"这样的限定词。
+
+6️⃣ **自然过渡**：段落之间不要用编号（第一/第二/第三），而是用自然的衔接——比如上一段末尾引出下一段内容，或者用一个短问句过渡。整体读起来像一个人在跟你聊天，不是在读报告。
+
+7️⃣ **结尾不要套路**：
+   ❌ 禁止："你怎么看？欢迎评论区讨论"
+   ❌ 禁止："让我们拭目以待"
+   ✅ 可以：突然收尾留白 / 一个反问 / 一个个人小故事 / 一个出人意料的结论 / 甚至一句"算了不说了"
+
+【格式要求】
+- 文章总长度 800-1200 字
+- 用 **粗体** 标记3-5个重点词句（这些会自动变成红色高亮）
+- 每个段落之间用空行分隔
+- 直接输出文章正文，不要任何前缀说明
+
+【标题参考】
+这篇文章的计划标题是：「{title}」
+你可以根据实际内容调整标题方向，但要保持这个吸睛的感觉。
+
+{"额外背景信息：" + extra_context if extra_context else ""}
+
+现在开始写正文：'''
+        
+        return prompt
+
+    def _parse_llm_output(self, raw_text: str) -> List[Dict]:
+        """将LLM输出的原始文本解析为结构化段落列表"""
+        paragraphs = []
+        
+        # 按双换行分割段落
+        raw_paras = re.split(r'\n\s*\n', raw_text.strip())
+        
+        for text in raw_paras:
+            text = text.strip()
+            if not text or len(text) < 10:
+                continue
+            
+            # 清理可能的markdown标记
+            text = re.sub(r'^#+\s+', '', text)  # 去除标题标记
+            
+            paragraphs.append({
+                'type': 'body',
+                'text': text,
+                'char_count': len(text),
+            })
+        
+        if len(paragraphs) < 2:
+            raise Exception(f"解析出的段落数量不足({len(paragraphs)})")
+        
+        # 标记首段为opening，末段为closing
+        if paragraphs:
+            paragraphs[0]['type'] = 'opening'
+        if len(paragraphs) > 1:
+            paragraphs[-1]['type'] = 'closing'
+        
+        return paragraphs
+
     def _build_paragraphs(self, topic: str, title: str, style: str,
                           fillers: Dict, author: str) -> List[Dict]:
         """构建完整的段落列表"""
@@ -750,8 +933,341 @@ class ArticleGenerator:
                 highlights.append(match)
         return highlights[:5]  # 最多返回5条
 
+    # ──────────────────────────────────────
+    # 吸睛标题生成器
+    # ──────────────────────────────────────
+    
+    # ════════════════════════════════════════════════════════
+    # 🎯 吸睛标题系统 v4 — 基于1000+爆文研究 + 7大心理学原理
+    # ════════════════════════════════════════════════════════
+    # 数据来源：
+    #   - CSDN 1000+爆文分析（26模板 / 7心理学原理）
+    #   - Easton/比邻 10大爆款公式（点击率翻倍方法论）
+    #   - 公众号运营实战（13-20字最佳区间 / 括号补充+38%CTR）
+    #
+    # 7大心理学原理：
+    #   ①好奇心(未知最诱人) ②稀缺心理(内部资料) ③对比反差(认知冲突)
+    #   ④共情心理(痛点共鸣) ⑤利益心理(快速提升) ⑥恐惧心理(避害驱动)
+    #   ⑦从众心理(大家都在看)
+    #
+    # 目标长度：15-28字（公众号最佳打开率区间）
+    # 平台限制：禁用极限词（最/最好/史上第一）→ 替代（强推/超全/首选）
+    # ════════════════════════════════════════════════════════
+
+    # ── 第一组：悬念好奇型 [权重:3] 触发"未知最诱人"心理 ──
+    TITLE_GROUP_CURIOSITY = [
+        '关于{topic}，有3件事90%的人都不知道',
+        '{topic}? 别急着下结论，看完这篇再说',
+        '全网都在聊{topic}，但很少有人看懂本质',
+        '深扒{topic}背后的真相，看完我沉默了',
+        '{topic}不是表面那么简单，这3个细节暴露了一切',
+        '为什么{topic}突然火了？答案可能跟你想的不一样',
+        '关于{topic}的一个冷知识，知道的人不到1%',
+        '直到昨天我才发现，{topic}居然是这样',
+    ]
+
+    # ── 第二组：对比反差型 [权重:3] 触发"认知冲突=注意力" ──
+    # （研究显示：反差标题互动率高出47%）
+    TITLE_GROUP_CONTRAST = [
+        '{topic}这事，我的看法可能跟大多数人不一样',
+        '说实话{topic}比你想象的复杂得多，今天聊聊真相',
+        '都以为{topic}是好事，但很少有人注意到这个隐患',
+        '关于{topic}，你可能一直搞错了重点',
+        '{topic}：一个被严重低估的信号，普通人该注意了',
+        '当所有人都在关注{topic}时，聪明人已经在做这件事了',
+        '表面看是{topic}，实际上完全不是那么回事',
+        '关于{topic}，官方不会告诉你的那些事',
+    ]
+
+    # ── 第三组：紧迫时效型 [权重:2] 触发"FOMO错过恐惧"心理 ──
+    # （时间限定标题平均点击率高35%）
+    TITLE_GROUP_URGENCY = [
+        '{topic}传来新消息！这几个变化你必须知道',
+        '刚确认：{topic}有重大进展，跟你我息息相关',
+        '{topic}又有新动向！普通人该怎么应对？',
+        '注意！{topic}正在发生巨变，别被甩在后面',
+        '刚刚，{topic}曝出重磅消息！速看',
+        '{topic}最新进展！这1个变化影响每个人',
+        '紧急提醒：关于{topic}这件事，再不知道就晚了',
+    ]
+
+    # ── 第四组：数字干货型 [权重:2] 触发"确定感+可信度"心理 ──
+    # （数字给人可量化的安全感，推荐用3/5/7/10）
+    TITLE_GROUP_DATA = [
+        '为什么{topic}这么火？看完这3个原因你就懂了',
+        '用数据说话：{topic}的真实情况，可能让你意外',
+        '关于{topic}的5个关键数字，第3个最重要',
+        '{topic}全解析：3分钟看懂核心逻辑',
+        '一张图看懂{topic}的前因后果',
+        '花了3天研究{topic}，发现了这些关键细节',
+        '从0到懂{topic}，只需读完这一篇',
+    ]
+
+    # ── 第五组：情感代入型 [权重:2] 触发"痛点=爆点"共情心理 ──
+    TITLE_GROUP_EMOTION = [
+        '刷到{topic}我愣住了，赶紧查了一下背后的事',
+        '{topic}突然冲上热搜！到底怎么回事？一文讲透',
+        '聊一聊{topic}，有些话不吐不快',
+        '作为一个普通人，我怎么看待{topic}',
+        '说到{topic}，我有几句大实话想讲',
+        '今天必须聊聊{topic}，因为太重要了',
+        '昨晚熬夜研究了{topic}所有资料，结论让人意外',
+    ]
+
+    # ── 第六组：警示避坑型 [权重:2] 触发"恐惧/避害"心理 ──
+    # （失去的痛苦是获得快乐的2.5倍 — 适度使用效果极强）
+    TITLE_GROUP_WARNING = [
+        '别再对{topic}一无所知了，这3个变化关乎每个人',
+        '警惕：{topic}正在发生，大多数人还没意识到',
+        '停止错误认知！关于{topic}你真正需要知道的',
+        '90%的人都搞错了{topic}，别再做那个糊涂虫',
+        '关于{topic}的几个误区，第2个最致命',
+    ]
+
+    # ── 第七组：独家揭秘型 [权重:1] 触发"稀缺=珍贵"心理 ──
+    TITLE_GROUP_EXCLUSIVE = [
+        '内部视角：{topic}的内幕，首次公开',
+        '深挖{topic}：普通媒体不会报道的角度',
+        '揭秘{topic}：那些你可能从未注意到的关键信息',
+        '关于{topic}的一份深度报告，建议收藏',
+        '花了大量时间整理{topic}，这可能是你最需要的一篇',
+    ]
+
+    # ── 第八组：故事场景型 [权重:1] 触发"代入感+画面感"心理 ──
+    TITLE_GROUP_STORY = [
+        '昨天聊起{topic}，朋友的一句话让我深思',
+        '从{topic}说起：这件事彻底改变了我的看法',
+        '身边越来越多人开始关注{topic}，原因是…',
+        '研究了大量案例后，我对{topic}有了全新认识',
+    ]
+
+    # ── 汇总所有模板（按权重分配概率）──
+    # 权重设计：悬念和冲突型最高（最吸睛），其次是紧迫/数据/情感/警示
+    CATCHY_TITLE_PATTERNS = (
+        TITLE_GROUP_CURIOSITY * 3 +      # 悬念型权重3（最高）
+        TITLE_GROUP_CONTRAST * 3 +       # 冲突型权重3（最高）
+        TITLE_GROUP_URGENCY * 2 +         # 紧迫型权重2
+        TITLE_GROUP_DATA * 2 +            # 数据型权重2
+        TITLE_GROUP_EMOTION * 2 +         # 情感型权重2
+        TITLE_GROUP_WARNING * 2 +         # 警示型权重2（v4新增）
+        TITLE_GROUP_EXCLUSIVE * 1 +       # 独家型权重1
+        TITLE_GROUP_STORY * 1             # 故事型权重1
+    )
+    
+    def _generate_catchy_title(self, topic: str, used_titles: set = None) -> str:
+        """从热点话题生成吸睛标题 v4
+        策略：
+        1. 从原始话题中提炼核心关键词(≤12字)，品牌名优先
+        2. 根据话题特征智能选择最匹配的模板组
+        3. 用系统熵做seed确保每次调用结果不同
+        4. 去重：自动避开已使用的标题
+        5. 长度保护：确保≥16字
+        
+        目标长度：16-28字（公众号最佳打开率区间）"""
+        
+        if used_titles is None:
+            used_titles = set()
+        
+        # 第一步：从原始话题提炼核心关键词
+        short_topic = self._extract_core_keyword(topic, max_bytes=12)
+        
+        # 第二步：尝试生成不重复的标题（最多重试10次）
+        best_title = None
+        candidates = []
+        
+        for attempt in range(10):
+            # 用系统熵做seed
+            import os
+            try:
+                seed_val = int.from_bytes(os.urandom(4), 'big') + attempt * 997
+            except:
+                seed_val = int(time.time() * 1_000_000) + id(topic) + attempt
+            random.seed(seed_val)
+            
+            # 根据话题特征选择最佳模板组
+            templates = self._select_templates_for_topic(topic)
+            
+            # 随机选一个模板
+            template = random.choice(templates)
+            
+            title = template.format(topic=short_topic)
+            title = self._polish_title(title)
+            
+            # 去重检查
+            if title not in used_titles and title not in candidates:
+                if len(title) >= 16:  # 长度下限保护
+                    return title  # 直接返回，够长且不重复
+                candidates.append(title)
+                if not best_title or len(title) > len(best_title):
+                    best_title = title  # 记录最长的候选
+        
+        # 如果所有尝试都没找到完美结果，返回最好的那个
+        if best_title:
+            return best_title
+        
+        # 终极兜底：用通用强模板
+        fallback_templates = [
+            '{topic}? 别急着下结论，看完这篇再说！',
+            '关于{topic}，有3件事90%的人都不知道',
+            '为什么{topic}突然火了？看完这篇你就懂了',
+        ]
+        random.seed(int.from_bytes(os.urandom(4), 'big'))
+        return random.choice(fallback_templates).format(topic=short_topic)
+    
+    def _select_templates_for_topic(self, topic: str) -> list:
+        """根据话题类型选择最合适的模板组
+        不同类型的热点用不同的标题策略效果更好"""
+        
+        # 检测话题特征
+        urgency_keywords = ['突发', '刚刚', '最新', '官宣', '确认', '回应', '通报',
+                           '曝光', '召回', '崩了', '宕机', '暴跌', '暴涨']
+        data_keywords = ['报告', '数据', '统计', '排名', '榜单', '发布', '营收', '利润',
+                        '同比', '环比', '市值', '融资', '上市']
+        emotion_keywords = ['消失', '现身', '去世', '离婚', '分手', '道歉', '翻车',
+                          '翻红', '塌房', '逆袭', '泪目', '感动', '争议']
+        tech_keywords = ['AI', '芯片', '大模型', '自动驾驶', '智驾', '量子', '脑机',
+                        '折叠屏', '固态电池', '鸿蒙', 'iPhone', 'GPU']
+        policy_keywords = ['新规', '政策', '法规', '出台', '调整', '改革', '监管',
+                         '牌照', '准入', '白名单', '补贴']
+        
+        topic_lower = topic.lower()
+        
+        # 根据特征选择主模板组 + 辅助混合
+        if any(k in topic for k in urgency_keywords):
+            # 突发/紧急新闻 → 紧迫型 + 悬念型
+            main = self.TITLE_GROUP_URGENCY
+            mix = self.TITLE_GROUP_CURIOSITY
+        elif any(k in topic for k in data_keywords):
+            # 数据/财报类 → 数字型 + 冲突型
+            main = self.TITLE_GROUP_DATA
+            mix = self.TITLE_GROUP_CONTRAST
+        elif any(k in topic for k in emotion_keywords):
+            # 情感/八卦/人物 → 情感型 + 故事型
+            main = self.TITLE_GROUP_EMOTION
+            mix = self.TITLE_GROUP_STORY
+        elif any(k in topic_lower for k in tech_keywords):
+            # 科技/AI产品 → 认知冲突 + 独家揭秘
+            main = self.TITLE_GROUP_CONTRAST
+            mix = self.TITLE_GROUP_EXCLUSIVE
+        elif any(k in topic for k in policy_keywords):
+            # 政策/法规 → 紧迫型 + 数据型
+            main = self.TITLE_GROUP_URGENCY
+            mix = self.TITLE_GROUP_DATA
+        else:
+            # 默认：悬念 + 冲突（通用最强组合）
+            main = self.TITLE_GROUP_CURIOSITY
+            mix = self.TITLE_GROUP_CONTRAST
+        
+        # 主组70%概率 + 混合组30%概率
+        if random.random() < 0.7:
+            return main
+        else:
+            return mix
+    
+    def _polish_title(self, title: str) -> str:
+        """标题后处理：确保有冲击力符号、去除冗余"""
+        # 确保至少有一个标点增强视觉冲击力
+        has_impact_punct = any(p in title for p in ['！', '？', '…', '！'])
+        if not has_impact_punct and random.random() < 0.3:
+            # 30%概率在结尾加感叹号（不过度使用）
+            if not title.endswith('…') and not title.endswith('？'):
+                if len(title) < 25:
+                    title += '！'
+        
+        return title
+
+    def _extract_core_keyword(self, topic: str, max_bytes: int = 12) -> str:
+        """从长话题中提取核心关键词用于标题生成 v3
+        策略：
+        1. 品牌名优先（英伟达/苹果/比亚迪 > 抽象概念词）
+        2. 高价值短词其次（绿牌/AI/芯片）
+        3. 中等概念词兜底（新能源/自动驾驶）
+        4. 永远不截断破坏词边界"""
+        
+        priority_words = []
+        
+        # ═══ 第一梯队：品牌名（最高优先级！标题里出现品牌=认知锚点）═══
+        # 品牌名是读者最熟悉的"钩子"，比任何抽象概念都强
+        brand_patterns = [
+            r'(苹果|华为|小米|特斯拉|比亚迪|英伟达|OpenAI)',
+            r'(腾讯|阿里|字节|百度|京东|美团|拼多多)',
+            r'(谷歌|微软|亚马逊|Meta|三星|索尼)',
+            r'(金立|格力|海尔|万科|恒大|融创)',
+        ]
+        for pat in brand_patterns:
+            matches = re.findall(pat, topic)
+            if matches and matches[0] not in priority_words:
+                w = matches[0]
+                if len(w.encode('utf-8')) <= max_bytes + 6:  # 品牌名允许稍长
+                    priority_words.append(w)
+                    break
+        
+        # ═══ 第二梯队：极短高密度核心词(2-4字) ═══
+        if not priority_words:
+            high_value_patterns = [
+                r'(绿牌|蓝牌|智驾|芯片|降价|涨价|召回|造假|曝光|突破)',
+                r'(iPhone|鸿蒙|固态电池|脑机接口|量子计算)',
+                r'(广交会|双11|春晚|奥运|世界杯|亚运会)',
+                r'(M5|M4|GPT|5G|6G|VR|AR|MR)',
+            ]
+            for pat in high_value_patterns:
+                matches = re.findall(pat, topic)
+                if matches and matches[0] not in priority_words:
+                    w = matches[0]
+                    if len(w.encode('utf-8')) <= max_bytes:
+                        priority_words.append(w)
+                        break
+        
+        # ═══ 第三梯队：中等长度概念词(4-6字) ═══
+        if not priority_words:
+            concept_patterns = [
+                r'(新能源|电动车|自动驾驶|充电桩|大模型|人工智能)',
+                r'(股票|基金|比特币|半导体|算力|折叠屏)',
+                r'(车牌|交管|创始人|发布会|博览会)',
+                r'(广交会|进出口|贸易展|智能手机)',
+                r'(日线|涨停|跌停|市值|财报)',
+            ]
+            for pat in concept_patterns:
+                matches = re.findall(pat, topic)
+                if matches and matches[0] not in priority_words:
+                    w = matches[0]
+                    if len(w.encode('utf-8')) <= max_bytes + 2:
+                        priority_words.append(w)
+                        break
+        
+        # ═══ 第四梯队：从话题中智能提取关键部分 ═══
+        if not priority_words:
+            clean_topic = re.sub(r'^(关于|针对|据悉|据称|近日|刚刚|突发)[：:\s]*', '', topic)
+            cn_words = re.findall(r'[\u4e00-\u9fff]{2,6}', clean_topic)
+            skip_words = {
+                '关于', '这个', '那个', '一个', '什么', '如何', '为什么',
+                '今天', '昨天', '正式', '目前', '已经', '回应', '部门',
+                '消息', '报道', '显示', '表示', '指出',
+            }
+            for w in cn_words[:5]:
+                if w not in skip_words and w not in priority_words:
+                    priority_words.append(w)
+        
+        if not priority_words:
+            return topic[:5] if len(topic) >= 5 else topic
+        
+        result = priority_words[0]
+        
+        # 安全检查：如果结果太长，不暴力截断而是换用更短的候选
+        if len(result.encode('utf-8')) > max_bytes + 4:
+            for candidate in priority_words[1:]:
+                if len(candidate.encode('utf-8')) <= max_bytes:
+                    return candidate
+        # 最终才截断
+        if len(result.encode('utf-8')) > max_bytes:
+            result = result.encode('utf-8')[:max_bytes].decode('utf-8', errors='ignore')
+        
+        return result
+
     def _generate_image_hint(self, topic: str, text: str, index: int, total: int) -> str:
-        """按段落语义生成配图提示 — 核心原则：每段必须不同！"""
+        """按段落语义生成配图提示 — 核心原则：每段必须不同！
+        安全约束：禁止车牌号、人脸、真实个人信息等隐私内容
+        封面风格：简洁大气，无杂乱元素"""
         text_clean = re.sub(r'\s+', ' ', text)[:200]
         
         # ── 只从本段文本提取关键词（不混入全局topic，避免所有段相同）──
@@ -784,8 +1300,9 @@ class ArticleGenerator:
         para_summary = text_clean[:80] if text_clean else topic
         
         # 按位置给不同场景引导词
-        if index == 0:
-            scene_type = '新闻开场主视觉'
+        is_cover = (index == 0)
+        if is_cover:
+            scene_type = '简洁封面图'
         elif index >= max(1, total - 2):
             scene_type = '趋势展望与影响'
         else:
@@ -796,7 +1313,14 @@ class ArticleGenerator:
         # 构建精简提示：以段落独有内容为主，topic仅作风格锚定放最后
         kw_str = ' '.join(kws[:8]) if kws else ''
         
-        return f"{scene_type} | {para_summary} | {kw_str} | 无人物无面部"
+        # 安全约束后缀：隐私保护 + 无人物 + 写实摄影风
+        safety_suffix = ', no people, no human, no face, no person, no license plate, no phone number, no ID card, no personal information, no identifiable real person data, realistic photography style, clean composition'
+        
+        # 封面额外要求简洁大气
+        if is_cover:
+            safety_suffix += ', minimalist clean design, simple elegant background, magazine cover quality, uncluttered, ample negative space'
+        
+        return f"{scene_type} | {para_summary} | {kw_str}{safety_suffix}"
 
     def _extract_tags(self, topic: str) -> List[str]:
         tags = []
@@ -945,7 +1469,7 @@ class ArticleGenerator:
             (r'不容忽视|至关重要|刻不容缓', 3),  # 夸张程度副词
             (r'随着.+?的(?:发展|进步|深入|普及)，', 3),  # 随着句式
             (r'不仅.*?而且.*?同时', 4),  # 递进套话
-        },
+        ],
         # 结尾套路
         'ending_risk': [
             (r'让我们共同期待|让我们拭目以待|让我们携手共进', 8),
@@ -1077,7 +1601,7 @@ if __name__ == '__main__':
         topic="78亿变1亿 河南3地曝巨额数据造假",
         title="河南数据造假事件分析",
         selected_title="78亿变1亿：一场数据造假的深度剖析",
-        author_name="AI观察者",
+        author_name="科技前沿观察",
         style='objective'
     )
     print(f"\n=== 文章标题 ===\n{article['title']}\n")

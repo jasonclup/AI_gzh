@@ -1,17 +1,26 @@
-"""Quick test: does fallback return data? Runs in < 3 seconds."""
-import sys, os, logging
-sys.path.insert(0, os.path.dirname(__file__))
-logging.disable(logging.CRITICAL)
-
+"""快速测试：热点+文章（无配图）"""
+import sys
+sys.path.insert(0, '.')
 from modules.hot_topics import HotTopicFetcher
+from modules.article_generator import ArticleGenerator
+import json
 
-f = HotTopicFetcher({'HOT_SOURCES': [{'name': 'weibo', 'enabled': True}, {'name': 'baidu', 'enabled': True}]})
-topics = f.fetch_all()
+# Step 1: 热点
+fetcher = HotTopicFetcher({})
+topics = fetcher.fetch_all()
+if not topics:
+    print('[FAIL] No topics')
+    sys.exit(1)
 
-print(f"COUNT={len(topics)}")
-if topics:
-    print(f"SOURCE={topics[0].get('source','NONE')}")
-    print(f"FIRST={topics[0]['title'][:30]}")
-    print("OK")
-else:
-    print("FAIL: no topics returned")
+t = topics[0].get('title', topics[0].get('name', str(topics[0])))
+print(f'[HOT] {t}')
+
+# Step 2: 文章
+gen = ArticleGenerator({})
+article = gen.generate(topic=t, title='')
+print(f'[TITLE] {article["title"]}')
+print(f'[SECTIONS] {len(article.get("sections", []))}')
+
+with open('output/_pipeline_step2_result.json', 'w', encoding='utf-8') as f:
+    json.dump(article, f, ensure_ascii=False, indent=2)
+print('[OK] Saved')
