@@ -1,0 +1,29 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-16T05:46:26.021983",
+  "summary": {
+    "articles_analyzed": 2,
+    "sampled_pages": 1,
+    "total_images_found": 0
+  },
+  "article_samples": [
+    {
+      "title": "女子把生姜当水果每天吃1-2斤",
+      "url": "https://www.toutiao.com/trending/7628188193745780799/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    }
+  ],
+  "cover_images": [],
+  "inline_images": [],
+  "strategy_findings": [],
+  "inline_summary": {
+    "total_sampled": 0,
+    "size_stats": {},
+    "placement_pattern": {},
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
