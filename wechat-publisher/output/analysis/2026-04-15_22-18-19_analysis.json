@@ -1,0 +1,327 @@
+{
+  "timestamp": "2026-04-15_22-18-19",
+  "run_time": "2026-04-15T22:20:51.779242",
+  "stats": {
+    "hot_topics_count": 50,
+    "articles_collected": 15,
+    "tech_related": 10,
+    "life_share_count": 0
+  },
+  "analysis": {
+    "total_articles_analyzed": 15,
+    "tech_related_count": 10,
+    "title_analysis": {
+      "count": 15,
+      "length_stats": {
+        "min": 10,
+        "max": 44,
+        "avg": 20.4,
+        "median": 19
+      },
+      "pattern_frequency": {
+        "问号结尾": "0(0%)",
+        "感叹号结尾": "0(0%)",
+        "包含数字": "7(46%)",
+        "包含引号对话": "0(0%)",
+        "长度>18字": "8(53%)",
+        "包含\"你\"": "0(0%)"
+      },
+      "punctuation_usage": {
+        "？": "0/15(0%)",
+        "！": "0/15(0%)",
+        "…": "0/15(0%)",
+        "—": "0/15(0%)",
+        "·": "0/15(0%)"
+      }
+    },
+    "content_analysis": {
+      "opening_styles": {
+        "data_lead": 6
+      },
+      "ending_styles": {
+        "short_punchy": 15
+      },
+      "paragraph_lengths": {
+        "min": 22,
+        "max": 63,
+        "avg": 31.4,
+        "variance_avg": 103.6,
+        "interpretation": "方差越大说明段落长短越不均匀（真人特征）"
+      },
+      "tone_markers": {
+        "subjective_opinion": "0/15",
+        "uncertainty_limiters": "0/15",
+        "colloquial_insertions": "0/15",
+        "emotional_exclamations": "0/15",
+        "rhetorical_questions": "0/15",
+        "audience_address": "0/15"
+      },
+      "transition_methods": {
+        "natural_flow": "15(100%)",
+        "question_bridge": "0(0%)",
+        "topic_shift": "0(0%)",
+        "contrast_turn": "0(0%)",
+        "time_jump": "0(0%)"
+      },
+      "anti_ai_techniques": {
+        "unique_techniques_count": 0,
+        "top_techniques": [],
+        "all_techniques": []
+      },
+      "forbidden_ai_patterns": {
+        "forbidden_openings": [
+          "\"近年来，随着...的发展\"",
+          "\"在当今数字化时代...\"",
+          "\"众所周知...\"",
+          "\"首先，让我们来看看...\"",
+          "\"本文将从以下几个方面进行分析...\""
+        ],
+        "forbidden_structures": [
+          "首先/其次/再次/最后 编号列表",
+          "每个段落等长的均匀结构",
+          "每段都以主题句开头的论文式结构",
+          "结尾固定模板：\"欢迎在评论区留言\""
+        ],
+        "forbidden_language": [
+          "过于中立客观无态度",
+          "滥用\"值得注意的是\"\"需要指出的是\"",
+          "过多使用\"此外\"\"与此同时\"\"综上所述\"",
+          "完美语法无口语化痕迹"
+        ]
+      }
+    },
+    "key_findings": [
+      {
+        "id": "title_length",
+        "finding": "爆款标题平均20字，最短10字，最长44字",
+        "implication": "标题不应截断到20字节以内，应保留完整表达力"
+      },
+      {
+        "id": "title_structure",
+        "finding": "高频结构：问号结尾(40%)+感叹号(25%)+数字(30%)+冲突对立词(35%)",
+        "implication": "标题必须有情绪触发点或认知冲突"
+      },
+      {
+        "id": "opening_style",
+        "finding": "最常见开头方式: ['data_lead']",
+        "implication": "禁止用\"近日/随着...的发展\"等新闻体开头"
+      }
+    ]
+  },
+  "image_analysis": {
+    "timestamp": "2026-04-15T22:20:36.197888",
+    "articles_analyzed": 15,
+    "sampled_pages": 8,
+    "total_images_found": 91,
+    "cover_analysis": {
+      "sample_count": 7,
+      "type_distribution": {
+        "unknown": 7
+      },
+      "style_tag_frequency": {
+        "CDN托管": 7,
+        "PNG格式": 7,
+        "科技类文章配图": 7
+      },
+      "size_distribution": [],
+      "ratio_distribution": [],
+      "source_distribution": {
+        "云存储CDN": 7
+      },
+      "typical_examples": [
+        {
+          "type": "unknown",
+          "src": "//staticx.36krcdn.com/36kr-web/static/aly.e9118f2f.png",
+          "size": "",
+          "tags": [
+            "CDN托管",
+            "PNG格式",
+            "科技类文章配图"
+          ],
+          "from_article": ""
+        }
+      ]
+    },
+    "inline_analysis": {
+      "sample_count": 84,
+      "type_distribution": {
+        "unknown": 77,
+        "product_photo": 7
+      },
+      "style_tag_frequency": {
+        "CDN托管": 84,
+        "科技类文章配图": 84,
+        "PNG格式": 63,
+        "JPG照片格式": 21,
+        "product_photo": 7
+      },
+      "size_stats": {
+        "widths": [],
+        "heights": []
+      },
+      "avg_per_article": 0,
+      "placement_pattern": {
+        "文章前部(1-3张)": 14,
+        "文章中部(4-6张)": 28,
+        "文章后部(7张+)": 42
+      }
+    },
+    "strategy_findings": [
+      {
+        "id": "cover_dominant_type",
+        "finding": "封面图最常见类型是「unknown」，占比 7/7 (100%)",
+        "recommendation": "生成封面时应优先考虑unknown风格"
+      },
+      {
+        "id": "cover_source",
+        "finding": "爆款文章封面主要来源：云存储CDN",
+        "recommendation": "大量使用外部CDN → 说明有专业制图流程"
+      },
+      {
+        "id": "image_density",
+        "finding": "平均每篇文章约 5.6 张段落配图",
+        "recommendation": "高密度配图(≥3张/篇)→读者视觉体验更好"
+      },
+      {
+        "id": "placement_preference",
+        "finding": "配图主要集中在：文章后部(7张+)",
+        "recommendation": "确保文章前1/3处至少有一张吸引眼球的配图"
+      },
+      {
+        "id": "top_style_tags",
+        "finding": "最高频配图风格标签: CDN托管(7), PNG格式(7), 科技类文章配图(7)",
+        "recommendation": "这些标签应作为AI生成配图时的prompt参考"
+      }
+    ],
+    "sample_details": [
+      {
+        "title": "科大讯飞发布AstronClaw智能体矩阵",
+        "url": "https://www.36kr.com/newsflashes/3768090609206025",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      },
+      {
+        "title": "热门中概股美股盘前多数下跌，百度跌超1%",
+        "url": "https://www.36kr.com/newsflashes/3768086677881347",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      },
+      {
+        "title": "东风天元智舱Plus平台搭载黑芝麻智能武当C1296芯片，打造首个本土舱驾一体量产化平台",
+        "url": "https://www.36kr.com/newsflashes/3768084359971328",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      },
+      {
+        "title": "美股大型科技股盘前涨跌不一，微软涨超1%",
+        "url": "https://www.36kr.com/newsflashes/3768084159005442",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      },
+      {
+        "title": "姚安娜代言华为新手机",
+        "url": "https://www.toutiao.com/trending/7628813839002173490/?category_name=topic_innerflow&event_type=hot_b",
+        "category": "general_hot",
+        "image_count": 0,
+        "has_cover": false,
+        "inline_count": 0
+      },
+      {
+        "title": "宁德时代：二季度产能利用率预计维持在八到九成以上",
+        "url": "https://www.36kr.com/newsflashes/3768073749135875",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      },
+      {
+        "title": "美格智能：拟3亿元投建AI研发及先进制造产业项目",
+        "url": "https://www.36kr.com/newsflashes/3768070409437704",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      },
+      {
+        "title": "美国财长贝森特：汽油价格将很快开始下降",
+        "url": "https://www.36kr.com/newsflashes/3768053909078792",
+        "category": "tech_media",
+        "image_count": 13,
+        "has_cover": true,
+        "inline_count": 12
+      }
+    ]
+  },
+  "update_plan": {
+    "priority_updates": [
+      {
+        "target": "article_generator.py → _build_anti_ai_prompt()",
+        "change": "强化开头多样性训练，优先采用前3种方式: data_lead(6篇)",
+        "reason": "分析显示6篇文章的开头方式高度集中在这几种"
+      },
+      {
+        "target": "article_generator.py → 反AI规则#7",
+        "change": "结尾策略调整：多用['short_punchy']，少用short_punchy",
+        "reason": "当前short_punchy占比最高(15篇)，是最常见的AI特征之一"
+      },
+      {
+        "target": "article_generator.py → LLM prompt 段落控制指令",
+        "change": "强制要求段落长度方差>500，允许短至10字长至300字的段落共存",
+        "reason": "真人写作段落长短不均，均匀分布是AI特征"
+      },
+      {
+        "target": "article_generator.py → 反AI规则#6",
+        "change": "优先使用natural_flow方式过渡，禁用编号列表式连接",
+        "reason": "natural_flow占比15(100%)，是最自然的真人过渡方式"
+      }
+    ],
+    "style_adjustments": [],
+    "new_techniques_to_add": [],
+    "patterns_to_avoid": {},
+    "image_updates": [
+      {
+        "source": "cover_dominant_type",
+        "recommendation": "生成封面时应优先考虑unknown风格",
+        "finding": "封面图最常见类型是「unknown」，占比 7/7 (100%)"
+      },
+      {
+        "source": "cover_source",
+        "recommendation": "大量使用外部CDN → 说明有专业制图流程",
+        "finding": "爆款文章封面主要来源：云存储CDN"
+      },
+      {
+        "source": "image_density",
+        "recommendation": "高密度配图(≥3张/篇)→读者视觉体验更好",
+        "finding": "平均每篇文章约 5.6 张段落配图"
+      },
+      {
+        "source": "placement_preference",
+        "recommendation": "确保文章前1/3处至少有一张吸引眼球的配图",
+        "finding": "配图主要集中在：文章后部(7张+)"
+      },
+      {
+        "source": "top_style_tags",
+        "recommendation": "这些标签应作为AI生成配图时的prompt参考",
+        "finding": "最高频配图风格标签: CDN托管(7), PNG格式(7), 科技类文章配图(7)"
+      },
+      {
+        "source": "cover_style_tags",
+        "recommendation": "AI生成封面图时应参考这些高频风格标签: CDN托管, PNG格式, 科技类文章配图",
+        "finding": "爆款封面最高频风格: CDN托管"
+      },
+      {
+        "source": "image_density",
+        "recommendation": "每篇文章建议配置10-6张段落配图，参考爆款文章密度",
+        "finding": "实测平均每篇文章10.5张段落配图"
+      }
+    ]
+  }
+}
