@@ -1,0 +1,130 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-16T07:53:23.490018",
+  "summary": {
+    "articles_analyzed": 26,
+    "sampled_pages": 8,
+    "total_images_found": 65
+  },
+  "article_samples": [
+    {
+      "title": "追觅科技旗下AI视觉机器人品牌NAVO亮相广交会",
+      "url": "https://www.36kr.com/newsflashes/3768730956759814",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "中信建投：Anthropic最强模型Mythos推出，重点推荐谷歌链",
+      "url": "https://www.36kr.com/newsflashes/3768720143057669",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "AMD、高通、安谋为自动驾驶初创公司Wayve提供新资金",
+      "url": "https://www.36kr.com/newsflashes/3768223374918409",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "OpenAI退出挪威“星门”数据中心合作，微软接手",
+      "url": "https://www.36kr.com/newsflashes/3768220910912009",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "官方就农业基地不干农业成立调查组",
+      "url": "https://www.toutiao.com/trending/7628803119765291049/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "美伊双方均否认就延长停火达成共识",
+      "url": "https://www.toutiao.com/trending/7629125721096474138/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "AI战略落地和国际化业务布局成券商业绩说明会两大核心主线",
+      "url": "https://www.36kr.com/newsflashes/3768701858808579",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "乌称仅用无人系统占领俄阵地有何意味",
+      "url": "https://www.toutiao.com/trending/7629010074903514665/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    }
+  ],
+  "cover_images": [
+    {
+      "type": "unknown",
+      "src_url": "//staticx.36krcdn.com/36kr-web/static/aly.e9118f2f.png",
+      "detected_size": "",
+      "style_tags": [
+        "CDN托管",
+        "PNG格式",
+        "科技类文章配图"
+      ],
+      "source_article": ""
+    }
+  ],
+  "inline_images": [],
+  "strategy_findings": [
+    {
+      "id": "cover_dominant_type",
+      "finding": "封面图最常见类型是「unknown」，占比 5/5 (100%)",
+      "recommendation": "生成封面时应优先考虑unknown风格"
+    },
+    {
+      "id": "cover_source",
+      "finding": "爆款文章封面主要来源：云存储CDN",
+      "recommendation": "大量使用外部CDN → 说明有专业制图流程"
+    },
+    {
+      "id": "image_density",
+      "finding": "平均每篇文章约 2.3 张段落配图",
+      "recommendation": "低密度配图(<2张/篇)→可能需要在关键段落增加配图"
+    },
+    {
+      "id": "placement_preference",
+      "finding": "配图主要集中在：文章后部(7张+)",
+      "recommendation": "确保文章前1/3处至少有一张吸引眼球的配图"
+    },
+    {
+      "id": "top_style_tags",
+      "finding": "最高频配图风格标签: CDN托管(5), PNG格式(5), 科技类文章配图(5)",
+      "recommendation": "这些标签应作为AI生成配图时的prompt参考"
+    }
+  ],
+  "inline_summary": {
+    "total_sampled": 60,
+    "size_stats": {
+      "widths": [],
+      "heights": []
+    },
+    "placement_pattern": {
+      "文章前部(1-3张)": 10,
+      "文章中部(4-6张)": 20,
+      "文章后部(7张+)": 30
+    },
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
