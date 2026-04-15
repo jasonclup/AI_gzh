@@ -1,0 +1,130 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-16T07:57:55.710127",
+  "summary": {
+    "articles_analyzed": 11,
+    "sampled_pages": 8,
+    "total_images_found": 39
+  },
+  "article_samples": [
+    {
+      "title": "马斯克的xAI据悉将向编程初创公司Cursor提供算力支持",
+      "url": "https://www.36kr.com/newsflashes/3768734282154758",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "互联互通工具持续丰富，公募大力布局香港市场ETF",
+      "url": "https://www.36kr.com/newsflashes/3768674456650497",
+      "category": "tech_media",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "绩优基金一季报密集披露：多只基金规模大增，看多AI相关产业链",
+      "url": "https://www.36kr.com/newsflashes/3768667893121799",
+      "category": "tech_media",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "EIA称美国石油出口总量跃升至纪录高位",
+      "url": "https://www.36kr.com/newsflashes/3768205715505672",
+      "category": "tech_media",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "南非向津巴布韦归还多件文物",
+      "url": "https://www.toutiao.com/trending/7629013118547509290/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "小鹏GX上市，预售价39.98万元",
+      "url": "https://www.36kr.com/newsflashes/3768204244386563",
+      "category": "tech_media",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "特斯拉完成AI5自动驾驶芯片流片",
+      "url": "https://www.36kr.com/newsflashes/3768211361366784",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "OpenAI据悉计划推出ChatGPT广告新定价方案",
+      "url": "https://www.36kr.com/newsflashes/3768206223770121",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    }
+  ],
+  "cover_images": [
+    {
+      "type": "unknown",
+      "src_url": "//staticx.36krcdn.com/36kr-web/static/aly.e9118f2f.png",
+      "detected_size": "",
+      "style_tags": [
+        "CDN托管",
+        "PNG格式",
+        "科技类文章配图"
+      ],
+      "source_article": ""
+    }
+  ],
+  "inline_images": [],
+  "strategy_findings": [
+    {
+      "id": "cover_dominant_type",
+      "finding": "封面图最常见类型是「unknown」，占比 3/3 (100%)",
+      "recommendation": "生成封面时应优先考虑unknown风格"
+    },
+    {
+      "id": "cover_source",
+      "finding": "爆款文章封面主要来源：云存储CDN",
+      "recommendation": "大量使用外部CDN → 说明有专业制图流程"
+    },
+    {
+      "id": "image_density",
+      "finding": "平均每篇文章约 3.3 张段落配图",
+      "recommendation": "高密度配图(≥3张/篇)→读者视觉体验更好"
+    },
+    {
+      "id": "placement_preference",
+      "finding": "配图主要集中在：文章后部(7张+)",
+      "recommendation": "确保文章前1/3处至少有一张吸引眼球的配图"
+    },
+    {
+      "id": "top_style_tags",
+      "finding": "最高频配图风格标签: CDN托管(3), PNG格式(3), 科技类文章配图(3)",
+      "recommendation": "这些标签应作为AI生成配图时的prompt参考"
+    }
+  ],
+  "inline_summary": {
+    "total_sampled": 36,
+    "size_stats": {
+      "widths": [],
+      "heights": []
+    },
+    "placement_pattern": {
+      "文章前部(1-3张)": 6,
+      "文章中部(4-6张)": 12,
+      "文章后部(7张+)": 18
+    },
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
