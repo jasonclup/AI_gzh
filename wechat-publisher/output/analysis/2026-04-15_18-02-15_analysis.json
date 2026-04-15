@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-04-15_18-02-15",
+  "run_time": "2026-04-15T18:02:17.630355",
+  "stats": {
+    "hot_topics_count": 50,
+    "articles_collected": 5,
+    "tech_related": 5
+  },
+  "analysis": {
+    "total_articles_analyzed": 5,
+    "tech_related_count": 5,
+    "title_analysis": {
+      "count": 5,
+      "length_stats": {
+        "min": 21,
+        "max": 27,
+        "avg": 24.2,
+        "median": 24
+      },
+      "pattern_frequency": {
+        "问号结尾": "0(0%)",
+        "感叹号结尾": "0(0%)",
+        "包含数字": "2(40%)",
+        "包含引号对话": "0(0%)",
+        "长度>18字": "5(100%)",
+        "包含\"你\"": "2(40%)"
+      },
+      "punctuation_usage": {
+        "？": "1/5(20%)",
+        "！": "1/5(20%)",
+        "…": "0/5(0%)",
+        "—": "0/5(0%)",
+        "·": "0/5(0%)"
+      }
+    },
+    "content_analysis": {},
+    "key_findings": [
+      {
+        "id": "title_length",
+        "finding": "爆款标题平均24字，最短21字，最长27字",
+        "implication": "标题不应截断到20字节以内，应保留完整表达力"
+      },
+      {
+        "id": "title_structure",
+        "finding": "高频结构：问号结尾(40%)+感叹号(25%)+数字(30%)+冲突对立词(35%)",
+        "implication": "标题必须有情绪触发点或认知冲突"
+      }
+    ]
+  },
+  "update_plan": {
+    "priority_updates": [],
+    "style_adjustments": [],
+    "new_techniques_to_add": [],
+    "patterns_to_avoid": {}
+  }
+}
