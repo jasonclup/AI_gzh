@@ -1,0 +1,130 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-15T23:15:49.880753",
+  "summary": {
+    "articles_analyzed": 29,
+    "sampled_pages": 8,
+    "total_images_found": 26
+  },
+  "article_samples": [
+    {
+      "title": "DeepSeek招人去内蒙草原“守机房”",
+      "url": "https://www.toutiao.com/trending/7628152198593691675/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "tech_hot_news",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "机器人切除肿瘤两年后患者去世",
+      "url": "https://www.toutiao.com/trending/7628813241162170431/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "tech_hot_news",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "杨利娟辞任特海CEO，接手海底捞红石榴计划",
+      "url": "https://www.36kr.com/newsflashes/3768051997213444",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "英国广播公司据悉将裁员2000人",
+      "url": "https://www.36kr.com/newsflashes/3768045260997382",
+      "category": "tech_media",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "无缘决赛！U20女足中国0-2日本",
+      "url": "https://www.toutiao.com/trending/7628142654219911204/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "国外两男子在草坪先后强奸醉酒女佣",
+      "url": "https://www.toutiao.com/trending/7628387144395784201/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "宁德时代：2025年度每10股派69.57元，分红总额超304亿元",
+      "url": "https://www.36kr.com/newsflashes/3768024936432132",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "创业板指创十年新高后跳水",
+      "url": "https://www.toutiao.com/trending/7628969176488496681/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    }
+  ],
+  "cover_images": [
+    {
+      "type": "unknown",
+      "src_url": "//staticx.36krcdn.com/36kr-web/static/aly.e9118f2f.png",
+      "detected_size": "",
+      "style_tags": [
+        "CDN托管",
+        "PNG格式",
+        "科技类文章配图"
+      ],
+      "source_article": ""
+    }
+  ],
+  "inline_images": [],
+  "strategy_findings": [
+    {
+      "id": "cover_dominant_type",
+      "finding": "封面图最常见类型是「unknown」，占比 2/2 (100%)",
+      "recommendation": "生成封面时应优先考虑unknown风格"
+    },
+    {
+      "id": "cover_source",
+      "finding": "爆款文章封面主要来源：云存储CDN",
+      "recommendation": "大量使用外部CDN → 说明有专业制图流程"
+    },
+    {
+      "id": "image_density",
+      "finding": "平均每篇文章约 0.8 张段落配图",
+      "recommendation": "低密度配图(<2张/篇)→可能需要在关键段落增加配图"
+    },
+    {
+      "id": "placement_preference",
+      "finding": "配图主要集中在：文章后部(7张+)",
+      "recommendation": "确保文章前1/3处至少有一张吸引眼球的配图"
+    },
+    {
+      "id": "top_style_tags",
+      "finding": "最高频配图风格标签: CDN托管(2), PNG格式(2), 科技类文章配图(2)",
+      "recommendation": "这些标签应作为AI生成配图时的prompt参考"
+    }
+  ],
+  "inline_summary": {
+    "total_sampled": 24,
+    "size_stats": {
+      "widths": [],
+      "heights": []
+    },
+    "placement_pattern": {
+      "文章前部(1-3张)": 4,
+      "文章中部(4-6张)": 8,
+      "文章后部(7张+)": 12
+    },
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
