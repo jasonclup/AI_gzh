@@ -1,0 +1,203 @@
+{
+  "version": "1.0",
+  "created_at": "2026-04-15T20:12:21.721346",
+  "total_articles": 58,
+  "categories": {
+    "tech_viral": {
+      "name_zh": "科技爆款",
+      "description": "AI、芯片、新能源车、消费电子、互联网平台等领域的高热度爆款文章，侧重行业观察和观点输出",
+      "count": 28,
+      "article_ids": [
+        "tech_viral_001",
+        "tech_viral_002",
+        "tech_viral_003",
+        "tech_viral_004",
+        "tech_viral_005",
+        "tech_viral_006",
+        "tech_viral_007",
+        "tech_viral_008",
+        "tech_viral_009",
+        "tech_viral_010",
+        "tech_viral_011",
+        "tech_viral_012",
+        "tech_viral_013",
+        "tech_viral_014",
+        "tech_viral_015",
+        "tech_viral_016",
+        "tech_viral_017",
+        "tech_viral_018",
+        "tech_viral_019",
+        "tech_viral_020",
+        "tech_viral_021",
+        "tech_viral_022",
+        "tech_viral_023",
+        "tech_viral_024",
+        "tech_viral_025",
+        "tech_viral_026",
+        "tech_viral_027",
+        "tech_viral_028"
+      ]
+    },
+    "life_share": {
+      "name_zh": "生活分享",
+      "description": "博主个人生活分享、自述式文章，第一人称自然语言，包含职业变动、独居生活、财务状况等真实经历",
+      "count": 20,
+      "article_ids": [
+        "life_share_001",
+        "life_share_002",
+        "life_share_003",
+        "life_share_004",
+        "life_share_005",
+        "life_share_006",
+        "life_share_007",
+        "life_share_008",
+        "life_share_009",
+        "life_share_010",
+        "life_share_011",
+        "life_share_012",
+        "life_share_013",
+        "life_share_014",
+        "life_share_015",
+        "life_share_016",
+        "life_share_017",
+        "life_share_018",
+        "life_share_019",
+        "life_share_020"
+      ]
+    },
+    "digital_review": {
+      "name_zh": "数码测评",
+      "description": "数码产品深度测评和使用体验，包含开箱感受、长期使用反馈、购买建议等",
+      "count": 10,
+      "article_ids": [
+        "digital_review_001",
+        "digital_review_002",
+        "digital_review_003",
+        "digital_review_004",
+        "digital_review_005",
+        "digital_review_006",
+        "digital_review_007",
+        "digital_review_008",
+        "digital_review_009",
+        "digital_review_010"
+      ]
+    },
+    "consumer_electronics": {
+      "name_zh": "消费电子观点",
+      "description": "消费电子产品相关的行业分析和观点文章",
+      "count": 0,
+      "article_ids": []
+    },
+    "internet_platform": {
+      "name_zh": "互联网平台观察",
+      "description": "互联网平台企业动态、战略方向、行业竞争格局观察",
+      "count": 0,
+      "article_ids": []
+    }
+  },
+  "tag_index": {
+    "AI大模型": [
+      "tech_viral_004",
+      "tech_viral_011",
+      "tech_viral_022",
+      "tech_viral_025"
+    ],
+    "互联网平台": [
+      "digital_review_005",
+      "digital_review_009",
+      "life_share_015",
+      "tech_viral_008",
+      "tech_viral_010",
+      "tech_viral_013",
+      "tech_viral_015",
+      "tech_viral_020",
+      "tech_viral_026",
+      "tech_viral_028"
+    ],
+    "华为": [
+      "tech_viral_002",
+      "tech_viral_006",
+      "tech_viral_012",
+      "tech_viral_016",
+      "tech_viral_023"
+    ],
+    "小米": [
+      "tech_viral_005"
+    ],
+    "数码测评": [
+      "digital_review_001",
+      "digital_review_006",
+      "digital_review_009",
+      "life_share_005",
+      "life_share_012",
+      "tech_viral_004",
+      "tech_viral_016",
+      "tech_viral_025"
+    ],
+    "智能硬件": [
+      "tech_viral_002",
+      "tech_viral_003",
+      "tech_viral_006",
+      "tech_viral_012"
+    ],
+    "比亚迪": [
+      "tech_viral_012"
+    ],
+    "特斯拉": [
+      "tech_viral_006",
+      "tech_viral_008"
+    ],
+    "理想汽车": [
+      "tech_viral_024"
+    ],
+    "生活方式": [
+      "life_share_006",
+      "life_share_009",
+      "life_share_010",
+      "life_share_011"
+    ],
+    "职场人生": [
+      "life_share_001",
+      "life_share_002",
+      "life_share_004",
+      "life_share_007",
+      "life_share_012",
+      "tech_viral_004",
+      "tech_viral_018"
+    ],
+    "芯片半导体": [
+      "digital_review_001",
+      "tech_viral_008",
+      "tech_viral_009",
+      "tech_viral_019",
+      "tech_viral_023"
+    ],
+    "英伟达": [
+      "tech_viral_001"
+    ],
+    "苹果": [
+      "digital_review_001",
+      "digital_review_004",
+      "digital_review_005",
+      "digital_review_006",
+      "digital_review_010",
+      "life_share_003",
+      "life_share_005",
+      "tech_viral_002",
+      "tech_viral_007",
+      "tech_viral_008",
+      "tech_viral_014",
+      "tech_viral_026"
+    ],
+    "蔚来": [
+      "digital_review_003",
+      "tech_viral_006",
+      "tech_viral_021"
+    ]
+  },
+  "statistics": {
+    "total_words": 24069,
+    "avg_word_per_article": 414,
+    "unique_tags": 15
+  }
+}

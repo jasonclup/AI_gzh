@@ -1,0 +1,22 @@
+{
+  "tech_viral": {
+    "name_zh": "科技爆款",
+    "description": "AI、芯片、新能源车、消费电子、互联网平台等领域的高热度爆款文章，侧重行业观察和观点输出"
+  },
+  "life_share": {
+    "name_zh": "生活分享",
+    "description": "博主个人生活分享、自述式文章，第一人称自然语言，包含职业变动、独居生活、财务状况等真实经历"
+  },
+  "digital_review": {
+    "name_zh": "数码测评",
+    "description": "数码产品深度测评和使用体验，包含开箱感受、长期使用反馈、购买建议等"
+  },
+  "consumer_electronics": {
+    "name_zh": "消费电子观点",
+    "description": "消费电子产品相关的行业分析和观点文章"
+  },
+  "internet_platform": {
+    "name_zh": "互联网平台观察",
+    "description": "互联网平台企业动态、战略方向、行业竞争格局观察"
+  }
+}
