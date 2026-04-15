@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display:flex;gap:20px;align-items:center;margin-bottom:24px;">
+    <h2 style="font-size:22px;">🔥 热门话题</h2>
+    <button class="btn btn-primary" onclick="fetchTopics()">🔄 刷新话题</button>
+    <span class="tag-tech" id="updateTime"></span>
+</div>
+
+<div class="stats-grid" style="margin-bottom:24px;">
+    <div class="stat-card" style="text-align:center;cursor:pointer;" onclick="filterTopics('all')">
+        <div class="stat-label">全部</div>
+        <div class="stat-value blue" id="countAll">--</div>
+    </div>
+    <div class="stat-card" style="text-align:center;cursor:pointer;" onclick="filterTopics('tech')">
+        <div class="stat-label">🧪 科技类</div>
+        <div class="stat-value green" id="countTech">--</div>
+    </div>
+    <div class="stat-card" style="text-align:center;">
+        <div class="stat-label">数据源</div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+            <span class="tag-tech">微博热搜</span>
+            <span class="tag-tech">百度热搜</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding:0;">
+        <ul class="topic-list" id="topicList">
+            <li class="loading"><div class="spinner"></div>点击「刷新话题」获取最新热点</li>
+        </ul>
+    </div>
+</div>
+
+<!-- 文章生成弹窗 -->
+<div class="modal-overlay" id="genModal">
+    <div class="modal">
+        <div class="modal-header">
+            <span>✏️ 生成文章</span>
+            <button class="modal-close" onclick="closeGenModal()">&times;</button>
+        </div>
+        <div style="padding:24px 28px;">
+            <div class="form-group">
+                <label class="form-label">原始话题</label>
+                <input type="text" class="form-input" id="modalTopic" readonly>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">🎯 选择爆款标题（点击选择）</label>
+                <div id="viralTitleOptions"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">额外角度（可选，让内容更有个性）</label>
+                <input type="text" class="form-input" id="extraContext"
+                       placeholder='例如：从普通用户角度 / 从投资人角度 / 从行业从业者角度...'>
+            </div>
+
+            <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;"
+                    onclick="generateFromModal()" id="genBtn">
+                🚀 开始生成
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let allTopics = [];
+let topicsMap = {};       // 标题→话题数据的索引（O(1)查找）
+let currentFilter = 'all';
+let selectedViralTitle = '';
+
+/* ─── 工具函数（避免引号地狱） ─── */
+function escHtml(str) {
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+function escAttr(str) {
+    return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;');
+}
+
+async function fetchTopics() {
+    var listEl = document.getElementById('topicList');
+    listEl.innerHTML = '<li class="loading"><div class="spinner"></div>正在抓取热点...</li>';
+
+    try {
+        var resp = await fetch('/api/topics/fetch');
+        var data = await resp.json();
+
+        if (data.success && data.data) {
+            allTopics = data.data;
+
+            // 构建 O(1) 索引，避免每次 openGenModal 都遍历数组
+            topicsMap = {};
+            for (var idx = 0; idx < allTopics.length; idx++) {
+                topicsMap[allTopics[idx].title] = allTopics[idx];
+            }
+
+            document.getElementById('updateTime').textContent =
+                '更新于 ' + new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+            document.getElementById('countAll').textContent = allTopics.length;
+            document.getElementById('countTech').textContent =
+                allTopics.filter(function(t){ return t.is_tech; }).length;
+            renderTopics(currentFilter);
+        } else {
+            listEl.innerHTML = '<li class="empty-state">抓取失败，请重试</li>';
+        }
+    } catch(e) {
+        listEl.innerHTML = '<li class="empty-state">网络错误，请检查网络后重试</li>';
+    }
+}
+
+function renderTopics(filter) {
+    currentFilter = filter;
+    var topics = (filter === 'tech')
+        ? allTopics.filter(function(t){ return t.is_tech; })
+        : allTopics;
+
+    var el = document.getElementById('topicList');
+
+    if (!topics.length) {
+        el.innerHTML = '<li class="empty-state">暂无相关话题</li>';
+        return;
+    }
+
+    /* 用 DOM 构建而不是 innerHTML 拼接，彻底避免转义问题 */
+    el.innerHTML = '';
+    for (var i = 0; i < topics.length; i++) {
+        (function(t, idx){
+            var li = document.createElement('li');
+            li.className = 'topic-item';
+            li.onclick = function(){ openGenModal(t.title); };
+
+            // 排名
+            var rank = document.createElement('div');
+            rank.className = 'topic-rank' + (idx < 3 ? ' top3' : '');
+            rank.textContent = idx + 1;
+
+            // 信息区
+            var info = document.createElement('div');
+            info.className = 'topic-info';
+
+            // 标题行
+            var titleDiv = document.createElement('div');
+            titleDiv.className = 'topic-title';
+            titleDiv.innerHTML = escHtml(t.title) + (t.is_tech ? ' <span class="tag-tech" style="margin-left:8px;">科技</span>' : '');
+
+            // 爆款标题
+            var viralDiv = document.createElement('div');
+            viralDiv.className = 'viral-titles';
+            if (t.viral_titles) {
+                for (var vi = 0; vi < Math.min(3, t.viral_titles.length); vi++) {
+                    (function(vt){
+                        var opt = document.createElement('div');
+                        opt.className = 'viral-title-option';
+                        opt.textContent = vt;
+                        opt.onmouseover = function(){ highlightVTitle(this); };
+                        opt.onclick = function(e){
+                            e.stopPropagation();
+                            selectedViralTitle = vt;
+                            openGenModal(t.title);
+                        };
+                        viralDiv.appendChild(opt);
+                    })(t.viral_titles[vi]);
+                }
+            }
+
+            // 元信息
+            var metaDiv = document.createElement('div');
+            metaDiv.className = 'topic-meta';
+            var srcSpan = document.createElement('span');
+            srcSpan.textContent = t.source || '';
+            metaDiv.appendChild(srcSpan);
+            if (t.hot_value) {
+                var hvSpan = document.createElement('span');
+                hvSpan.className = 'hot-value';
+                hvSpan.textContent = '\uD83D\uDD25' + t.hot_value.toLocaleString();
+                metaDiv.appendChild(hvSpan);
+            }
+
+            info.appendChild(titleDiv);
+            info.appendChild(viralDiv);
+            info.appendChild(metaDiv);
+
+            // 按钮
+            var btn = document.createElement('button');
+            btn.className = 'btn btn-primary';
+            btn.style.cssText = 'font-size:13px;padding:6px 14px;';
+            btn.textContent = '写文章 →';
+            btn.onclick = function(e){
+                e.stopPropagation();
+                openGenModal(t.title);
+            };
+
+            li.appendChild(rank);
+            li.appendChild(info);
+            li.appendChild(btn);
+            el.appendChild(li);
+        })(topics[i], i);
+    }
+}
+
+function highlightVTitle(el) {
+    var opts = document.querySelectorAll('.viral-title-option');
+    for (var i = 0; i < opts.length; i++) opts[i].classList.remove('selected');
+    el.classList.add('selected');
+    selectedViralTitle = el.textContent || '';
+}
+
+function openGenModal(topic) {
+    // O(1) Map 查找替代 O(n) 遍历
+    var t = topicsMap[topic];
+
+    document.getElementById('modalTopic').value = topic;
+    document.getElementById('genModal').classList.add('show');
+
+    var container = document.getElementById('viralTitleOptions');
+
+    if (t && t.viral_titles && t.viral_titles.length > 0) {
+        // 用 innerHTML 一次性渲染，比逐个 createElement 快得多
+        var _opts = '';
+        for (var j = 0; j < t.viral_titles.length; j++) {
+            _opts += '<div class="viral-title-option' + (!selectedViralTitle && j === 0 ? ' selected' : '') + '">'
+                   + escHtml(t.viral_titles[j]) + '</div>';
+        }
+        container.innerHTML = _opts;
+
+        // 自动选中第一个
+        if (!selectedViralTitle && t.viral_titles[0]) {
+            selectedViralTitle = t.viral_titles[0];
+        }
+
+        // 事件委托（只绑定一次到容器，不逐个绑定）
+        if (!container._delegated) {
+            container.addEventListener('click', function(e) {
+                var opt = e.target.closest('.viral-title-option');
+                if (!opt) return;
+                var opts2 = container.querySelectorAll('.viral-title-option');
+                for (var k = 0; k < opts2.length; k++) opts2[k].classList.remove('selected');
+                opt.classList.add('selected');
+                selectedViralTitle = opt.textContent;
+            });
+            container._delegated = true;
+        }
+    } else {
+        container.innerHTML = '';
+    }
+}
+
+function closeGenModal() {
+    document.getElementById('genModal').classList.remove('show');
+}
+
+async function generateFromModal() {
+    var topic = document.getElementById('modalTopic').value;
+    var title = selectedViralTitle || topic;
+    var extraCtx = document.getElementById('extraContext').value;
+    var btn = document.getElementById('genBtn');
+
+    if (!title) { showToast('请先选择一个标题'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '\u23F3 AI 正在写作中...';
+
+    try {
+        // 快速生成正文：先不阻塞等待配图，避免“写作卡住”
+        var controller = new AbortController();
+        var t = setTimeout(function() { controller.abort(); }, 12000);
+
+        var resp = await fetch('/api/article/generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            signal: controller.signal,
+            body: JSON.stringify({
+                topic: topic,
+                title: topic,
+                selected_title: title,
+                extra_context: extraCtx,
+                generate_images: false
+            })
+        });
+        clearTimeout(t);
+
+        var data = await resp.json();
+
+        if (data.success && data.data) {
+            closeGenModal();
+            var draftJson = JSON.stringify(data.data);
+            // 双写，避免某些场景 sessionStorage 丢失导致 editor 空白
+            sessionStorage.setItem('draftArticle', draftJson);
+            localStorage.setItem('draftArticleBackup', draftJson);
+            location.href = '/editor?mode=preview&t=' + Date.now();
+        } else {
+            showToast((data && (data.error || data.message)) || '生成失败', 'error');
+        }
+    } catch(e) {
+        if (e && e.name === 'AbortError') {
+            showToast('写作请求超时，请重试', 'error');
+        } else {
+            showToast('网络错误', 'error');
+        }
+    }
+
+    btn.disabled = false;
+    btn.textContent = '\uD83D\uDE80 开始生成';
+}
+
+function filterTopics(f) { renderTopics(f); }
+
+// 页面加载时自动抓取
+fetchTopics();
+
+</script>
+
+{% endblock %}

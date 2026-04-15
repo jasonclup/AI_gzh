@@ -1,24 +1,15 @@
-# -*- coding: utf-8 -*-
-"""Fix summary fields in hourly_08 gen script"""
-with open('_gen_hourly_08.py', 'r', encoding='utf-8') as f:
-    lines = f.readlines()
+# Fix Chinese curly quotes in _run_round_v2.py
+with open('_run_round_v2.py', 'r', encoding='utf-8') as f:
+    c = f.read()
 
-fixed_lines = []
+lines = c.split('\n')
+out = []
 for line in lines:
-    # Fix lines with problematic summary pattern: "summary": " "...",
-    if '"summary":' in line and line.strip().startswith('"summary"'):
-        # Check if this line has a nested quote issue (Chinese quote inside)
-        # Replace the broken pattern
-        pass
-    fixed_lines.append(line)
+    if '\u201c' in line or '\u201d' in line:
+        line = line.replace('\u201c', '\u300a').replace('\u201d', '\u300b')
+    out.append(line)
 
-# Actually let's just do a simple replace for the specific broken pattern
-text = ''.join(lines)
-# The problem is: "summary": "  "actual content"
-# Need to remove extra space+quote after summary":
-import re
-text = re.sub(r'"summary":\s+"(\s*")', r'"summary": "', text)
+with open('_run_round_v2.py', 'w', encoding='utf-8') as f:
+    f.write('\n'.join(out))
 
-with open('_gen_hourly_08.py', 'w', encoding='utf-8') as f:
-    f.write(text)
-print("Done fixing")
+print('Fixed Chinese quotes in _run_round_v2.py')

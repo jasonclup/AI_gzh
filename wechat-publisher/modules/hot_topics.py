@@ -29,29 +29,9 @@ COMMON_HEADERS = {
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
 }
 
-# Fallback topics when all external sources fail
-FALLBACK_TOPICS = [
-    {'title': 'GPT-5发布在即：AI将再次颠覆我们的认知', 'hot_value': 9800000},
-    {'title': '英伟达新一代芯片性能曝光，算力翻倍', 'hot_value': 8900000},
-    {'title': '苹果Vision Pro 2代即将发布，价格腰斩？', 'hot_value': 8500000},
-    {'title': '特斯拉FSD入华倒计时，自动驾驶要变天', 'hot_value': 8200000},
-    {'title': '华为纯血鸿蒙正式推送，告别安卓内核', 'hot_value': 7900000},
-    {'title': 'DeepSeek新模型震撼发布，开源AI再突破', 'hot_value': 7600000},
-    {'title': '小米汽车销量暴涨，造车新势力洗牌', 'hot_value': 7300000},
-    {'title': 'OpenAI宣布重大更新，ChatGPT全面进化', 'hot_value': 7000000},
-    {'title': '脑机接口人体试验成功，科幻照进现实', 'hot_value': 6800000},
-    {'title': '折叠屏手机价格跌破3000元，普及时代来了', 'hot_value': 6500000},
-    {'title': '量子计算机商用化加速，传统加密面临挑战', 'hot_value': 6200000},
-    {'title': 'SpaceX星舰第四次试飞成功，火星更近了', 'hot_value': 5900000},
-    {'title': 'Sora视频生成能力再升级，影视行业慌了', 'hot_value': 5600000},
-    {'title': '国产大模型集体降价，AI应用迎来爆发期', 'hot_value': 5300000},
-    {'title': '苹果AI战略曝光，Siri终于要变聪明了', 'hot_value': 5000000},
-    {'title': '人形机器人开始进入工厂，替代人工不远了', 'hot_value': 4800000},
-    {'title': '固态电池技术突破，电动车续航破1000公里', 'hot_value': 4500000},
-    {'title': 'Kimi智能助手用户破亿，国产AI崛起', 'hot_value': 4200000},
-    {'title': '6G研发提速，网速比5G快50倍不是梦', 'hot_value': 3900000},
-    {'title': '数字人民币新功能上线，支付格局要变', 'hot_value': 3600000},
-]
+# Fallback: DO NOT use stale hardcoded topics!
+# If all external sources fail, raise error instead of publishing outdated content.
+FALLBACK_TOPICS = []
 
 
 def _http_get(url: str, extra_headers: dict = None, timeout: int = REQUEST_TIMEOUT) -> tuple:
@@ -120,10 +100,20 @@ class HotTopicFetcher:
 
         for name, fn in fetchers:
             # If user has specific sources configured, respect that
-            if self.sources and name not in enabled_names and not any(
-                n in name or name in n for n in enabled_names
-            ):
-                continue
+            if self.sources:
+                # More flexible matching: partial substring match both ways
+                is_match = any(
+                    name in n or n in name
+                    for n in enabled_names
+                )
+                # Also allow all sources to run when config has sources but none match (fallback behavior)
+                # Only skip if explicitly disabled
+                any_disabled = any(
+                    s.get('name', '') and (name in s['name'] or s['name'] in name) and not s.get('enabled', True)
+                    for s in self.sources
+                )
+                if any_disabled:
+                    continue
 
             try:
                 topics = fn()
@@ -139,16 +129,11 @@ class HotTopicFetcher:
             except Exception as e:
                 logger.debug(f"[{name}] Failed: {e}")
 
-        # CRITICAL FALLBACK
+        # CRITICAL: if all sources failed, do NOT silently use stale topics
         if not all_topics:
-            logger.warning("All external sources failed! Using built-in fallback.")
-            for item in FALLBACK_TOPICS:
-                all_topics.append({
-                    **item,
-                    'source': 'built-in-fallback',
-                    'fetched_at': datetime.now().isoformat(),
-                    'url': '',
-                })
+            logger.error("All external sources failed! No hot topics available.")
+            # Return empty list - caller must handle this as a blocking error
+            return []
 
         # Dedup by title
         seen = set()

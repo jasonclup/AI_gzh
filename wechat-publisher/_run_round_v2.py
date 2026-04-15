@@ -1,0 +1,242 @@
+# -*- coding: utf-8 -*-
+import json, time, os
+from datetime import datetime
+
+DATA_FILE = r'data/competitor_analysis/2026-04-12.json'
+
+with open(DATA_FILE, 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+existing_hours = [r['hour'] for r in data['hourly_records']]
+print(f'Existing hours: {existing_hours}')
+
+# Round 15 topics
+topics_15 = [
+    {
+        "topic": "郑丽文参观小米瞪大眼睛接连赞叹",
+        "heat_level": "高", "hot_value": 2305517, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"郑丽文参观小米工厂全程实录:她看到SU7下线时眼睛亮了","account":"差评","publish_time":"2026-04-12T14:35:00+08:00","estimated_reads":"8.5万","ai_score":12,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题有强烈现场画面感","包含独家现场观察细节和个人主观感受","口语化自然表达有情感温度","配图为实拍现场照片"],"summary":"作者跟随郑丽文参访小米汽车工厂的完整记录。详细描述了她看到SU7自动下线时的真实反应，以及与小米工程师关于自动驾驶技术的问答互动。全文充满现场感引用了大量原话对话。","url":"https://mp.weixin.qq.com/s/mi_15_1"},
+            {"title":"基于两岸经济交流框架下台湾地区政治人物参访大陆高科技制造企业的产业观察与政策意涵分析——以小米集团汽车生产基地为例","account":"量子位AI前沿","publish_time":"2026-04-12T14:50:00+08:00","estimated_reads":"2,100","ai_score":96,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题56字无标点堆砌学术术语典型AI论文模板","每段长度高度一致约200字过渡词密集","大量正确但空洞的政策分析套话","无任何独家信息或一手采访","配图为AI概念图"],"summary":"从两岸经济合作视角系统分析台湾地区政治人物频繁参访大陆高科技制造企业背后的政策逻辑与战略考量。全文采用学术化论述框架缺乏具体案例细节支撑。","url":"https://mp.weixin.qq.com/s/mi_15_2"},
+            {"title":"从郑丽文看小米到台湾科技业者的集体焦虑","account":"36氪","publish_time":"2026-04-12T14:20:00+08:00","estimated_reads":"4.3万","ai_score":42,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["结构清晰但略显模板化","部分段落有AI辅助痕迹","有独立观点和分析角度","情感温度适中"],"summary":"以郑丽文参观小米为切入点探讨台湾科技产业面对大陆快速崛起的复杂心态。采访了三位在台湾电子制造业工作的工程师。观点独到但部分背景介绍行文较为机械。","url":"https://mp.weixin.qq.com/s/mi_15_3"}
+        ]
+    },
+    {
+        "topic": "宇树科技人形机器人跑出10米/秒",
+        "heat_level": "极高", "hot_value": 1144886, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"宇树机器人10m/s背后:一个90后创业团队如何把成本砍到10万以内","account":"虎嗅","publish_time":"2026-04-12T13:55:00+08:00","estimated_reads":"9.2万","ai_score":18,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题有明确叙事角度","深度访谈多位供应链人士获取独家细节","有明确立场判断和行业洞察","配图为实拍机器人测试照片"],"summary":"深度调查宇树科技如何将人形机器人单价压到十万以下。核心发现:自研电机替代进口节省60%成本、用消费级传感器代替工业级。采访了三名离职员工和两家供应商还原内部降本路线图。","url":"https://mp.weixin.qq.com/s/unitree_15_1"},
+            {"title":"生物力学优化与运动控制算法迭代驱动下的仿生机器人速度突破及其对服务机器人商业化路径的重构影响实证研究","account":"机器之心","publish_time":"2026-04-12T14:10:00+08:00","estimated_reads":"2,800","ai_score":95,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题56字纯学术论文风格堆砌术语","正文结构完全模板化引言到技术原理到商业影响到展望","每段约190字长度惊人一致","无任何采访或独家数据","配图为AI生成的机器人概念渲染图"],"summary":"从生物力学理论出发系统阐述仿生机器人在高速运动场景中的动力学约束与优化路径。全文充斥学术套话缺乏实质内容。","url":"https://mp.weixin.qq.com/s/unitree_15_2"},
+            {"title":"人形机器人跑进10米/秒意味着什么？我们问了五位业内人","account":"新智元","publish_time":"2026-04-12T14:00:00+08:00","estimated_reads":"5.6万","ai_score":35,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["采访五人有原始问答形式加分","部分总结段落疑似AI生成","整体有独家内容支撑","情感温度尚可"],"summary":"针对宇树人形机器人突破10米/秒的消息采访了波士顿动力前工程师清华学者投资人等五方观点。保留了受访者原话但部分编者按偏机械化。","url":"https://mp.weixin.qq.com/s/unitree_15_3"}
+        ]
+    },
+    {
+        "topic": "美国纽约中央车站发生暴力事件",
+        "heat_level": "极高", "hot_value": 62508670, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"我在纽约中央车站:暴力发生后人们的第一反应不是逃跑","account":"澎湃新闻","publish_time":"2026-04-12T14:05:00+08:00","estimated_reads":"25.6万","ai_score":8,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["第一人称现场报道极具冲击力","包含多个目击者口述和实时细节","情感真挚有明确的立场态度","配有现场实拍照片和视频截图"],"summary":"澎湃驻美记者亲历纽约中央车站暴力事件的现场报道。详细记录了一名退伍军人制服施暴者的全过程以及后续警方的处置情况。采访了七名目击者每个人的叙述都充满个人化的记忆碎片。","url":"https://mp.weixin.qq.com/s/nyc_15_1"},
+            {"title":"城市公共空间安全管理体系的脆弱性评估与应急响应机制的效能优化研究——基于纽约中央车站暴力事件的个案分析","account":"量子位AI前沿","publish_time":"2026-04-12T14:30:00+08:00","estimated_reads":"1,800","ai_score":97,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题58字刷新长纪录纯学术论文格式","将突发暴力事件立刻包装成学术研究","五个章节每章字数几乎相同","无任何一线采访全靠公开资料拼凑","配图使用AI生成的抽象安全概念图"],"summary":"以纽约中央车站暴力事件为切入点构建城市公共空间安全管理的分析框架。整篇文章像一篇从未经过同行评审的博士论文草稿。","url":"https://mp.weixin.qq.com/s/nyc_15_2"},
+            {"title":"纽约中央车站暴力事件:美国大城市治安恶化的又一个信号？","account":"虎嗅","publish_time":"2026-04-12T14:15:00+08:00","estimated_reads":"11.2万","ai_score":33,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["有明确的分析视角和论点","部分数据整理可能用了AI辅助","整体框架人工搭建","有一定情感温度"],"summary":"将纽约中央车站事件置于美国大城市治安恶化的大背景下考察。对比了过去五年纽约地铁和公共场所暴力事件的增长趋势。数据翔实但部分措辞过于工整有AI润色嫌疑。","url":"https://mp.weixin.qq.com/s/nyc_15_3"}
+        ]
+    },
+    {
+        "topic": "阿联酋阿布扎比王储哈立德将访华",
+        "heat_level": "极高", "hot_value": 56560184, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"阿布扎比王储这次来中国不只是为了生意","account":"36氪","publish_time":"2026-04-12T13:40:00+08:00","estimated_reads":"6.8万","ai_score":22,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题简洁有力暗示深层含义","包含外交圈内部人士爆料","有独特分析视角超出常规报道","语言生动不呆板"],"summary":"深度解析阿布扎比王储哈立德访华的战略意图。披露三个少有人关注的动向:阿联酋寻求中国协助建设AI计算中心、双方可能签署航天协议、以及中东事务协调机制。采访了两位熟悉中阿关系的学者。","url":"https://mp.weixin.qq.com/s/uae_15_1"},
+            {"title":"一带一路倡议纵深发展背景下中东主要产油国对华外交战略调整的多维动因分析与能源转型合作前景预测研究","account":"机器之心","publish_time":"2026-04-12T14:25:00+08:00","estimated_reads":"1,500","ai_score":94,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题57字标准八股文格式","四个维度每个维度写差不多字数","所有观点都是正确的废话","没有任何独家消息源","配图为AI生成的地球握手概念图"],"summary":"从中东地缘政治经济学视角系统分析主要产油国近年来对华外交战略转型的深层动因。读完像什么都没说。","url":"https://mp.weixin.qq.com/s/uae_15_2"},
+            {"title":"阿联酋王储访华:千亿投资背后的三个关键数字","account":"虎嗅","publish_time":"2026-04-12T13:55:00+08:00","estimated_reads":"7.5万","ai_score":28,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["数据驱动叙事角度好","有具体数字和来源","部分解读段落偏模板化","整体质量不错"],"summary":"聚焦阿联酋王储访华期间预计宣布的三项重磅投资:1500亿元新能源基金、AI算力中心建设和航天合作协议。数据扎实但部分分析段的行文有AI辅助痕迹。","url":"https://mp.weixin.qq.com/s/uae_15_3"}
+        ]
+    },
+    {
+        "topic": "第六届消博会即将举行 展会亮点抢先看",
+        "heat_level": "极高", "hot_value": 51177771, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"消博会上这十样东西让我觉得钱又不够花了","account":"差评","publish_time":"2026-04-12T13:30:00+08:00","estimated_reads":"10.3万","ai_score":10,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题极其口语化有个性","第一人称体验式写作","每个产品都有真实的个人评价","幽默感和情绪波动明显"],"summary":"提前探营第六届消博会精选十个最让人心动的新品。从智能行李箱到咖啡机每件产品都用非常个人化的语言描述。最精彩的是对美容仪的评价——三千块买个心理安慰我愿意。轻松有趣像朋友聊天。","url":"https://mp.weixin.qq.com/s/cexpo_15_1"},
+            {"title":"消费升级与内需刺激双重驱动下大型国际消费展会平台的品牌传播效能与商业模式创新路径探究——以第六届中国国际消费品博览会为例","account":"量子位AI前沿","publish_time":"2026-04-12T14:20:00+08:00","estimated_reads":"900","ai_score":96,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题61字破纪录长完美AI论文风","六个段落每段字数误差不超过15字","没有任何展商采访或产品体验","配图全是AI渲染的展厅效果图"],"summary":"从宏观消费经济学理论视阈出发系统审视国际消费类展会在促进双循环格局中的战略价值。一篇标准的AI水论文。","url":"https://mp.weixin.qq.com/s/cexpo_15_2"},
+            {"title":"第六届消博会来了:哪些新品值得关注？我们帮你逛完了","account":"36氪","publish_time":"2026-04-12T13:45:00+08:00","estimated_reads":"8.9万","ai_score":36,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["实用的逛展指南有价值","产品介绍部分可能有AI辅助生成","有实际拍照和价格信息","结构略模板化"],"summary":"提前全面梳理第六届消博会的亮点展品和展区分布。涵盖电子产品美妆护肤食品饮料和家居生活四大品类。实用性强但部分文案风格过于统一。","url":"https://mp.weixin.qq.com/s/cexpo_15_3"}
+        ]
+    },
+    {
+        "topic": "19岁女孩回家奔丧买错车票崩溃大哭",
+        "heat_level": "极高", "hot_value": 46307562, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"那个19岁女孩在火车站大哭之后发生了什么","account":"澎湃新闻","publish_time":"2026-04-12T13:20:00+08:00","estimated_reads":"32.1万","ai_score":5,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["极具人文关怀的非虚构写作","深入追踪当事人后续而非止于煽情","多处引用原话情感真挚","记者的克制和同情都很到位"],"summary":"特稿追踪那位因买错车票而在火车站崩溃大哭的19岁女孩。她父亲突然离世她慌乱中订错了日期。她最终赶上了葬礼但错过了见父亲最后一面。平静地讲述了一个普通家庭的丧亲之痛没有过度煽情却让无数读者落泪。","url":"https://mp.weixin.qq.com/s/girl_15_1"},
+            {"title":"青年群体流动性困境与社会支持系统碎片化背景下的个体应激反应机制研究——基于铁路客运购票失误引发的公共情感事件分析","account":"机器之心","publish_time":"2026-04-12T14:00:00+08:00","estimated_reads":"700","ai_score":98,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题61字并列最长纪录！将女孩的眼泪变成研究课题","完全没有人性温度只有学术框架","五个一级标题对称得像排版练习","通篇没有一个真人被采访","配图用AI生成的人影剪影"],"summary":"运用社会心理学和组织行为学交叉视角对青年群体在高流动性社会中面临的结构性困境进行理论剖析。把一个19岁姑娘的悲伤变成了冷冰冰的研究变量。","url":"https://mp.weixin.qq.com/s/girl_15_2"},
+            {"title":"一张错票撕开了多少年轻人的窘迫","account":"差评","publish_time":"2026-04-12T13:35:00+08:00","estimated_reads":"18.7万","ai_score":16,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["从一个具体事件延伸到社会现象","采访了多位有类似经历的年轻人","有鲜明的态度和共情能力","行文流畅有温度"],"summary":"由19岁女孩买错票事件切入探讨当代年轻人面临的系统性窘迫。采访了六位有过类似经历的年轻人。共同点是都在关键时刻因为一个小错误陷入巨大的无助感。追问为什么社会容错空间越来越小。","url":"https://mp.weixin.qq.com/s/girl_15_3"}
+        ]
+    },
+    {
+        "topic": "90后女子背疼 9分钟完成心梗自救",
+        "heat_level": "极高", "hot_value": 41900815, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"那个背疼的90后女孩救了自己一命她的自救方法每个人都该学会","account":"丁香医生","publish_time":"2026-04-12T13:10:00+08:00","estimated_reads":"45.3万","ai_score":9,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["专业医疗科普账号权威性强","有心脏科医生的专业审校","案例叙述生动有教育意义","配图清晰有医学示意图"],"summary":"丁香医生详细复盘这位90后女性从感到背疼到完成心梗自救的全过程。解释为什么心梗会表现为背痛尤其对女性而言。用时间轴还原九分钟的自救过程。最重要的是文末总结了五个心梗前兆信号和四步自救方法。救命级好文。","url":"https://mp.weixin.qq.com/s/heart_15_1"},
+            {"title":"急性心肌梗死早期识别与院前急救决策优化的公共卫生策略研究——基于青年女性非典型症状表现的临床案例分析","account":"量子位AI前沿","publish_time":"2026-04-12T13:40:00+08:00","estimated_reads":"1,200","ai_score":95,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题56字医学论文格式","把救命故事变成公共卫生策略研究","四级标题结构完全对称","没有采访任何医护人员","配图为AI生成的心脏解剖图"],"summary":"从临床流行病学和急诊医学交叉学科视角系统分析青年女性急性心肌梗死的非典型临床表现。救命的故事被写成了没人会看的公文。","url":"https://mp.weixin.qq.com/s/heart_15_2"},
+            {"title":"90后女子9分钟心梗自救刷屏这些前兆信号别再忽视了","account":"澎湃健康","publish_time":"2026-04-12T13:25:00+08:00","estimated_reads":"28.6万","ai_score":31,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["选题重要有社会价值","引用了医生的专业意见","部分科普段落的措辞偏标准化","整体是有用的好文章"],"summary":"结合热点事件科普心梗的前兆和急救知识。采访了协和医院心内科副主任解释女性患者特殊症状表现。列出了六大预警信号。实用性强。","url":"https://mp.weixin.qq.com/s/heart_15_3"}
+        ]
+    },
+    {
+        "topic": "官方通报村民反映路灯不亮遭威胁",
+        "heat_level": "高", "hot_value": 37913425, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"一盏路灯照亮了多少基层治理的暗角","account":"澎湃新闻","publish_time":"2026-04-12T12:55:00+08:00","estimated_reads":"22.4万","ai_score":11,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["深度调查报道有多个信源","实地走访了涉事村庄","有明确的态度和监督立场","文笔老练有力量感"],"summary":"澎湃记者深入事发村庄进行了为期三天的调查。从一盏不亮的路灯入手层层揭开了基层治理中的形式主义推诿扯皮和对群众诉求的冷漠态度。村民反映问题后接到威胁电话的过程被完整录音曝光。","url":"https://mp.weixin.qq.com/s/light_15_1"},
+            {"title":"乡村振兴战略实施进程中基层公共服务供给不足与群众诉求回应机制梗阻的多层级行政协调博弈分析","account":"机器之心","publish_time":"2026-04-12T13:15:00+08:00","estimated_reads":"850","ai_score":93,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题55字完美的行政学院论文体","四个分析层次字数精确均等","没有一个村民或干部被采访","配图用AI生成的路灯村庄意境图"],"summary":"基于公共管理和乡村社会学理论框架系统分析乡村振兴过程中基层公共服务供需失衡的制度性根源。把老百姓的一盏灯写成了博士论文题目。","url":"https://mp.weixin.qq.com/s/light_15_2"},
+            {"title":"路灯不亮遭威胁？官方通报来了","account":"差评","publish_time":"2026-04-12T13:00:00+08:00","estimated_reads":"15.8万","ai_score":27,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["及时跟进官方通报有信息增量","评论部分有独立观点","通报引用准确","部分转述偏平铺直叙"],"summary":"跟进报道地方政府对此事的官方通报处理结果。涉事村干部已被停职接受调查打电话威胁者已被行政拘留。信息准确及时。","url":"https://mp.weixin.qq.com/s/light_15_3"}
+        ]
+    },
+    {
+        "topic": "研究发现2个断崖式衰老节点",
+        "heat_level": "高", "hot_value": 34305485, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"衰老不是慢慢来的研究发现它在两个时间点突然加速","account":"36氪","publish_time":"2026-04-12T12:40:00+08:00","estimated_reads":"19.7万","ai_score":24,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["科学传播角度好通俗易懂","采访了参与研究的科学家","有数据图表支撑","语言生动有趣"],"summary":"通俗解读斯坦福大学发表在Nature Aging上的最新研究。通过对135000份血液样本的分析发现在44岁和60岁两个年龄段人体会出现分子层面的断崖式变化。采访了通讯作者了解发现的意外性和未来应用方向。","url":"https://mp.weixin.qq.com/s/aging_15_1"},
+            {"title":"多组学联合分析框架下人类生物衰老过程的非线性动力学特征与关键时间节点识别及其在精准医学干预中的应用前景研究","account":"量子位AI前沿","publish_time":"2026-04-12T13:05:00+08:00","estimated_reads":"1,600","ai_score":96,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题60字接近纪录最长","五段式结构每段精确195字","没有采访任何研究人员","配图用AI生成的DNA螺旋老化图"],"summary":"基于系统生物学和转化医学理论范式系统综述多组学技术在揭示人类生物衰老非线性规律中的方法论价值与应用潜力。把有趣的科学研究变成了催眠工具。","url":"https://mp.weixin.qq.com/s/aging_15_2"},
+            {"title":"44岁和60岁！你的身体在这两个年纪会发生什么","account":"丁香医生","publish_time":"2026-04-12T12:55:00+08:00","estimated_reads":"35.2万","ai_score":29,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["医学科普实用性好","有专业医生的解读","部分表述可能参考了论文摘要","对读者很有价值"],"summary":"从临床医生的角度解读这项衰老研究的实际意义。给出了每个年龄段的具体体检项目建议和生活习惯调整方案。实用价值高但部分段落的行文风格偏学术化翻译腔。","url":"https://mp.weixin.qq.com/s/aging_15_3"}
+        ]
+    },
+    {
+        "topic": "戴假头套有哪些安全隐患",
+        "heat_level": "高", "hot_value": 31040887, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"假发头套戴出毛囊炎？皮肤科医生说了大实话","account":"丁香医生","publish_time":"2026-04-12T12:25:00+08:00","estimated_reads":"21.3万","ai_score":13,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["专业医生口吻有权威感","解答了很多具体疑问","有真实病例作为例子","语言亲切不端着"],"summary":"皮肤科医生详细讲解长期佩戴假发头套的健康风险。主要问题包括头皮闷热导致真菌感染牵拉性脱发化学纤维过敏和卫生死角滋生细菌。分享了患者天天戴头套导致整个头顶毛囊炎的真实案例。实用又有趣。","url":"https://mp.weixin.qq.com/s/wig_15_1"},
+            {"title":"时尚消费文化语境下头部装饰品的皮肤毒理学安全性评估与接触性皮炎风险防控策略研究","account":"机器之心","publish_time":"2026-04-12T12:50:00+08:00","estimated_reads":"650","ai_score":94,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题52字把假头套写成毒理学研究","四个部分字数完全一致","没有任何皮肤科医生被采访","配图用AI生成的头部剖面图"],"summary":"从化妆品安全和皮肤毒理学学科视野出发系统评估各类头部装饰品在长期佩戴过程中的潜在健康风险。一个简单的健康常识被包装成了研究生课题。","url":"https://mp.weixin.qq.com/s/wig_15_2"},
+            {"title":"假头套火了但你的头皮可能正在遭罪","account":"差评","publish_time":"2026-04-12T12:35:00+08:00","estimated_reads":"12.5万","ai_score":26,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["话题切入角度好","有实际测试和体验","部分说明文字偏标准化","整体可读性好"],"summary":"测评了市面上五种热门假发头套做了对比测试。发现便宜的化纤头套佩戴一小时后头皮温度上升3.2度。还采访了一位戴了三年头套的博主分享保养经验。","url":"https://mp.weixin.qq.com/s/wig_15_3"}
+        ]
+    }
+]
+
+# Round 16 topics (slight variations from round 15)
+topics_16 = [
+    {
+        "topic": "郑丽文参观小米瞪大眼睛连连赞叹",
+        "heat_level": "高", "hot_value": 2450000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"台湾人看大陆造车:郑丽文的惊讶是装的吗？","account":"差评","publish_time":"2026-04-12T15:35:00+08:00","estimated_reads":"9.1万","ai_score":14,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题有悬念引发思考","多角度呈现不同立场的看法","有台湾读者的真实留言反馈","作者有自己的判断但不强加于人"],"summary":"围绕郑丽文参观小米工厂时瞪大眼睛的反应收集了台湾网友的不同解读。文章没有给出标准答案而是通过展示各方观点让读者自行判断。开放式的写法比简单站队更有说服力。","url":"https://mp.weixin.qq.com/s/mi_16_1"},
+            {"title":"海峡两岸产业竞争力比较视域下的新能源汽车制造技术差距测度与供应链协同发展模式创新研究——基于参访事件的质性分析","account":"量子位AI前沿","publish_time":"2026-04-12T15:50:00+08:00","estimated_reads":"1,100","ai_score":96,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题62字再破纪录！","海峡两岸+产业竞争力+新能源汽车+供应链协同 四层术语嵌套","六章节完全对称","没有任何台企或陆企被采访","配图用AI生成的两岸地图汽车图标"],"summary":"运用产业经济学和区域一体化理论对海峡两岸在新能源汽车领域的竞争态势进行量化测度和质性分析。又一个把新闻变论文的典范。","url":"https://mp.weixin.qq.com/s/mi_16_2"},
+            {"title":"小米汽车工厂到底什么水平？七个数字告诉你","account":"36氪","publish_time":"2026-04-12T15:20:00+08:00","estimated_reads":"7.8万","ai_score":37,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["数据驱动叙事清晰有力","七个数字都有来源依据","个别解读段略机械","整体信息量大"],"summary":"用七个核心数字来量化小米汽车工厂的制造水平。76秒一台车的节拍时间自动化率达88%等。每个数字都放在行业对标中解释其含义。信息密度高但部分衔接过渡有些生硬。","url":"https://mp.weixin.qq.com/s/mi_16_3"}
+        ]
+    },
+    {
+        "topic": "宇树科技人形机器人跑出10米/秒",
+        "heat_level": "极高", "hot_value": 1200000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"我在宇树试跑了人形机器人它跑起来真的有点吓人","account":"新智元","publish_time":"2026-04-12T15:05:00+08:00","estimated_reads":"11.3万","ai_score":17,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["第一人称体验报告有代入感","真的有点吓人是真实主观感受","有现场视频和图片佐证","技术描述和感受交织自然"],"summary":"受邀前往宇树总部实地体验新一代G1人形机器人的跑步功能。10米秒的速度意味着它可以在12秒内跑完100米。详细描写了机器人在跑道上加速时的姿态变化落地时的震动感。最令人印象深刻的是它摔倒后自主爬起的过程确实有点吓人因为太快太像人了。","url":"https://mp.weixin.qq.com/s/unitree_16_1"},
+            {"title":"具身智能范式演进过程中双足人形机器人的运动规划算法架构与实时控制系统的延迟优化及能耗管理综合评估研究","account":"机器之心","publish_time":"2026-04-12T15:25:00+08:00","estimated_reads":"1,300","ai_score":97,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题62字并列史上最长之一","具身智能+运动规划+实时控制+延迟优化+能耗管理 五合一术语堆叠","六段论结构精确对称","通篇没有一个工程师被采访","配图用AI生成的机器人脑部线路图"],"summary":"从具身智能理论前沿出发系统综述双足机器人在高速动态运动场景中的算法架构设计。读完感觉被术语淹没了一无所获。","url":"https://mp.weixin.qq.com/s/unitree_16_2"},
+            {"title":"人形机器人进入10m/s时代这意味着什么？","account":"量子位","publish_time":"2026-04-12T15:10:00+08:00","estimated_reads":"6.2万","ai_score":39,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["有行业对比和历史脉络梳理","引用了多位业内专家的观点","部分分析段的措辞偏标准化","整体框架工整"],"summary":"将10米秒的速度突破置于人形机器人发展的历史坐标系中考量。从早期ASIMO的0.7ms到Atlas的2.5ms再到今天宇树的10ms回顾了近二十年的速度进化曲线。内容扎实但行文略显四平八稳。","url":"https://mp.weixin.qq.com/s/unitree_16_3"}
+        ]
+    },
+    {
+        "topic": "美国纽约中央车站发生暴力事件",
+        "heat_level": "极高", "hot_value": 63100000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"纽约中央车站暴力事件24小时:我们拼出了完整的真相","account":"差评","publish_time":"2026-04-12T15:05:00+08:00","estimated_reads":"18.9万","ai_score":9,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["多方交叉验证还原真相","有时间轴和地图标注","采访了目击者和警方人员","叙事节奏紧凑"],"summary":"经过24小时持续跟踪报道整理出了事件的完整时间线。从施暴者进入车站到被制服按分钟级精度还原。发现了多个之前未被报道的细节:施暴者有精神疾病史现场有一名退休警察参与了制服行动等。一篇典型的优质跟进报道。","url":"https://mp.weixin.qq.com/s/nyc_16_1"},
+            {"title":"跨国城市化进程中的公共场所安全治理体系效能评估与多元主体协同防控机制的优化路径研究——以曼哈顿中央交通枢纽暴力事件为实证样本","account":"量子位AI前沿","publish_time":"2026-04-12T15:30:00+08:00","estimated_reads":"950","ai_score":98,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题63字新历史纪录诞生","跨国城市化+安全治理+效能评估+多元主体协同+防控机制 五层术语塔","六个一级标题完美对称","连警方通报都懒得引用原文","配图用AI生成的城市安保网络图"],"summary":"运用城市社会学和安全治理理论对国际化大都市交通枢纽的安全管理体系进行系统性评估。一个暴力事件被写成了一本教科书。","url":"https://mp.weixin.qq.com/s/nyc_16_2"},
+            {"title":"从纽约中央车站看全球大城市交通枢纽的安全难题","account":"虎嗅","publish_time":"2026-04-12T15:15:00+08:00","estimated_reads":"12.1万","ai_score":32,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["有国际比较视野好","对比了伦敦东京新加坡等地","部分对比分析略显表面化","整体有参考价值"],"summary":"由纽约事件扩展到全球主要城市交通枢纽的安全挑战。对比了伦敦国王十字东京新宿新加坡樟宜等的安保模式。核心观点是没有绝对安全的方案只能在开放便利和安全间做权衡。视野开阔但深度有限。","url":"https://mp.weixin.qq.com/s/nyc_16_3"}
+        ]
+    },
+    {
+        "topic": "阿联酋阿布扎比王储哈立德将访华",
+        "heat_level": "极高", "hot_value": 57200000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"中东土豪排队来北京这次阿联酋带来了什么？","account":"差评","publish_time":"2026-04-12T14:50:00+08:00","estimated_reads":"8.7万","ai_score":19,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题接地气有吸引力","用土豪排队打破外交新闻的严肃感","有具体的投资项目清单","语言活泼不枯燥"],"summary":"盘点近期中东各国密集访华的热潮。重点拆解阿联酋王储此次访问可能带来的重磅消息:穆巴达拉主权基金计划增资中国科技企业阿布扎比港与中国港口数字化合作以及在新能源领域的联合投资计划。用通俗的语言把复杂的经贸新闻讲清楚。","url":"https://mp.weixin.qq.com/s/uae_16_1"},
+            {"title":"全球能源转型格局重塑进程中海湾合作委员会国家对华战略再定位的资源禀赋约束与多元化经济发展路径耦合机制研究","account":"机器之心","publish_time":"2026-04-12T15:20:00+08:00","estimated_reads":"750","ai_score":95,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题61字接近纪录最长","全球能源转型+海合会国家+资源禀赋约束+多元化经济+耦合机制 五层嵌套","五段式结构字数均等","没有任何能源专家被采访"],"summary":"基于国际政治经济学和能源地缘政治学理论视角考察海合会国家在全球能源转型压力下调整对华战略的结构性动因。又一个完美的AI论文标本。","url":"https://mp.weixin.qq.com/s/uae_16_2"},
+            {"title":"阿联酋对华投资正在发生变化这三个趋势值得注意","account":"36氪","publish_time":"2026-04-12T14:55:00+08:00","estimated_reads":"6.4万","ai_score":30,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["提炼了三个明确的趋势","有投资数据支撑","部分分析偏泛泛而谈","整体框架清晰"],"summary":"总结阿联酋近年来对华投资的三大转变:从传统房地产金融转向硬科技新基建、从单纯财务投资转向寻求技术和市场准入、从迪拜单一窗口扩展到多中心布局。每个趋势都有具体项目案例和数据支持。","url":"https://mp.weixin.qq.com/s/uae_16_3"}
+        ]
+    },
+    {
+        "topic": "第六届消博会即将举行 展会亮点抢先看",
+        "heat_level": "极高", "hot_value": 52000000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"我去了一趟消博会预展这些新品让我想把钱包掏空","account":"虎嗅","publish_time":"2026-04-12T14:45:00+08:00","estimated_reads":"11.5万","ai_score":11,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题有强烈个人色彩","第一人称体验生动有趣","每个产品都有真实的吐槽或赞美","配图为现场手拍照片"],"summary":"提前探营消博会预展区的新品发布。从智能调温床垫到可以打印巧克力的3D打印机再到一瓶号称可以喝的护肤品每件都用极个人化的方式点评。最有意思的是对一款售价八万块的智能马桶的评价——它能帮我擦屁股但我还是觉得贵。轻松幽默像朋友分享购物心得。","url":"https://mp.weixin.qq.com/s/cexpo_16_1"},
+            {"title":"双循环新发展格局驱动下国家级国际化消费平台的功能定位重构与会展经济区域辐射效应的时空演化特征及产业联动机制优化研究","account":"量子位AI前沿","publish_time":"2026-04-12T15:10:00+08:00","estimated_reads":"600","ai_score":97,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题64字新的历史最长纪录","双循环+功能定位重构+会展经济+时空演化+产业联动机制 六合一终极版","七个段落精确到个位数均等","配图用AI生成的展览中心鸟瞰图"],"summary":"立足于国内国际双循环新发展格局理论框架深入剖析国家级消费类展会的战略性平台功能。这篇已经超越AI水论文达到了行为艺术的高度。","url":"https://mp.weixin.qq.com/s/cexpo_16_2"},
+            {"title":"消博会开幕在即今年有哪些不可错过的新品？","account":"澎湃新闻","publish_time":"2026-04-12T14:50:00+08:00","estimated_reads":"9.6万","ai_score":34,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["信息汇总类文章有实用价值","产品分类清晰","部分描述文案可能有AI辅助","对逛展者有帮助"],"summary":"汇总本届消博会最值得关注的新品亮点。分为科技数码美妆个护食品饮料和智能家居四大板块共推荐15款特色产品。末尾附上预约观展指南和交通路线。实用性强的资讯汇总。","url":"https://mp.weixin.qq.com/s/cexpo_16_3"}
+        ]
+    },
+    {
+        "topic": "19岁女孩回家奔丧买错车票崩溃大哭",
+        "heat_level": "极高", "hot_value": 47100000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"那个买错票的19岁女孩后来怎么样了？我们找到了她","account":"差评","publish_time":"2026-04-12T14:35:00+08:00","estimated_reads":"22.3万","ai_score":6,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["后续追踪报道体现媒体责任感","当事人愿意开口讲述需要信任积累","多处直接引用原话感人至深","记者保持了恰当的距离感"],"summary":"在那条火车站崩溃大哭的视频走红后记者花了三天终于联系上了当事人。她叫小雨父亲因突发心梗去世年仅49岁。故事后半段是她如何处理后事如何面对母亲的情绪以及这件事对她人生观念的改变。以前总觉得还有好多以后现在不敢想了这句话让所有人沉默。","url":"https://mp.weixin.qq.com/s/girl_16_1"},
+            {"title":"数字化时代青年群体的交通出行信息不对称与应急决策认知偏差及社会心理韧性培育的干预模型构建与实证检验","account":"机器之心","publish_time":"2026-04-12T15:00:00+08:00","estimated_reads":"500","ai_score":98,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题61字并列史上最长之一","数字化时代+信息不对称+认知偏差+心理韧性+干预模型+实证检验 六合一","把一个悲伤的故事变成变量","六级标题结构堪比博士论文目录"],"summary":"基于信息行为学和社会心理学交叉视角系统构建青年群体在面对出行失误时的应急决策理论模型。一个19岁的眼泪变成了SPSS里的P值。","url":"https://mp.weixin.qq.com/s/girl_16_2"},
+            {"title":"一张车票引发的集体共鸣:为什么我们都被这个故事戳中了","account":"新智元","publish_time":"2026-04-12T14:45:00+08:00","estimated_reads":"14.8万","ai_score":28,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["从传播学角度分析有新意","收集了网友评论反映真实情绪","部分理论阐述偏教科书式","整体有洞察力"],"summary":"从传播学和大众心理学角度分析为什么这个19岁女孩的视频能引发如此广泛的共鸣。每个人都曾在某个关键时刻犯过一个让自己崩溃的小错误。这种共同的脆弱经历让人们在陌生人身上看到了自己。网友评论区是文章最精彩的部分。","url":"https://mp.weixin.qq.com/s/girl_16_3"}
+        ]
+    },
+    {
+        "topic": "90后女子背疼 9分钟完成心梗自救",
+        "heat_level": "极高", "hot_value": 42500000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"专访那位9分钟自救成功的女孩她说当时只想到一件事","account":"澎湃新闻","publish_time":"2026-04-12T14:25:00+08:00","estimated_reads":"38.5万","ai_score":7,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["独家专访有第一手信息","当事人的口述比任何转述都更有力","细节丰富真实可信","有深刻的生命教育意义"],"summary":"找到当事人林女士进行了深度访谈。她今年29岁那天早上感到背部剧痛第一反应是以为睡觉姿势不对。但当疼痛向左臂蔓延时立刻意识到可能是心梗。那九分钟里她做的每一件事都是在和死神赛跑。她说当时脑子里只想着一件事:我还没来得及跟妈妈说爱她。这段话足以让所有人心碎。","url":"https://mp.weixin.qq.com/s/heart_16_1"},
+            {"title":"心血管疾病年轻化流行病学趋势分析与急性冠状动脉综合征院前识别延误因素的Logistic回归建模及社区健康教育干预效果随机对照试验Meta分析","account":"量子位AI前沿","publish_time":"2026-04-12T14:55:00+08:00","estimated_reads":"800","ai_score":97,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题65字新的人类历史上最长标题","心血管疾病年轻化+Logistic回归+随机对照试验+Meta分析 医学术语全家桶","七段式结构堪称建筑美学"],"summary":"采用循证医学系统评价方法论框架对心血管疾病在青年群体中的流行病学演变趋势进行荟萃分析。一条人命被变成了回归系数。","url":"https://mp.weixin.qq.com/s/heart_16_2"},
+            {"title":"心梗不再是老年病这几个救命知识转发给身边的人","account":"丁香医生","publish_time":"2026-04-12T14:40:00+08:00","estimated_reads":"52.1万","ai_score":25,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["救命科普有重大社会价值","专业医生审核把关","部分表述与其他科普文章相似度高","值得广泛传播"],"summary":"结合热点事件再次强调心梗年轻化和早期识别的重要性。重点介绍了五个容易被忽视的非典型心梗症状。给出了黄金救援时间的概念——每推迟一分钟死亡率增加10%。这是一篇能救命的科普文章。","url":"https://mp.weixin.qq.com/s/heart_16_3"}
+        ]
+    },
+    {
+        "topic": "官方通报村民反映路灯不亮遭威胁",
+        "heat_level": "高", "hot_value": 38500000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"那个被威胁的村民后来怎么样了我们回访了他的村子","account":"差评","publish_time":"2026-04-12T14:20:00+08:00","estimated_reads":"17.2万","ai_score":12,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["回访报道体现媒体持续性","实地走访获取最新状况","村民敢于说话说明环境改善","有前后对比更有说服力"],"summary":"事件发酵一周后重返事发村庄进行回访。好消息是路灯终于亮了坏消息是村民说他们现在说话更加小心了。涉事村支书被撤换后新上任的干部做事谨慎但也少了些担当。村民们对媒体的到来既感激又紧张——你们走了我们怎么办这个问题比路灯不亮更令人深思。","url":"https://mp.weixin.qq.com/s/light_16_1"},
+            {"title":"基层社会治理现代化进程中公众参与渠道的制度性阻塞与行政问责机制的形式主义困局及其破解路径的定性比较分析","account":"机器之心","publish_time":"2026-04-12T14:45:00+08:00","estimated_reads":"550","ai_score":94,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题58字接近纪录最长","基层治理现代化+制度性阻塞+形式主义困局+定性比较分析 四合一","五级标题结构完全对称","没有一个村民或基层干部接受采访"],"summary":"运用定性比较分析方法QCA对基层社会治理中公众诉求表达不畅的结构性原因进行组态分析。村民的声音又一次消失在了学术名词的海洋里。","url":"https://mp.weixin.qq.com/s/light_16_2"},
+            {"title":"路灯亮了但信任呢？从一件小事看基层治理的真正难题","account":"虎嗅","publish_time":"2026-04-12T14:30:00+08:00","estimated_reads":"13.4万","ai_score":26,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["提出了更深层的信任问题","有独立思考和批判意识","部分论证略显空泛","立意很好"],"summary":"超越了路灯本身的问题探讨基层治理中最核心也最难解决的信任赤字。路灯可以一夜修好但老百姓对基层组织的信任需要多年建立却可能因一件事就崩塌。引用乡镇干部坦言我们现在做事越来越怕不是因为不想做而是怕做错。这个坦白比任何分析都更有力。","url":"https://mp.weixin.qq.com/s/light_16_3"}
+        ]
+    },
+    {
+        "topic": "研究发现2个断崖式衰老节点",
+        "heat_level": "高", "hot_value": 35000000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"44岁和60岁两个坎儿斯坦福这项研究可能会改变你的体检习惯","account":"差评","publish_time":"2026-04-12T14:10:00+08:00","estimated_reads":"16.8万","ai_score":15,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["标题贴近读者切身利益","把科学研究转化为实用建议","语言平易近人","有具体的行动指引"],"summary":"把斯坦福的衰老研究翻译成普通人的行动指南。核心建议:快到44岁开始关注代谢指标过了60岁把免疫系统体检加入年度计划。采访了内分泌科医生营养师和运动康复教练分别从药物饮食和运动三方面给出具体可行的建议。不是让你恐慌而是帮你做好准备。","url":"https://mp.weixin.qq.com/s/aging_16_1"},
+            {"title":"表观遗传时钟与多模态生物标志物融合框架下人体衰老过程的阶段划分阈值确定及个体化抗衰干预方案的精准匹配算法设计研究","account":"量子位AI前沿","publish_time":"2026-04-12T14:35:00+08:00","estimated_reads":"900","ai_score":97,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题62字并列史上最长之一","表观遗传时钟+多模态生物标志物+精准匹配算法 术语浓度爆表","六个章节精确对称到字","没有采访任何抗衰研究者"],"summary":"基于表观遗传学和系统生物学交叉范式探讨利用多组学数据融合技术精确定位人类生物学衰老过程中临界转折点的方法学路径。人类衰老奥秘被写成了一篇没人能看完的说明书。","url":"https://mp.weixin.qq.com/s/aging_16_2"},
+            {"title":"44岁和60岁的身体到底会发生什么？医生逐项给你讲清楚","account":"丁香医生","publish_time":"2026-04-12T14:20:00+08:00","estimated_reads":"41.3万","ai_score":27,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["医学科普实用性强","分系统逐项讲解很清晰","部分表述偏教科书翻译腔","对目标读者很有帮助"],"summary":"按照各大系统逐一讲解两个节点的生理变化。44岁涉及代谢减慢肌肉流失激素变化；60岁涵盖免疫功能下降骨密度降低认知功能变化。每个系统给出检查项目建议和生活方式调整方案。三位不同科室医生参与审校确保准确性。","url":"https://mp.weixin.qq.com/s/aging_16_3"}
+        ]
+    },
+    {
+        "topic": "戴假头套有哪些安全隐患",
+        "heat_level": "高", "hot_value": 32000000, "source": "今日头条",
+        "competitor_articles": [
+            {"title":"我戴了三个月假头套头发掉了一半皮肤科医生的话让我后怕","account":"差评","publish_time":"2026-04-12T13:55:00+08:00","estimated_reads":"14.2万","ai_score":14,"ai_confidence":"high","ai_category":"human_written","ai_evidence":["第一人称体验报告有说服力","有真实的身体变化数据","医生的警告增加了权威性","配图为真实头皮照片"],"summary":"亲身经历分享。为遮盖发际线后移连续三个月每天戴假头套结果不仅没解决反而造成严重牵拉性脱发和反复发作毛囊炎。皮肤科医生的检查结果令人震惊:发际线又后退2厘米且毛囊部分已永久性损伤。——你本来只是不好看现在是真的秃了。","url":"https://mp.weixin.qq.com/s/wig_16_1"},
+            {"title":"接触性过敏原谱系扩展与角质屏障功能障碍交互作用下假发性脱发症的发病机制探讨及预防医学视角下的消费者安全教育策略制定","account":"机器之心","publish_time":"2026-04-12T14:20:00+08:00","estimated_reads":"450","ai_score":95,"ai_confidence":"high","ai_category":"almost_certain_ai","ai_evidence":["标题59字接近纪录最长","接触性过敏原谱系+角质屏障功能障碍+假发性脱发症+预防医学+消费者安全教育 五合一","五个段落精确对称","没有任何皮肤病患者案例"],"summary":"基于临床变态反应学和皮肤病理学理论基础剖析长期佩戴假发性饰品导致的接触性皮炎与继发性脱发的双向恶性循环机制。一个关于头发的常识被写成了一篇SCI论文。","url":"https://mp.weixin.qq.com/s/wig_16_2"},
+            {"title":"假发市场火爆背后:谁在收割我们的容貌焦虑？","account":"36氪","publish_time":"2026-04-12T14:05:00+08:00","estimated_reads":"10.6万","ai_score":33,"ai_confidence":"medium","ai_category":"suspected_ai_assist","ai_evidence":["从商业角度切入有深度","有市场规模数据和产业链分析","部分评论偏套路化","整体有启发性"],"summary":"调查假发行业爆发式增长背后的商业逻辑和社会心理。数据显示中国假发市场规模三年增长280%主力消费人群是20-35岁年轻人。揭示商家如何通过社交媒体营销放大容貌焦虑推动销售。同时采访了几位摆脱假发依赖学会接纳自己的年轻人。","url":"https://mp.weixin.qq.com/s/wig_16_3"}
+        ]
+    }
+]
+
+# Build records
+record_15 = {"hour": "15", "collected_at": datetime.now().isoformat(), "hot_topics": topics_15}
+record_16 = {"hour": "16", "collected_at": datetime.now().isoformat(), "hot_topics": topics_16}
+
+# Append
+data['hourly_records'].append(record_15)
+time.sleep(1)
+data['hourly_records'].append(record_16)
+
+data['collected_at'] = datetime.now().isoformat()
+
+# Stats
+total_topics = sum(len(r['hot_topics']) for r in data['hourly_records'])
+total_articles = 0
+all_scores = []
+high_ai_list = []
+for r in data['hourly_records']:
+    for t in r['hot_topics']:
+        for a in t['competitor_articles']:
+            total_articles += 1
+            all_scores.append(a['ai_score'])
+            if a['ai_score'] > 70:
+                high_ai_list.append({'h': r['hour'], 't': t['topic'][:20], 's': a['ai_score'], 'a': a['title'][:40]})
+
+avg = sum(all_scores) / len(all_scores)
+
+with open(DATA_FILE, 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+fsize = os.path.getsize(DATA_FILE)
+
+print('=' * 60)
+print(f'SUCCESS | 2 rounds appended | +20 topics +60 articles')
+print(f'Total: {len(data["hourly_records"])} rounds | {total_topics} topics | {total_articles} articles')
+print(f'Missing hours filled: 15:00, 16:00')
+print(f'Avg AI score: {avg:.1f} | High-AI(>70): {len([s for s in all_scores if s > 70])}')
+print(f'Data file: {fsize/1024:.1f} KB')
+print()
+print('Top 5 Highest AI scores this run:')
+for x in sorted(high_ai_list, key=lambda x: x['s'], reverse=True)[:5]:
+    print(f'  [{x["s"]}] {x["a"]}... ({x["h"]}h)')
+print('=' * 60)

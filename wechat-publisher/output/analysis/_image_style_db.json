@@ -35,6 +35,13 @@
       "sampled_pages": 8,
       "total_images_found": 39,
       "findings_count": 5
+    },
+    {
+      "timestamp": "2026-04-15T22:12:08.977810",
+      "articles_analyzed": 10,
+      "sampled_pages": 8,
+      "total_images_found": 0,
+      "findings_count": 0
     }
   ]
 }

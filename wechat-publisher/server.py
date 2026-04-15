@@ -146,9 +146,10 @@ def api_generate_article():
         config = {
             'MIN_PARAGRAPHS': 5,
             'MAX_PARAGRAPHS': 8,
-            'IMAGES_PER_ARTICLE': 4,
+            'IMAGES_PER_ARTICLE': 4,  # 总配图上限（含封面）
             'ARTICLE_STYLE': style,
         }
+
         generator = ArticleGenerator(config)
         result = generator.generate(
             topic=topic,

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- 统计卡片 -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">今日已发布</div>
+        <div class="stat-value green">{{ today_stats.today_count }} / {{ today_stats.target_max }}</div>
+        <div class="stat-sub">目标: {{ today_stats.target_min }}-{{ today_stats.target_max }} 篇/天</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">成功发布</div>
+        <div class="stat-value blue">{{ today_stats.success_count }}</div>
+        <div class="stat-sub">篇</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">微信状态</div>
+        <div class="stat-value {{ 'green' if wechat_configured else 'orange' }}">
+            {{ '✅ 已绑定' if wechat_configured else '⚠️ 未配置' }}
+        </div>
+        <div class="sub">{{ '可以发布文章' if wechat_configured else '需要先配置 AppID' }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">定时任务</div>
+        <div class="stat-value blue" id="schedulerStatus">--</div>
+        <div class="stat-sub">
+            发布时段: 08:00 / 12:30 / 18:30
+            <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer;">
+                <input type="checkbox" class="switch" id="schedulerSwitch" onchange="toggleScheduler()">
+                <span style="font-size:13px;color:var(--text-secondary);">自动定时发布</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- 快捷操作 -->
+<div class="action-bar">
+    <button class="btn btn-primary btn-lg" onclick="location.href='/topics'">
+        🔥 抓取热门话题
+    </button>
+    <button class="btn btn-success btn-lg" onclick="location.href='/editor'">
+        ✏️ 创建新文章
+    </button>
+    <button class="btn btn-warning" onclick="quickPublish()">
+        ⚡ 一键生成+发布
+    </button>
+</div>
+
+<!-- 最近发布记录 -->
+<div class="card">
+    <div class="card-header">
+        📋 最近发布记录
+        <a href="/publish" style="color:var(--primary);text-decoration:none;font-size:13px;">查看全部 →</a>
+    </div>
+    <div class="card-body">
+        {% if history %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>话题/标题</th>
+                    <th>字数</th>
+                    <th>状态</th>
+                    <th>来源</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in history[-5:] %}
+                <tr>
+                    <td>{{ h.time[:16] }}</td>
+                    <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;">
+                        {{ h.title or h.topic }}
+                    </td>
+                    <td>{{ h.article_word_count or '-' }}字</td>
+                    <td><span class="status-badge {{ h.status }}">{{ '✅ 成功' if h.status == 'success' else '❌ 失败' }}</span></td>
+                    <td><span class="tag-tech">{{ h.source or h.time_slot }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>暂无发布记录</p>
+            <p style="margin-top:8px;font-size:13px;">点击上方按钮开始创建你的第一篇文章吧！</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 使用流程指引 -->
+<div class="stats-grid" style="margin-top:32px;">
+    <div class="stat-card">
+        <div class="stat-label">① 抓取热点</div>
+        <div style="font-size:24px;">🔥</div>
+        <div class="stat-sub">自动抓取微博/百度热搜，科技话题优先推荐</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">② AI 写作</div>
+        <div style="font-size:24px;">✍️</div>
+        <div class="stat-sub">AI 第一人称叙述，娱乐性强，爆款标题可选</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">③ 配图生成</div>
+        <div style="font-size:24px;">🎨</div>
+        <div class="stat-sub">每段自动插入科技风配图，无人持有产品风格</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">④ 一键发布</div>
+        <div style="font-size:24px;">🚀</div>
+        <div class="stat-sub">自动排版 + 上传图片 + 发布到公众号</div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 页面加载时获取调度器状态
+async function checkSchedulerStatus() {
+    try {
+        const resp = await fetch('/api/scheduler/status');
+        const data = await resp.json();
+        if (data.success) {
+            document.getElementById('schedulerStatus').textContent = 
+                data.data.running ? '运行中' : '已停止';
+            document.getElementById('schedulerSwitch').checked = data.data.running;
+        }
+    } catch(e) {}
+}
+
+async function toggleScheduler() {
+    const checked = document.getElementById('schedulerSwitch').checked;
+    try {
+        const resp = await fetch(`/api/scheduler/toggle?action=${checked ? 'start' : 'stop'}`);
+        const data = await resp.json();
+        showToast(data.message);
+        checkSchedulerStatus();
+    } catch(e) {
+        showToast('操作失败', 'error');
+    }
+}
+
+async function quickPublish() {
+    showToast('正在抓取热点并生成文章...');
+    
+    // 先抓取话题
+    const topicResp = await fetch('/api/topics/fetch');
+    const topicData = await topicResp.json();
+    
+    if (!topicData.success || !topicData.data.length) {
+        showToast('未获取到热门话题', 'error');
+        return;
+    }
+    
+    // 选第一个科技话题
+    const topic = topicData.data.find(t => t.is_tech) || topicData.data[0];
+    const selectedTitle = topic.viral_titles[0];
+    
+    showToast(`正在生成文章: ${selectedTitle}`);
+    
+    // 生成文章
+    const articleResp = await fetch('/api/article/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            topic: topic.title,
+            title: topic.title,
+            selected_title: selectedTitle,
+            generate_images: true
+        })
+    });
+    
+    const articleData = await articleResp.json();
+    
+    if (articleData.success) {
+        showToast(`文章生成完成！共 ${articleData.data.word_count} 字`);
+        
+        // 自动发布
+        const pubResp = await fetch('/api/publish', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({article: articleData.data, publish_now: true})
+        });
+        
+        const pubData = await pubResp.json();
+        
+        if (pubData.success) {
+            showToast('🎉 文章已发布到公众号！');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showToast(pubData.error || pubData.message, 'error');
+        }
+    } else {
+        showToast(articleData.error, 'error');
+    }
+}
+
+checkSchedulerStatus();
+setInterval(checkSchedulerStatus, 30000);
+</script>
+
+{% endblock %}

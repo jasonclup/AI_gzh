@@ -557,6 +557,643 @@ class RealWebCrawler:
 
 
 # ============================================================
+# 配图风格分析器（v2 新增）
+# ============================================================
+
+# 图片风格分析结果存档路径
+IMAGE_STYLE_DB_PATH = os.path.join(os.path.dirname(__file__), 'output', 'analysis', '_image_style_db.json')
+
+
+def _load_image_style_db():
+    """加载历史配图风格数据库"""
+    if os.path.exists(IMAGE_STYLE_DB_PATH):
+        try:
+            with open(IMAGE_STYLE_DB_PATH, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
+    return {'cover_styles': [], 'inline_styles': [], 'analysis_history': []}
+
+
+def _save_image_style_db(db):
+    """保存配图风格数据库"""
+    os.makedirs(os.path.dirname(IMAGE_STYLE_DB_PATH), exist_ok=True)
+    with open(IMAGE_STYLE_DB_PATH, 'w', encoding='utf-8') as f:
+        json.dump(db, f, ensure_ascii=False, indent=2)
+
+
+class ImageStyleAnalyzer:
+    """
+    爆款文章配图风格分析器
+    
+    分析维度：
+    1. 封面图风格 — 尺寸比例、视觉元素、配色、文字覆盖方式
+    2. 段落配图 — 数量、位置、与内容的关联方式、尺寸规格
+    3. 整体配图策略 — 图文比例、配图密度、风格统一性
+    
+    所有分析结果基于真实抓取的文章页面，不伪造任何数据。
+    """
+
+    # 封面图常见尺寸比例模式（用于识别）
+    COVER_RATIO_PATTERNS = {
+        '2.35:1_cinema': (2.2, 2.5),      # 电影宽屏 (约900x383)
+        '16:9_widescreen': (1.7, 1.8),     # 标准横版
+        '1:1_square': (0.9, 1.1),           # 正方形
+        '3:4_portrait': (0.7, 0.85),        # 竖版
+        '9:16_phone': (0.55, 0.65),         # 手机竖屏
+    }
+
+    # 封面图内容类型关键词（用于从URL/alt/context推断）
+    COVER_CONTENT_KEYWORDS = {
+        'product_photo': ['产品', '实拍', '真机', '开箱', '评测', '上手', '展示'],
+        'screenshot': ['截图', '界面', '屏幕', 'app', '软件', '操作', '功能'],
+        'infographic': ['信息图', '图表', '数据', '对比', '趋势', '统计'],
+        'illustration': ['插画', '漫画', '手绘', '卡通', '设计', '创意'],
+        'news_photo': ['现场', '发布会', '活动', '会议', '人物', '采访'],
+        'abstract_gradient': ['背景', '渐变', '纯色', '简约', '抽象'],
+        'text_quote': ['金句', '语录', '文字', '海报', '排版'],
+        'meme_funny': ['表情包', '梗图', '搞笑', 'meme', '沙雕'],
+    }
+
+    def __init__(self):
+        self.style_db = _load_image_style_db()
+        self.crawler = RealWebCrawler()
+
+    def analyze_articles_images(self, articles, sample_size=10):
+        """
+        对采集到的文章进行配图风格分析
+        
+        由于完整下载每篇文章的HTML成本太高，
+        采用策略：
+        1. 对有URL的文章，抽样访问页面提取<img>标签
+        2. 从图片URL、alt属性、上下文推断图片风格特征
+        3. 结合文章类型(科技/生活)做交叉分析
+        
+        Args:
+            articles: 文章列表
+            sample_size: 实际访问页面的抽样数量
+            
+        Returns:
+            analysis dict 包含封面图和段落配图的风格统计
+        """
+        results = {
+            'timestamp': datetime.now().isoformat(),
+            'articles_analyzed': len(articles),
+            'sampled_pages': 0,
+            'total_images_found': 0,
+            'cover_analysis': {},       # 封面图分析
+            'inline_analysis': {},      # 段落配图分析
+            'strategy_findings': [],     # 配图策略发现
+            'sample_details': [],        # 抽样详情（用于人工复核）
+        }
+
+        if not articles:
+            return results
+
+        # === Step 1: 筛选有可访问URL的文章进行抽样 ===
+        url_articles = [a for a in articles if a.get('url') and a['url'].startswith('http')]
+        
+        if not url_articles:
+            # 没有可访问URL的文章，基于已有信息做轻量级分析
+            results.update(self._lightweight_image_inference(articles))
+            return results
+
+        # 抽样（优先选科技类+生活分享类）
+        tech_samples = [a for a in url_articles if a.get('is_tech')]
+        life_samples = [a for a in url_articles if a.get('category') == 'life_share']
+        other_samples = [a for a in url_articles if a not in tech_samples and a not in life_samples]
+        
+        # 组合抽样列表
+        sampled = []
+        sampled.extend(tech_samples[:max(sample_size//2, 3)])   # 科技类占一半
+        sampled.extend(life_samples[:max(sample_size//4, 2)])    # 生活类占1/4
+        sampled.extend(other_samples[:max(sample_size//4, 2)])   # 其他占1/4
+        
+        # 如果还不够，随机补
+        if len(sampled) < min(sample_size, len(url_articles)):
+            remaining = [a for a in url_articles if a not in sampled]
+            sampled.extend(random.sample(remaining, min(sample_size - len(sampled), len(remaining))))
+
+        print(f'    [配图分析] 从{len(url_articles)}篇有URL的文章中抽样{len(sampled)}篇进行图片分析...')
+
+        # === Step 2: 访问每个抽样页面提取图片信息 ===
+        cover_data = []   # 封面图数据
+        inline_data = []  # 段落配图数据
+
+        for art in sampled:
+            page_analysis = self._analyze_single_page_images(art)
+            if page_analysis:
+                results['sampled_pages'] += 1
+                results['total_images_found'] += page_analysis.get('image_count', 0)
+                
+                if page_analysis.get('cover'):
+                    cover_data.append(page_analysis['cover'])
+                if page_analysis.get('inline_images'):
+                    inline_data.extend(page_analysis['inline_images'])
+                
+                # 保留抽样详情
+                results['sample_details'].append({
+                    'title': art.get('title', '')[:50],
+                    'url': art.get('url', '')[:100],
+                    'category': art.get('category', ''),
+                    'image_count': page_analysis.get('image_count', 0),
+                    'has_cover': bool(page_analysis.get('cover')),
+                    'inline_count': len(page_analysis.get('inline_images', [])),
+                })
+
+            # 礼貌间隔
+            time.sleep(random.uniform(1.0, 2.5))
+
+        # === Step 3: 汇总统计分析 ===
+        results['cover_analysis'] = self._summarize_cover_styles(cover_data)
+        results['inline_analysis'] = self._summarize_inline_styles(inline_data)
+        results['strategy_findings'] = self._derive_strategy_findings(
+            results['cover_analysis'], 
+            results['inline_analysis'],
+            articles
+        )
+
+        # === Step 4: 存档到持久化数据库 ===
+        self._persist_to_style_db(results)
+
+        print(f'    [配图分析] 完成! 抽样{results["sampled_pages"]}页, 发现{results["total_images_found"]}张图')
+
+        return results
+
+    def _analyze_single_page_images(self, article):
+        """
+        分析单个文章页面的图片使用情况
+        
+        返回该页面的图片分析详情
+        """
+        url = article.get('url', '')
+        if not url or not url.startswith('http'):
+            return None
+
+        html = self.crawler._fetch_url(url, timeout=10)
+        if not html:
+            return None
+
+        import re as _re
+
+        result = {
+            'image_count': 0,
+            'cover': None,
+            'inline_images': [],
+        }
+
+        # 提取所有 <img> 标签
+        img_pattern = _re.compile(
+            r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>',
+            _re.IGNORECASE | _re.DOTALL
+        )
+
+        images = []
+        for match in img_pattern.finditer(html):
+            src = match.group(1)
+            
+            # 跳过过小的图（图标、emoji、tracking pixel等）
+            if any(skip in src.lower() for skip in ['icon', 'logo', 'avatar', 'pixel', 'gif', 'tracking']):
+                continue
+            
+            # 获取其他属性
+            tag_str = match.group(0)
+            alt_match = _re.search(r'alt=["\']([^"\']*)["\']', tag_str, _re.IGNORECASE)
+            width_match = _re.search(r'(?:width|data-w)["\']["\']?(\d+)', tag_str, _re.IGNORECASE)
+            height_match = _re.search(r'(?:height|data-h)["\']["\']?(\d+)', tag_str, _re.IGNORECASE)
+            class_match = _re.search(r'class=["\']([^"\']*)["\']', tag_str, _re.IGNORECASE)
+
+            img_info = {
+                'src': src[:200],  # 截断过长URL
+                'alt': alt_match.group(1) if alt_match else '',
+                'width': int(width_match.group(1)) if width_match else None,
+                'height': int(height_match.group(1)) if height_match else None,
+                'tag_class': class_match.group(1) if class_match else '',
+            }
+            images.append(img_info)
+
+        result['image_count'] = len(images)
+
+        if not images:
+            return result
+
+        # === 识别封面图 ===
+        # 封面图通常是：最大的图 / 第一个大幅图 / class含cover/header/featured
+        cover_candidates = []
+        for i, img in enumerate(images):
+            score = 0
+            w, h = img.get('width'), img.get('height')
+            
+            # 尺寸加分（大图更可能是封面）
+            if w and h:
+                area = w * h
+                if area > 50000:   # 大图
+                    score += 30
+                elif area > 10000:
+                    score += 15
+                
+                # 宽屏加分（封面通常偏宽）
+                if w and h and w / max(h, 1) > 1.5:
+                    score += 20
+                
+            # CSS class 加分
+            cls_lower = img.get('tag_class', '').lower()
+            if any(kw in cls_lower for kw in ['cover', 'header', 'hero', 'feature', 'banner', 'thumb', 'title-img']):
+                score += 40
+            if 'avatar' in cls_lower or 'icon' in cls_lower:
+                score -= 50  # 明确不是封面
+                
+            # 位置加分（第一张大图很可能是封面）
+            if i < 3 and (w and h and w * h > 10000):
+                score += 25
+
+            cover_candidates.append((score, i, img))
+
+        # 选得分最高的作为封面
+        if cover_candidates:
+            cover_candidates.sort(key=lambda x: x[0], reverse=True)
+            best = cover_candidates[0][2]
+            
+            # 推断封面图风格
+            cover_style = self._infer_image_style(best, article)
+            result['cover'] = {
+                **best,
+                **cover_style,
+                'is_first_image': cover_candidates[0][1] == 0,
+            }
+
+        # === 收集段落配图（除封面外的图） ===
+        cover_idx = cover_candidates[0][1] if cover_candidates else -1
+        for i, img in enumerate(images):
+            if i == cover_idx:
+                continue
+            
+            inline_style = self._infer_image_style(img, article)
+            result['inline_images'].append({
+                **img,
+                **inline_style,
+                'position_index': i,
+            })
+
+        return result
+
+    def _infer_image_style(self, img_info, article):
+        """
+        基于图片URL、alt文本、上下文推断图片风格类型
+        
+        不需要真正"看"图片——通过元数据分析
+        """
+        style = {
+            'inferred_type': 'unknown',
+            'inferred_style_tags': [],
+            'confidence': 'low',
+        }
+
+        src = img_info.get('src', '').lower()
+        alt = img_info.get('alt', '')
+        title_text = article.get('title', '')
+
+        # --- 从URL路径推断 ---
+        # CDN/存储服务特征
+        if any(cdn in src for cdn in ['qpic.cn', 'mmbiz.qpic.cn', 'wx.qlogo.cn']):
+            style['inferred_type'] = 'wechat_native'
+            style['confidence'] = 'high'
+            style['inferred_style_tags'].append('公众号原生图片')
+        
+        elif any(cdn in src for cdn in ['cdn', 'oss-', 'cos.', 'obs.', 'cloudinary']):
+            style['inferred_style_tags'].append('CDN托管')
+
+        # --- 从文件扩展名推断 ---
+        if src.endswith('.png') or '.png?' in src:
+            style['inferred_style_tags'].append('PNG格式')
+        elif src.endswith('.jpg') or src.endswith('.jpeg') or '.jpg?' in src:
+            style['inferred_style_tags'].append('JPG照片格式')
+        elif src.endswith('.gif'):
+            style['inferred_style_tags'].append('GIF动图')
+        elif src.endswith('.webp'):
+            style['inferred_style_tags'].append('WebP新格式')
+
+        # --- 从URL关键词推断内容类型 ---
+        for type_name, keywords in self.COVER_CONTENT_KEYWORDS.items():
+            if any(kw in src for kw in keywords) or any(kw in alt for kw in keywords):
+                style['inferred_type'] = type_name
+                style['inferred_style_tags'].append(type_name)
+                style['confidence'] = 'medium'
+                break
+
+        # --- 从alt文本补充推断 ---
+        if alt:
+            if len(alt) > 15:
+                style['inferred_style_tags'].append('详细描述性alt')
+            elif any(char in alt for char in ['图', '示', '截', '看']):
+                style['inferred_style_tags'].append('功能性说明文字')
+
+        # --- 尺寸推断 ---
+        w = img_info.get('width')
+        h = img_info.get('height')
+        if w and h:
+            ratio = w / max(h, 1)
+            for pattern_name, (low, high) in self.COVER_RATIO_PATTERNS.items():
+                if low <= ratio <= high:
+                    style['inferred_style_tags'].append(f'{pattern_name}_比例')
+                    break
+            else:
+                if ratio > 2:
+                    style['inferred_style_tags'].append(f'超宽幅({ratio:.1f}:1)')
+                elif ratio > 1.5:
+                    style['inferred_style_tags'].append(f'宽幅({ratio:.1f}:1)')
+                elif ratio > 0.8:
+                    style['inferred_style_tags'].append(f'方近({ratio:.1f}:1)')
+                else:
+                    style['inferred_style_tags'].append(f'竖向({ratio:.1f}:1)')
+
+            style['detected_size'] = f'{w}x{h}'
+            style['confidence'] = 'high'
+
+        # --- 从文章类别交叉推断 ---
+        category = article.get('category', '')
+        if 'tech' in category:
+            style['inferred_style_tags'].append('科技类文章配图')
+        elif 'life' in category:
+            style['inferred_style_tags'].append('生活分享类配图')
+
+        return style
+
+    def _summarize_cover_styles(self, cover_data_list):
+        """汇总所有封面图的风格特征"""
+        if not cover_data_list:
+            return {'note': '本次未获取到封面图样本', 'sample_count': 0}
+
+        from collections import Counter
+
+        summary = {
+            'sample_count': len(cover_data_list),
+            'type_distribution': Counter(),
+            'style_tag_frequency': Counter(),
+            'size_distribution': [],
+            'ratio_distribution': [],
+            'source_distribution': Counter(),   # 来源分布(微信原生/外部CDN/自托管)
+            'typical_examples': [],
+        }
+
+        for cover in cover_data_list:
+            # 类型分布
+            t = cover.get('inferred_type', 'unknown')
+            summary['type_distribution'][t] += 1
+
+            # 风格标签频率
+            for tag in cover.get('inferred_style_tags', []):
+                summary['style_tag_frequency'][tag] += 1
+
+            # 尺寸分布
+            size = cover.get('detected_size', '')
+            if size:
+                summary['size_distribution'].append(size)
+
+            # 来源分布
+            src = cover.get('src', '')
+            if 'qpic.cn' in src or 'mmbiz' in src:
+                summary['source_distribution']['微信公号平台(qpic)'] += 1
+            elif 'cdn' in src or 'oss' in src:
+                summary['source_distribution']['云存储CDN'] += 1
+            else:
+                summary['source_distribution']['其他来源'] += 1
+
+        # 取典型示例（每种类型取1个）
+        seen_types = set()
+        for cover in cover_data_list:
+            t = cover.get('inferred_type', 'unknown')
+            if t not in seen_types:
+                summary['typical_examples'].append({
+                    'type': t,
+                    'src': cover.get('src', '')[:150],
+                    'size': cover.get('detected_size', ''),
+                    'tags': cover.get('inferred_style_tags', []),
+                    'from_article': cover.get('from_title', ''),
+                })
+                seen_types.add(t)
+                if len(summary['typical_examples']) >= 5:
+                    break
+
+        # 转换Counter为普通dict以便JSON序列化
+        summary['type_distribution'] = dict(summary['type_distribution'].most_common(10))
+        summary['style_tag_frequency'] = dict(summary['style_tag_frequency'].most_common(15))
+        summary['source_distribution'] = dict(summary['source_distribution'])
+
+        return summary
+
+    def _summarize_inline_styles(self, inline_data_list):
+        """汇总段落配图的使用策略"""
+        if not inline_data_list:
+            return {'note': '本次未获取到段落数据', 'sample_count': 0}
+
+        from collections import Counter
+
+        summary = {
+            'sample_count': len(inline_data_list),
+            'type_distribution': Counter(),
+            'style_tag_frequency': Counter(),
+            'size_stats': {'widths': [], 'heights': []},
+            'avg_per_article': 0,
+            'placement_pattern': Counter(),   # 配图位置规律
+        }
+
+        for img in inline_data_list:
+            t = img.get('inferred_type', 'unknown')
+            summary['type_distribution'][t] += 1
+
+            for tag in img.get('inferred_style_tags', []):
+                summary['style_tag_frequency'][tag] += 1
+
+            w = img.get('width')
+            h = img.get('height')
+            if w:
+                summary['size_stats']['widths'].append(w)
+            if h:
+                summary['size_stats']['heights'].append(h)
+
+            pos = img.get('position_index', 0)
+            if pos <= 2:
+                summary['placement_pattern']['文章前部(1-3张)'] += 1
+            elif pos <= 6:
+                summary['placement_pattern']['文章中部(4-6张)'] += 1
+            else:
+                summary['placement_pattern']['文章后部(7张+)'] += 1
+
+        # 统计平均值
+        if summary['size_stats']['widths']:
+            ws = summary['size_stats']['widths']
+            hs = summary['size_stats']['heights']
+            summary['size_stats'] = {
+                'avg_width': round(sum(ws)/len(ws)),
+                'max_width': max(ws),
+                'min_width': min(ws),
+                'avg_height': round(sum(hs)/len(hs)) if hs else 0,
+                'max_height': max(hs) if hs else 0,
+                'min_height': min(hs) if hs else 0,
+            }
+
+        summary['type_distribution'] = dict(summary['type_distribution'].most_common(10))
+        summary['style_tag_frequency'] = dict(summary['style_tag_frequency'].most_common(15))
+        summary['placement_pattern'] = dict(summary['placement_pattern'])
+
+        return summary
+
+    def _derive_strategy_findings(self, cover_analysis, inline_analysis, articles):
+        """从统计数据中提炼配图策略发现"""
+        findings = []
+
+        # 发现1: 封面图主流类型
+        types = cover_analysis.get('type_distribution', {})
+        if types:
+            top_type = max(types.keys(), key=lambda k: types[k]) if types else None
+            if top_type:
+                count = types[top_type]
+                total = cover_analysis.get('sample_count', 1)
+                findings.append({
+                    'id': 'cover_dominant_type',
+                    'finding': f'封面图最常见类型是「{top_type}」，占比 {count}/{total} ({int(count/max(total,1)*100)}%)',
+                    'recommendation': f'生成封面时应优先考虑{top_type}风格',
+                })
+
+        # 发现2: 封面图来源
+        sources = cover_analysis.get('source_distribution', {})
+        if sources:
+            top_source = max(sources.keys(), key=lambda k: sources[k])
+            findings.append({
+                'id': 'cover_source',
+                'finding': f'爆款文章封面主要来源：{top_source}',
+                'recommendation': ('公众号原生图片(qpic)为主 → 说明作者常用手机拍摄或设计软件自制' 
+                                  if 'qpic' in top_source else '大量使用外部CDN → 说明有专业制图流程'),
+            })
+
+        # 发现3: 配图密度
+        inline_count = inline_analysis.get('sample_count', 0)
+        article_count = len(articles)
+        if article_count > 0 and inline_count > 0:
+            density = inline_count / max(article_count, 1)
+            findings.append({
+                'id': 'image_density',
+                'finding': f'平均每篇文章约 {density:.1f} 张段落配图',
+                'recommendation': ('高密度配图(≥3张/篇)→读者视觉体验更好' if density >= 3 
+                                   else '低密度配图(<2张/篇)→可能需要在关键段落增加配图'),
+            })
+
+        # 发现4: 配图位置偏好
+        placement = inline_analysis.get('placement_pattern', {})
+        if placement:
+            top_placement = max(placement.keys(), key=lambda k: placement[k])
+            findings.append({
+                'id': 'placement_preference',
+                'finding': f'配图主要集中在：{top_placement}',
+                'recommendation': '确保文章前1/3处至少有一张吸引眼球的配图',
+            })
+
+        # 发现5: 风格标签高频词
+        tags = cover_analysis.get('style_tag_frequency', {})
+        if tags:
+            top_tags = sorted(tags.items(), key=lambda x: x[1], reverse=True)[:5]
+            tag_str = ', '.join([f'{k}({v})' for k, v in top_tags])
+            findings.append({
+                'id': 'top_style_tags',
+                'finding': f'最高频配图风格标签: {tag_str}',
+                'recommendation': '这些标签应作为AI生成配图时的prompt参考',
+            })
+
+        # 发现6: 尺寸规格参考
+        sizes = cover_analysis.get('size_distribution', [])
+        if sizes:
+            findings.append({
+                'id': 'size_reference',
+                'finding': f'实测封面图尺寸样本: {sizes[:5]}',
+                'recommendation': '建议封面图采用 900x383 或相近比例',
+            })
+
+        return findings
+
+    def _lightweight_image_inference(self, articles):
+        """
+        轻量级推断 — 当没有可访问URL时，
+        仅基于文章标题+分类+摘要做推断型分析
+        """
+        from collections import Counter
+        
+        # 基于文章类型的推荐配图策略
+        cat_counter = Counter(a.get('category', 'unknown') for a in articles)
+
+        return {
+            'sampled_pages': 0,
+            'total_images_found': 0,
+            'cover_analysis': {
+                'sample_count': 0,
+                'note': '无URL可访问，跳过实际页面分析',
+                'category_based_suggestion': {
+                    'tech_viral': '科技热点 → 产品实拍/数据图表/发布会现场图',
+                    'life_share': '生活分享 → 手机实拍/场景照/氛围感图片',
+                    'general_hot': '通用热点 → 新闻现场图/信息图',
+                },
+                'category_distribution': dict(cat_counter.most_common(10)),
+            },
+            'inline_analysis': {
+                'sample_count': 0,
+                'note': '建议后续对有URL的文章增加页面访问分析',
+            },
+            'strategy_findings': [{
+                'id': 'no_url_fallback',
+                'finding': f'本次{len(articles)}篇文章均无可访问URL，无法做深度图片分析',
+                'recommendation': '建议增强搜狗微信搜索以获取更多带URL的结果',
+            }],
+            'sample_details': [],
+        }
+
+    def _persist_to_style_db(self, analysis_result):
+        """
+        将分析结果追加到持久化的配图风格数据库
+        
+        这个数据库会随时间积累，形成配图风格的"经验库"
+        """
+        db = self.style_db
+
+        # 追加封面风格数据
+        cover = analysis_result.get('cover_analysis', {})
+        if cover.get('sample_count', 0) > 0:
+            db['cover_styles'].append({
+                'timestamp': analysis_result['timestamp'],
+                'sample_count': cover.get('sample_count', 0),
+                'top_types': cover.get('type_distribution', {}),
+                'top_tags': list(cover.get('style_tag_frequency', {}).keys())[:10],
+                'sources': cover.get('source_distribution', {}),
+            })
+
+        # 追加段落数据
+        inline = analysis_result.get('inline_analysis', {})
+        if inline.get('sample_count', 0) > 0:
+            db['inline_styles'].append({
+                'timestamp': analysis_result['timestamp'],
+                'sample_count': inline.get('sample_count', 0),
+                'avg_width': inline.get('size_stats', {}).get('avg_width', 0),
+                'placement': inline.get('placement_pattern', {}),
+            })
+
+        # 追加分析历史
+        db['analysis_history'].append({
+            'timestamp': analysis_result['timestamp'],
+            'articles_analyzed': analysis_result['articles_analyzed'],
+            'sampled_pages': analysis_result['sampled_pages'],
+            'total_images_found': analysis_result['total_images_found'],
+            'findings_count': len(analysis_result.get('strategy_findings', [])),
+        })
+
+        # 只保留最近30次分析历史（防止无限增长）
+        db['analysis_history'] = db['analysis_history'][-30:]
+        db['cover_styles'] = db['cover_styles'][-30:]
+        db['inline_styles'] = db['inline_styles'][-30:]
+
+        _save_image_style_db(db)
+        print(f'    [配图存档] 已写入 _image_style_db.json (历史记录{len(db["analysis_history"])}条)')
+
+
+# ============================================================
 # 核心分析引擎
 # ============================================================
 
@@ -590,9 +1227,14 @@ class ViralArticleAnalyzer:
         print('\n[Step 3] 分析文章写作特征...')
         analysis = self._analyze_writing_patterns(articles)
         
+        # Step 3.5: 分析配图风格（封面图 + 段落配图）  ← v2 新增
+        print('\n[Step 3.5] 分析爆款文章配图风格...')
+        img_analyzer = ImageStyleAnalyzer()
+        image_analysis = img_analyzer.analyze_articles_images(articles, sample_size=8)
+        
         # Step 4: 提取学习要点，更新写作模块
         print('\n[Step 4] 提取学习要点并生成更新建议...')
-        update_plan = self._generate_update_plan(analysis)
+        update_plan = self._generate_update_plan(analysis, image_analysis)
         
         # Step 5: 保存结果
         # 分类统计
@@ -608,6 +1250,7 @@ class ViralArticleAnalyzer:
                 'life_share_count': len(life_shares),
             },
             'analysis': analysis,
+            'image_analysis': image_analysis,   # ← v2 新增：配图风格分析结果
             'update_plan': update_plan,
         }
         
@@ -994,7 +1637,7 @@ class ViralArticleAnalyzer:
             ],
         }
     
-    def _generate_update_plan(self, analysis):
+    def _generate_update_plan(self, analysis, image_analysis=None):
         """基于分析结果生成写作模块更新方案"""
         findings = analysis.get('key_findings', [])
         content = analysis.get('content_analysis', {})
@@ -1008,6 +1651,7 @@ class ViralArticleAnalyzer:
             'style_adjustments': [],     # 风格调优
             'new_techniques_to_add': [], # 新增技巧
             'patterns_to_avoid': [],     # 要避免的模式
+            'image_updates': [],         # ← v2 新增：配图相关更新建议
         }
         
         # === 优先级更新 ===
@@ -1059,6 +1703,41 @@ class ViralArticleAnalyzer:
         forbidden = content.get('forbidden_patterns', {})
         plan['patterns_to_avoid'] = forbidden
         
+        # === v2 新增: 配图相关更新建议 ===
+        if image_analysis:
+            img_findings = image_analysis.get('strategy_findings', [])
+            cover = image_analysis.get('cover_analysis', {})
+            inline = image_analysis.get('inline_analysis', {})
+            
+            # 从图片分析发现中生成更新建议
+            for finding in img_findings:
+                rec = finding.get('recommendation', '')
+                if rec:
+                    plan['image_updates'].append({
+                        'source': finding.get('id', ''),
+                        'recommendation': rec,
+                        'finding': finding.get('finding', ''),
+                    })
+            
+            # 封面图风格建议
+            if cover.get('style_tag_frequency'):
+                top_tags = list(cover['style_tag_frequency'].keys())[:5]
+                if top_tags:
+                    plan['image_updates'].append({
+                        'source': 'cover_style_tags',
+                        'recommendation': f'AI生成封面图时应参考这些高频风格标签: {", ".join(top_tags)}',
+                        'finding': f'爆款封面最高频风格: {top_tags[0]}',
+                    })
+            
+            # 配图密度建议
+            if inline.get('sample_count', 0) > 0:
+                density = inline.get('sample_count', 0) / max(image_analysis.get('sampled_pages', 1), 1)
+                plan['image_updates'].append({
+                    'source': 'image_density',
+                    'recommendation': f'每篇文章建议配置{max(int(density), 2)}-6张段落配图，参考爆款文章密度',
+                    'finding': f'实测平均每篇文章{density:.1f}张段落配图',
+                })
+        
         return plan
     
     def _build_markdown_report(self, result):
@@ -1109,6 +1788,72 @@ class ViralArticleAnalyzer:
                 for p in patterns:
                     lines.append(f'- ❌ {p}')
                 lines.append('')
+        
+        # === v2 新增: 配图风格分析章节 ===
+        img_analysis = result.get('image_analysis', {})
+        if img_analysis and img_analysis.get('sampled_pages', 0) > 0:
+            lines.append('## 🖼️ 配图风格分析（v2 新增）')
+            lines.append(f'- 抽样页面: **{img_analysis["sampled_pages"]}** 个文章页面')
+            lines.append(f'- 发现图片: **{img_analysis["total_images_found"]}** 张')
+            lines.append('')
+            
+            # 封面图分析
+            cover = img_analysis.get('cover_analysis', {})
+            if cover.get('sample_count', 0) > 0:
+                lines.append(f'### 封面图风格 (样本{cover["sample_count"]}张)')
+                
+                types = cover.get('type_distribution', {})
+                if types:
+                    lines.append(f'- **类型分布**: {", ".join([f"{k}({v})" for k,v in list(types.items())[:5]])}')
+                
+                sources = cover.get('source_distribution', {})
+                if sources:
+                    lines.append(f'- **图片来源**: {", ".join([f"{k}({v})" for k,v in sources.items()])}')
+                
+                tags = cover.get('style_tag_frequency', {})
+                if tags:
+                    top5 = list(tags.keys())[:8]
+                    lines.append(f'- **高频标签**: {", ".join(top5)}')
+                    
+                    # 提取prompt建议
+                    prompt_tags = [t for t in top5 if not any(skip in t for skip in ['比例', '格式', '微信原生', 'CDN'])]
+                    if prompt_tags:
+                        lines.append(f'- → **AI生成prompt参考关键词**: {" ".join(prompt_tags[:6])}')
+                lines.append('')
+            
+            # 段落配图分析
+            inline = img_analysis.get('inline_analysis', {})
+            if inline.get('sample_count', 0) > 0:
+                lines.append(f'### 段落配图策略 (样本{inline["sample_count"]}张)')
+                sizes = inline.get('size_stats', {})
+                if sizes.get('avg_width'):
+                    lines.append(f'- **平均尺寸**: ~{sizes["avg_width"]}x{sizes.get("avg_height", "?")}px')
+                
+                placement = inline.get('placement_pattern', {})
+                if placement:
+                    lines.append(f'- **位置分布**: {", ".join([f"{k}({v})" for k,v in placement.items()])}')
+                lines.append('')
+            
+            # 配图策略发现
+            img_findings = img_analysis.get('strategy_findings', [])
+            if img_findings:
+                lines.append('### 📌 配图策略发现与建议')
+                for f in img_findings[:6]:
+                    lines.append(f'- **[{f["id"]}]** {f["finding"]}')
+                    lines.append(f'  - 💡 建议: {f["recommendation"]}')
+                lines.append('')
+        elif img_analysis and img_analysis.get('cover_analysis', {}).get('note'):
+            # 无URL时的轻量级推断结果
+            lines.append('## 🖼️ 配图风格分析')
+            note = img_analysis['cover_analysis'].get('note', '本次无法获取图片数据')
+            lines.append(f'> ⚠️ {note}')
+            suggestions = img_analysis['cover_analysis'].get('category_based_suggestion', {})
+            if suggestions:
+                lines.append('')
+                lines.append('基于文章类型的配图建议:')
+                for cat, sugg in suggestions.items():
+                    lines.append(f'- **{cat}**: {sugg}')
+            lines.append('')
         
         # 结束语
         lines.append('---')
@@ -1196,6 +1941,11 @@ def send_feishu_notification(result):
             f'  • 采集文章: {stats["articles_collected"]}篇',
             f'  • 科技相关: {stats["tech_related"]}篇',
         ]
+        
+        # 配图分析摘要（v2 新增）
+        img = result.get('image_analysis', {})
+        if img and img.get('sampled_pages', 0) > 0:
+            lines.append(f'  🖼️ 配图分析: 抽样{img["sampled_pages"]}页, 发现{img["total_images_found"]}张图')
         
         if 'life_share_count' in stats and stats['life_share_count'] > 0:
             lines.append(f'  • 生活分享(自述类): {stats["life_share_count"]}篇')

@@ -1,0 +1,14 @@
+mul: "═" * 30 -> "═════════════════════════════...
+mul: "═" * 30 -> "═════════════════════════════...
+concat iter0: ...
+concat iter1: ...
+ternary_tpl: {can_release ? '可以发' : '建议修完再发'}... -> '可以发'
+ternary_tpl: {all_green ? '全部绿灯，放心跑 🟢' : '⚠️ 有黄灯，已重点关注'}... -> '全部绿灯，放心跑 🟢'
+
+Total fixes: 6
+Content length: 9370
+
+*** FAILED at pos 8579 ***
+'api_status}\\n• 飞书推送: {feishu_status}\\n\\n{all_green ? \'全部绿灯，放心跑 🟢\' :\'全部绿灯，放心跑 🟢\'"⚙️ 性能监控 [{phase}]\\n   耗时: {duration}s\\n   内存增量: {memory_delta}MB\\n   API调用: {api'
+
+'内存峰值: {peak_memory}MB\\n\\n━━━ 系统状态 ━━━\\nFlask: {flask_status}\\n飞书推送: {feishu_result}\\n异常/重试: {errors}次\\n\\n━━━ 优化建议 ━━━\\n{suggestions}\\n\\n系统运行平稳，无需人工介入 ✅", "技术侧汇报 📟\\n\\n📈 本次运行技术数据：\\n• 总耗时: {time}s\\n• 瓶颈环节: {bottleneck}\\n• API调用: {calls}次\\n• 错误/重试: {errors}次\\n\\n系统状态：{system_health}\\n\\n\'需要关注的技术问题\'"]}}, "interaction_rules": {"handoff_style": "@对方角色名 + 简短交接说明 + 表情", "disagree_style": "礼貌但坚持专业立场，用数据和理由支撑", "praise_style": "真诚具体，不说空话", "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'

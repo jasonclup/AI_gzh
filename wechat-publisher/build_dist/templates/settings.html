@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display:flex;gap:20px;align-items:center;margin-bottom:24px;">
+    <h2 style="font-size:22px;">⚙️ 系统设置</h2>
+</div>
+
+<div style="max-width:700px;">
+
+<!-- 微信公众号配置 -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">
+        📱 微信公众号配置
+        <span class="status-badge {{ 'success' if configured else '' }}">
+            {{ '已绑定' if configured else '未配置' }}
+        </span>
+    </div>
+    <div class="card-body">
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;line-height:1.6;">
+            绑定微信公众号后，系统可以自动将文章发布到你的公众号。
+            需要获取 AppID 和 AppSecret（微信公众平台 → 开发 → 基本配置）
+        </p>
+        
+        <form id="wechatForm" onsubmit="saveWechatConfig(event)">
+            <div class="form-group">
+                <label class="form-label">AppID</label>
+                <input type="text" class="form-input" id="appid" 
+                       value="{{ appid }}" placeholder="输入你的公众号 AppID">
+                <p class="form-hint">在微信公众平台 → 设置与开发 → 基本配置中获取</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">AppSecret</label>
+                <input type="password" class="form-input" id="secret"
+                       value="{{ secret }}" placeholder="输入你的公众号 AppSecret">
+                <p class="form-hint">⚠️ 请妥善保管，不要泄露给他人</p>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                💾 保存微信配置
+            </button>
+            
+            <button type="button" class="btn btn-outline" onclick="testWechatConfig()" style="margin-left:12px;">
+                🔗 测试连接
+            </button>
+            
+            <div id="configResult" style="margin-top:16px;"></div>
+        </form>
+    </div>
+</div>
+
+<!-- 发布策略配置 -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">📝 内容风格配置</div>
+    <div class="card-body">
+        <div class="form-group">
+            <label class="form-label">作者名称</label>
+            <input type="text" class="form-input" value="AI观察者" id="authorName">
+            <p class="form-hint">显示在文章中的作者名，建议使用有辨识度的名字</p>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">每日发布数量</label>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <input type="number" class="form-input" value="1" min="1" max="5" 
+                       style="width:80px;" id="dailyMin">
+                <span style="color:var(--text-secondary);">到</span>
+                <input type="number" class="form-input" value="3" min="1" max="5"
+                       style="width:80px;" id="dailyMax">
+                <span style="color:var(--text-secondary);">篇/天</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">文章段落数量</label>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <input type="number" class="form-input" value="5" min="3" max="15"
+                       style="width:80px;" id="minPara">
+                <span style="color:var(--text-secondary);">到</span>
+                <input type="number" class="form-input" value="10" min="3" max="15"
+                       style="width:80px;" id="maxPara">
+                <span style="color:var(--text-secondary);">段</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">每篇文章配图数</label>
+            <input type="number" class="form-input" value="4" min="1" max="8"
+                   style="width:80px;" id="imgCount">
+            <span style="color:var(--text-secondary);"> 张（含封面）</span>
+        </div>
+        
+        <button class="btn btn-success" onclick="saveContentConfig()">
+            保存内容配置
+        </button>
+    </div>
+</div>
+
+<!-- 热点数据源配置 -->
+<div class="card" style="margin-bottom:24px;">
+    <div class="card-header">🔥 热点数据源</div>
+    <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:14px;
+                          background:var(--bg-dark);border-radius:10px;cursor:pointer;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:18px;">📱</span>
+                    <div>
+                        <div style="font-size:15px;font-weight:500;">微博热搜</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">实时热搜榜 Top50</div>
+                    </div>
+                </div>
+                <input type="checkbox" class="switch" checked disabled title="默认启用">
+            </label>
+            
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:14px;
+                          background:var(--bg-dark);border-radius:10px;cursor:pointer;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:18px;">🔍</span>
+                    <div>
+                        <div style="font-size:15px;font-weight:500;">百度热搜</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">百度实时热点榜</div>
+                    </div>
+                </div>
+                <input type="checkbox" class="switch" checked disabled title="默认启用">
+            </label>
+            
+            <label style="display:flex;align-items:center;justify-content:space-between;padding:14px;
+                          background:var(--bg-dark);border-radius:10px;opacity:0.5;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:18px;">📰</span>
+                    <div>
+                        <div style="font-size:15px;font-weight:500;">今日头条</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">即将支持</div>
+                    </div>
+                </div>
+                <input type="checkbox" class="switch" disabled title="即将开放">
+            </label>
+        </div>
+        
+        <p style="margin-top:16px;font-size:13px;color:var(--text-secondary);">
+            科技类话题会自动优先推荐。关键词包括：AI、芯片、手机、新能源、元宇宙等。
+        </p>
+    </div>
+</div>
+
+<!-- 关于 -->
+<div class="card">
+    <div class="card-header">ℹ️ 关于</div>
+    <div class="card-body">
+        <p style="line-height:1.8;color:var(--text-secondary);font-size:14px;">
+            <strong>公众号爆款内容自动生成 + 发布系统 v1.0</strong><br><br>
+            功能：<br>
+            • 自动抓取微博/百度热门话题<br>
+            • AI 生成第一人称叙述风格的科技内容文章<br>
+            • 每个段落自动插入科技风配图<br>
+            • 一键发布到微信公众号<br>
+            • 支持定时自动发布任务<br>
+            • 爆款标题多版本供选择<br><br>
+            使用前请先在上方配置你的微信公众号 AppID 和 Secret。<br><br>
+        </p>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script async function saveWechatConfig(e) {
+    e.preventDefault();
+    
+    const appid = document.getElementById('appid').value.trim();
+    const secret = document.getElementById('secret').value.trim();
+    
+    const resultEl = document.getElementById('configResult');
+    resultEl.innerHTML = '<span style="color:var(--primary);">保存中...</span>';
+    
+    try {
+        const resp = await fetch('/api/settings/wechat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ appid, secret })
+        });
+        const data = await resp.json();
+        
+        if (data.success) {
+            resultEl.innerHTML = '<span class="status-badge success">✅ 配置已保存！请刷新页面查看状态。</span>';
+            showToast('配置已保存');
+        } else {
+            resultEl.innerHTML = '<span class="status-badge failed">❌ ' + (data.error || '保存失败') + '</span>';
+        }
+    } catch(e) {
+        resultEl.innerHTML = '<span class="status-badge failed">❌ 网络错误</span>';
+    }
+}
+
+async function testWechatConfig() {
+    showToast('测试连接中...');
+    
+    try {
+        // 尝试获取 token 来验证配置是否正确
+        const resp = await fetch('/api/publish', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                article: {title: '__test__'},
+                publish_now: false
+            })
+        });
+        const data = await resp.json();
+        
+        if (data.success || (data.error && data.error.indexOf('AppID') === -1)) {
+            showToast('✅ 连接成功！');
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch(e) {
+        showToast('连接失败：' + e.message, 'error');
+    }
+}
+
+function saveContentConfig() {
+    showToast('内容配置已更新（演示模式）');
+}
+</script>
+
+{% endblock %}
+</html>

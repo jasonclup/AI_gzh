@@ -1,0 +1,10 @@
+Before interaction_rules:
+'━━━ 优化建议 ━━━\\n{suggestions}\\n\\n系统运行平稳，无需人工介入 ✅", "技术侧汇报 📟\\n\\n📈 本次运行技术数据：\\n• 总耗时: {time}s\\n• 瓶颈环节: {bottleneck}\\n• API调用: {calls}次\\n• 错误/重试: {errors}次\\n\\n系统状态：{system_health}\\n\\n✅ 一切正常，没有需要关注的问题"]}}, "interaction_rules": {"handoff_'
+
+Braces before ir: 199 open, 198 close (diff=1)
+Brackets before ir: 46 open, 46 close (diff=0)
+
+Total: open_braces=201 close=200 open_sq=46 close=46
+
+Error at pos 9344, line 1, col 9345
+'诚具体，不说空话", "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'

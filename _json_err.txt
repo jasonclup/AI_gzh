@@ -1,0 +1,6 @@
+pos=9344
+'markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'
+line=1
+
+Last 200:
+'interaction_rules": {"handoff_style": "@对方角色名 + 简短交接说明 + 表情", "disagree_style": "礼貌但坚持专业立场，用数据和理由支撑", "praise_style": "真诚具体，不说空话", "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'

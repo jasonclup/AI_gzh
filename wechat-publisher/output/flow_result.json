@@ -1,0 +1,89 @@
+{
+  "version": "v3",
+  "timestamp": "2026-04-15 21:02:10",
+  "title": "关于，有3件事90%的人都不知道！",
+  "steps": {
+    "step1_hot_fetch": {
+      "status": "ok",
+      "total": 50,
+      "top5": [
+        {
+          "title": "机器人切除肿瘤两年后患者去世",
+          "heat": "?"
+        },
+        {
+          "title": "姚安娜代言华为新手机",
+          "heat": "?"
+        },
+        {
+          "title": "郑丽文老公全身除优衣库外都是小米",
+          "heat": "?"
+        },
+        {
+          "title": "美国将退还超1万亿元关税",
+          "heat": "?"
+        },
+        {
+          "title": "苏林访华将乘坐总计12小时高铁",
+          "heat": "?"
+        }
+      ]
+    },
+    "step2_topic_score": {
+      "status": "ok",
+      "scored_count": 50,
+      "grade_distribution": {
+        "B": 37,
+        "C": 13
+      },
+      "selected": {
+        "title": "",
+        "score": 0,
+        "grade": "B",
+        "score_detail": {}
+      }
+    },
+    "step3_competitor": {
+      "status": "ok",
+      "coverage": "low",
+      "covered_accounts": 0,
+      "suggested_angles_count": 3
+    },
+    "step4_article_gen": {
+      "status": "ok",
+      "title": "关于，有3件事90%的人都不知道！",
+      "word_count": 859,
+      "paragraph_count": 6,
+      "tags_count": 1
+    },
+    "step5_perf_record": {
+      "status": "ok",
+      "article_id": 4,
+      "title": "关于，有3件事90%的人都不知道！",
+      "topic": "",
+      "grade": "B"
+    },
+    "step6_images": {
+      "status": "ok",
+      "total_images": 4,
+      "unique_files": 4,
+      "all_unique": true
+    },
+    "step7_html": {
+      "status": "ok",
+      "file": "output/previews/preview_关于有3件事90的人都不知道_1776258126.html",
+      "images": 4
+    },
+    "step8_screenshot": "output/previews/final_1776258126.png"
+  },
+  "key_metrics": {
+    "topics_fetched": 50,
+    "topics_scored": 50,
+    "selected_grade": "B",
+    "selected_score": 0,
+    "competitor_accounts_covered": 0,
+    "word_count": 859,
+    "images_generated": 4,
+    "article_id": 4
+  }
+}

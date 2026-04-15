@@ -1,0 +1,13 @@
+MUL: "═" * 30
+MUL: "═" * 30
+CONCAT: "══════════════════════════════" + "\n🚀 新任务 [{time}] \n📌 话题: {topic}\n\n分工如下：\n→
+CONCAT: "══════════════════════════════" + "\n📦 任务完成！\n\n📝 标题: {title}\n📊 字数: ~{words}字 
+TERNARY_TPL: {can_release ? '可以发' : '建议修完再发'}
+TERNARY_TPL: {all_green ? '全部绿灯，放心跑 🟢' : '⚠️ 有黄灯，已重点关注'}
+TERNARY_TPL: {has_issue ? '⚠️ 需要跟进的技术债：' + tech_debt : '✅ 一切正常，没有需要关注的问题'}
+
+FAILED at pos 9420:
+'markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'
+
+Last 300 chars:
+'rs}次\\n\\n系统状态：{system_health}\\n\\n{has_issue ? \'⚠️ 需要跟进的技术债：\' + tech_debt : \'✅ 一切正常，没有需要关注的问题\'}"]}}, "interaction_rules": {"handoff_style": "@对方角色名 + 简短交接说明 + 表情", "disagree_style": "礼貌但坚持专业立场，用数据和理由支撑", "praise_style": "真诚具体，不说空话", "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'

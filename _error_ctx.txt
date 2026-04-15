@@ -1,0 +1,7 @@
+Pos: 5021
+Snippet:
+'📌 任务编号: #{task_id}\\n📌 话题: {topic}\\n📌 目标产出: {target}\\n\\n各岗位就位，按流水线顺序执行。开始！", "═" * 30 + "\\n🚀 新任务 [{time}] \\n📌 话题: {topic}\\n\\n分工如下：\\n→ @热点猎手 先行确认话题方向\\n→ @内容写手 跟进创'
+
+
+Last 500 chars:
+'sk_status}\\n飞书推送: {feishu_result}\\n异常/重试: {errors}次\\n\\n━━━ 优化建议 ━━━\\n{suggestions}\\n\\n系统运行平稳，无需人工介入 ✅", "技术侧汇报 📟\\n\\n📈 本次运行技术数据：\\n• 总耗时: {time}s\\n• 瓶颈环节: {bottleneck}\\n• API调用: {calls}次\\n• 错误/重试: {errors}次\\n\\n系统状态：{system_health}\\n\\n{has_issue ? \'⚠️ 需要跟进的技术债：\' + tech_debt : \'✅ 一切正常，没有需要关注的问题\'}"]}}, "interaction_rules": {"handoff_style": "@对方角色名 + 简短交接说明 + 表情", "disagree_style": "礼貌但坚持专业立场，用数据和理由支撑", "praise_style": "真诚具体，不说空话", "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'

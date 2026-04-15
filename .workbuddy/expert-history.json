@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "sessions": {
+    "d4eb464afa274302bdd7c6e252d2facf": [
+      {
+        "expertId": "PerformanceTestingExpert",
+        "name": "Jasper",
+        "profession": "性能测试专家",
+        "avatarUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/avatars/08-QualityAssurance/PerformanceTestingExpert/PerformanceTestingExpert.png",
+        "promptUrl": "https://acc-1258344699.cos.accelerate.myqcloud.com/workbuddy/experts/experts/08-QualityAssurance/PerformanceTestingExpert/PerformanceTestingExpert_zh.md",
+        "usedAt": 1776072038457,
+        "industryId": "all"
+      }
+    ]
+  },
+  "lastUpdated": 1776133481953
+}

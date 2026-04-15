@@ -1,0 +1,117 @@
+﻿python : All external sources failed! Using built-in fallback.
+所在位置 行:1 字符: 220
++ ... y\Claw\wechat-publisher; python _run_full_pipeline_v2.py 2>&1 | Out-F ...
++                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (All external so...lt-in fallback.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+============================================================
+🚀 Step 1/5: 热点抓取
+============================================================
+  ✅ 获取到 20 条热点
+     - [?] GPT-5发布在即：AI将再次颠覆我们的认知
+     - [?] 英伟达新一代芯片性能曝光，算力翻倍
+     - [?] 苹果Vision Pro 2代即将发布，价格腰斩？
+     - [?] 特斯拉FSD入华倒计时，自动驾驶要变天
+     - [?] 华为纯血鸿蒙正式推送，告别安卓内核
+  📸 截图已保存: output/previews/step1_topics_1776165335.png (900x500)
+
+============================================================
+✍️  Step 2/5: 文章撰写
+============================================================
+  ✅ 文章完成: 《GPT-5发布在即：AI将再次颠覆我们的认知》
+     字数: 1099, 段落数: 6
+     段落[opening]: 53字 → 配图prompt已生成
+     段落[body]: 159字 → 配图prompt已生成
+     段落[body]: 253字 → 配图prompt已生成
+     段落[body]: 304字 → 配图prompt已生成
+     段落[body]: 235字 → 配图prompt已生成
+     段落[closing]: 95字 → 配图prompt已生成
+  📸 截图已保存: output/previews/step2_article_1776165335.png (900x500)
+
+============================================================
+🎨  Step 3/5: AI配图生成
+============================================================
+  [封面] 生成中...
+  ✅ 封面图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191535.png
+  [段落1] 根据文案内容生成配图中...
+  ✅ 段落1配图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191535.png
+  [段落2] 根据文案内容生成配图中...
+  ✅ 段落2配图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191535.png
+  [段落3] 根据文案内容生成配图中...
+  ✅ 段落3配图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191536.png
+  [段落4] 根据文案内容生成配图中...
+  ✅ 段落4配图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191536.png
+  [段落5] 根据文案内容生成配图中...
+  ✅ 段落5配图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191536.png
+  [段落6] 根据文案内容生成配图中...
+  ✅ 段落6配图: C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\output\images\single_20260414_191536.png
+
+  ✅ 配图完成: 共生成 7 张图片
+     🖼️ single_20260414_191535.png (119KB)
+     🖼️ single_20260414_191535.png (119KB)
+     🖼️ single_20260414_191535.png (119KB)
+     🖼️ single_20260414_191536.png (119KB)
+     🖼️ single_20260414_191536.png (119KB)
+     🖼️ single_20260414_191536.png (119KB)
+     🖼️ single_20260414_191536.png (119KB)
+  📸 图片展示截图: output/previews/step3_images_1776165336.png
+
+============================================================
+📄 Step 4/5: HTML渲染
+============================================================
+  ✅ HTML已保存: output/previews/preview_GPT5发布在即AI将再次颠覆我们的认知_1776165336.html
+     嵌入图片: <img>标签=7, 段落配图=6
+  📸 截图已保存: output/previews/step4_html_1776165336.png (900x500)
+
+============================================================
+📱 Step 5/5: Playwright截图
+============================================================
+  ✅ 截图完成: output/previews/final_1776165336.png
+     图片加载: 总计=0, 成功=0, 失败=0
+
+============================================================
+🏁 流水线完成！结果汇总
+============================================================
+{
+  "timestamp": "2026-04-14 19:15:40",
+  "title": "GPT-5发布在即：AI将再次颠覆我们的认知",
+  "steps": [
+    {
+      "name": "热点抓取",
+      "status": "✅",
+      "count": 20
+    },
+    {
+      "name": "文章撰写",
+      "status": "✅",
+      "chars": 1099
+    },
+    {
+      "name": "配图生成",
+      "status": "✅",
+      "images": 7
+    },
+    {
+      "name": "HTML渲染",
+      "status": "✅",
+      "file": "output/previews/preview_GPT5发布在即AI将再次颠覆我们的认知_1776165336.html"
+    },
+    {
+      "name": "Playwright截图",
+      "status": "✅",
+      "file": "output/previews/final_1776165336.png"
+    }
+  ],
+  "files": [
+    "output/previews/step1_topics_1776165335.png",
+    "output/previews/step2_article_1776165335.png",
+    "output/previews/step3_images_1776165336.png",
+    "output/previews/step4_html_1776165336.png",
+    "output/previews/final_1776165336.png"
+  ],
+  "preview_url": "http://localhost:8080/output/previews/"
+}
+
+💾 结果已保存: output/flow_result.json

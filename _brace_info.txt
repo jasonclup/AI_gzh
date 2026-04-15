@@ -1,0 +1,9 @@
+
+Depth=1, pos=0:
+'{"personalities": {"hot_fetcher": {"name": "热点猎手", "role_des'
+
+Depth=2, pos=9164:
+'切正常，没有需要关注的问题"]}}, "interaction_rules": {"handoff_style": "@对方角色名 + 简短交接说明 + 表情", "disagree_style": '
+
+Depth=3, pos=9294:
+'style": "真诚具体，不说空话", "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}}'

@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-04-14 19:39:20",
+  "title": "GPT-5发布在即：AI将再次颠覆我们的认知",
+  "steps": [
+    {
+      "name": "热点抓取",
+      "status": "✅",
+      "count": 20
+    },
+    {
+      "name": "文章撰写",
+      "status": "✅",
+      "chars": 1099
+    },
+    {
+      "name": "配图生成",
+      "status": "✅",
+      "images": 7
+    },
+    {
+      "name": "HTML渲染",
+      "status": "✅",
+      "file": "output/previews/preview_GPT5发布在即AI将再次颠覆我们的认知_1776166754.html"
+    },
+    {
+      "name": "Playwright截图",
+      "status": "✅",
+      "file": "output/previews/final_1776166754.png"
+    }
+  ],
+  "files": [
+    "output/previews/step1_topics_1776166735.png",
+    "output/previews/step2_article_1776166735.png",
+    "output/previews/step3_images_1776166754.png",
+    "output/previews/step4_html_1776166754.png",
+    "output/previews/final_1776166754.png"
+  ],
+  "preview_url": "http://localhost:8080/output/previews/"
+}

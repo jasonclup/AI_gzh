@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "recorded_at": "2026-04-15 20:49:05",
+    "article_title": "姚安娜代言华为这事儿，我看完只说一句",
+    "publish_date": "2026-04-15",
+    "topic": "姚安娜代言华为Pura X Max",
+    "title_template": "悬念式",
+    "word_count": 1023,
+    "image_count": 4,
+    "category": "tech_viral",
+    "tags": [
+      "华为",
+      "代言",
+      "手机"
+    ],
+    "score_before_publish": 82,
+    "performance_tier": "D",
+    "engagement_rate": 7.12,
+    "data_updated_at": "2026-04-15 20:49:05",
+    "read_count": 3580,
+    "like_count": 120,
+    "share_count": 45,
+    "comment_count": 0,
+    "finish_rate": null
+  },
+  {
+    "id": 2,
+    "recorded_at": "2026-04-15 20:49:05",
+    "article_title": "交管部门回应新能源车牌绿色变白色",
+    "publish_date": "2026-04-14",
+    "topic": "新能源车牌变色",
+    "title_template": "冲突式",
+    "word_count": 1105,
+    "image_count": 4,
+    "category": "auto_tech",
+    "tags": [
+      "新能源车",
+      "车牌"
+    ],
+    "score_before_publish": 75,
+    "performance_tier": "C",
+    "engagement_rate": 9.51,
+    "data_updated_at": "2026-04-15 20:49:05",
+    "read_count": 8920,
+    "like_count": 380,
+    "share_count": 156,
+    "comment_count": 0,
+    "finish_rate": null
+  },
+  {
+    "id": 3,
+    "recorded_at": "2026-04-15 21:01:52",
+    "article_title": "关于，有3件事90%的人都不知道",
+    "publish_date": "2026-04-15",
+    "topic": "",
+    "title_template": "关于，有3件事90%的人都不知道",
+    "category": "tech_general",
+    "word_count": 864,
+    "image_count": 3,
+    "performance_tier": null,
+    "engagement_rate": null,
+    "data_updated_at": null
+  },
+  {
+    "id": 4,
+    "recorded_at": "2026-04-15 21:02:06",
+    "article_title": "关于，有3件事90%的人都不知道！",
+    "publish_date": "2026-04-15",
+    "topic": "",
+    "title_template": "关于，有3件事90%的人都不知道！",
+    "category": "tech_general",
+    "word_count": 859,
+    "image_count": 3,
+    "performance_tier": null,
+    "engagement_rate": null,
+    "data_updated_at": null
+  }
+]

@@ -1,0 +1,12 @@
+﻿==================================================
+python : Traceback (most recent call last):
+所在位置 行:1 字符: 220
++ ... dy\Claw\wechat-publisher; python build_desktop_client.py 2>&1 | Out-F ...
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\build_desktop_client.py", line 23, in <module>
+    print("  \U0001f4e6 ��ʼ�������ͻ���")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'gbk' codec can't encode character '\U0001f4e6' in position 2: illegal multibyte sequence

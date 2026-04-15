@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 热门话题 - 微信公众号爆款内容系统</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; background:#f5f7fa; color:#333; }
+.header { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; padding:24px 32px; }
+.header h1 { font-size:22px; font-weight:600; }
+.container { max-width:900px; margin:0 auto; padding:20px; }
+
+.stats-row { display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+.stat-card { background:#fff; border-radius:12px; padding:18px; min-width:140px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.stat-num { font-size:28px; font-weight:700; margin-top:4px; }
+.stat-num.blue { color:#667eea; }
+.stat-num.green { color:#10b981; }
+
+.toolbar { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500; transition:.2s; }
+.btn-primary { background:#667eea; color:#fff; }
+.btn-primary:hover { background:#5a6fd6; }
+.btn:disabled { opacity:.6; cursor:not-allowed; }
+
+.topic-list { list-style:none; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.topic-item { display:flex; align-items:center; gap:14px; padding:14px 18px; border-bottom:1px solid #f0f0f0; transition:.15s; cursor:pointer; }
+.topic-item:hover { background:#fafbff; }
+.topic-item:last-child { border-bottom:none; }
+.rank { font-size:18px; font-weight:700; width:32px; text-align:center; flex-shrink:0; }
+.rank.top3 { color:#ef4444; }
+.rank.normal { color:#9ca3af; }
+.topic-body { flex:1; min-width:0; }
+.t-title { font-size:15px; line-height:1.5; word-break:break-all; }
+.t-meta { display:flex; gap:12px; margin-top:4px; font-size:12px; color:#9ca3af; align-items:center; }
+.tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:500; }
+.tag-tech { background:#ecfdf5; color:#059669; }
+.tag-source { background:#f0f4ff; color:#667eea; }
+.hot-val { color:#ef4444; font-weight:600; }
+.viral-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+.viral-chip { font-size:11px; padding:3px 10px; background:#fef3c7; color:#92400e; border-radius:12px; cursor:pointer; transition:.15s; white-space:nowrap; }
+.viral-chip:hover { background:#fde68a; }
+
+.spinner { display:inline-block; width:20px; height:20px; border:3px solid #e5e7eb; border-top-color:#667eea; border-radius:50%; animation:spin .6s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.loading-state { text-align:center; padding:40px; color:#9ca3af; }
+.error-msg { text-align:center; padding:40px; color:#ef4444; }
+
+/* Modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100; align-items:center; justify-content:center; }
+.modal-overlay.show { display:flex; }
+.modal-box { background:#fff; border-radius:16px; width:520px; max-width:92vw; max-height:85vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+.m-head { display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #eee; }
+.m-head h3 { font-size:17px; }
+.m-close { background:none; border:none; font-size:24px; cursor:pointer; color:#999; }
+.m-body { padding:22px; }
+.form-label { font-size:13px; font-weight:600; color:#555; margin-bottom:6px; display:block; }
+.form-input { width:100%; padding:10px 14px; border:1.5px solid #e5e7eb; border-radius:8px; font-size:14px; outline:none; transition:.2s; }
+.form-input:focus { border-color:#667eea; box-shadow:0 0 0 3px rgba(102,126,234,.15); }
+.vt-options { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+.vt-opt { padding:10px 14px; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; font-size:13px; transition:.15s; }
+.vt-opt:hover { border-color:#667eea; background:#f8f9ff; }
+.vt-opt.sel { border-color:#667eea; background:#f0f4ff; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div style="display:flex;align-items:center;gap:16px;">
+        <a href="/" class="nav-btn" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;text-decoration:none;">🏠 返回首页</a>
+        <h1>🔥 热门话题 · 实时热搜抓取</h1>
+    </div>
+    <span style="font-size:13px;opacity:.8;">多源：今日头条 · 百度热搜 · 微博热榜</span>
+</div>
+
+<div class="container">
+
+<div class="toolbar">
+    <button class="btn btn-primary" id="btnFetch" onclick="doFetch()">🔄 刷新话题</button>
+    <span id="statusText" style="font-size:13px;color:#888;"></span>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card"><div class="form-label">全部话题</div><div class="stat-num blue" id="cAll">--</div></div>
+    <div class="stat-card"><div class="form-label">🧪 科技类</div><div class="stat-num green" id="cTech">--</div></div>
+    <div class="stat-card" style="flex:1;"><div class="form-label">当前数据源</div><div style="margin-top:4px;font-size:14px;font-weight:600;" id="srcLabel">加载中...</div></div>
+</div>
+
+<ul class="topic-list" id="list">
+    <li class="loading-state"><span class="spinner"></span> 正在获取热点...</li>
+</ul>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="mOverlay">
+<div class="modal-box">
+    <div class="m-head"><h3>✏️ 生成文章</h3><button class="m-close" onclick="closeM()">×</button></div>
+    <div class="m-body">
+        <label class="form-label">原始话题</label>
+        <input type="text" class="form-input" id="mTopic" readonly style="margin-bottom:14px;">
+        <label class="form-label">🎯 选择爆款标题（点击选择）</label>
+        <div class="vt-options" id="vtList"></div>
+        <label class="form-label" style="margin-top:14px;">额外角度（可选）</label>
+        <input type="text" class="form-input" id="mExtra" placeholder='从普通用户角度 / 从投资人角度 ...' style="margin-bottom:18px;">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:15px;" id="btnGen" onclick="doGen()">🚀 开始生成文章</button>
+    </div>
+</div>
+</div>
+
+<script>
+// ══════════════ EMBEDDED DATA (instant load) ══════════════
+const FALLBACK = [
+    {title:'GPT-5发布在即：AI将再次颠覆我们的认知',hot_value:9800000,source:'内置',is_tech:true,viral_titles:['🔥 GPT-5发布！这波操作我看呆了','说真的，GPT-5可能改变一切','深度体验 GPT-5 后，我发现了一个秘密...']},
+    {title:'英伟达新一代芯片性能曝光，算力翻倍',hot_value:8900000,source:'内置',is_tech:true,viral_titles:['英伟达芯片炸裂！算力直接翻倍','深度体验新芯片后：游戏和AI都变了']},
+    {title:'华为纯血鸿蒙正式推送，告别安卓内核',hot_value:7900000,source:'内置',is_tech:true,viral_titles:['鸿蒙终于来了！告别安卓内核','纯血鸿蒙推送：我用了一周说说真实感受']},
+    {title:'DeepSeek新模型震撼发布，开源AI再突破',hot_value:7600000,source:'内置',is_tech:true,viral_titles:['DeepSeek新模型来了！开源AI再次突破','刚试了DeepSeek新模型，我的下巴掉下来了']},
+    {title:'特斯拉FSD入华倒计时，自动驾驶要变天',hot_value:8200000,source:'内置',is_tech:true,viral_titles:['FSD要入华了！自动驾驶变天','特斯拉FSD实测：中国路况能行吗？']},
+    {title:'苹果Vision Pro 2代即将发布，价格腰斩？',hot_value:8500000,source:'内置',is_tech:true,viral_titles:['Vision Pro 2代！价格腰斩？我帮你测了','苹果VR头显二代曝光：这次真的买得起了？']},
+    {title:'小米汽车销量暴涨，造车新势力洗牌',hot_value:7300000,source:'内置',is_tech:true,viral_titles:['小米汽车卖爆了！造车格局大洗牌','深度体验小米汽车一个月：这几点没想到']},
+    {title:'OpenAI宣布重大更新，ChatGPT全面进化',hot_value:7000000,source:'内置',is_tech:true,viral_titles:['ChatGPT大更新！这次变化太大了','OpenAI又搞事情了，99%的人还不知道']},
+    {title:'脑机接口人体试验成功，科幻照进现实',hot_value:6800000,source:'内置',is_tech:true,viral_titles:['脑机接口成功了！科幻照进现实','脑机接口人体试验：我能用意念打字了']},
+    {title:'折叠屏手机价格跌破3000元，普及时代来了',hot_value:6500000,source:'内置',is_tech:true,viral_titles:['折叠屏跌破3000！终于可以买了','折叠屏手机降价实测：值不值得买？']},
+    {title:'国产大模型集体降价，AI应用迎来爆发期',hot_value:5300000,source:'内置',is_tech:true,viral_titles:['AI大模型集体降价！应用爆发期来了','国产AI大降价：普通人怎么抓住机会？']},
+    {title:'人形机器人开始进入工厂，替代人工不远了',hot_value:4800000,source:'内置',is_tech:true,viral_titles:['人形机器人进工厂了！替代人工不远','工厂里的机器人：我观察了一周发现...']},
+    {title:'Kimi智能助手用户破亿，国产AI崛起',hot_value:4200000,source:'内置',is_tech:true,viral_titles:['Kimi用户破亿！国产AI真起来了','Kimi为什么这么火？用了三个月告诉你']},
+    {title:'Sora视频生成能力再升级，影视行业慌了',hot_value:5600000,source:'内置',is_tech:true,viral_titles:['Sora又升级了！影视行业慌不慌？','Sora新功能实测：我用AI拍了一部电影']},
+    {title:'量子计算机商用化加速，传统加密面临挑战',hot_value:6200000,source:'内置',is_tech:true,viral_titles:['量子计算机商用加速！加密面临挑战','量子计算离我们还有多远？答案惊人']},
+    {title:'固态电池技术突破，电动车续航破1000公里',hot_value:4500000,source:'内置',is_tech:true,viral_titles:['固态电池突破！电动车续航破1000km','续航1000公里的电动车：什么时候能买到？']},
+];
+
+let topics = [];
+let pickedTitle = '';
+
+const TECH_KW = ['AI','GPT','ChatGPT','机器人','芯片','半导体','苹果','华为','小米','特斯拉','科技','元宇宙','VR','AR','区块链','量子','5G','6G','新能源','自动驾驶','大模型','算力','英伟达','OpenAI','DeepSeek','Kimi','Sora','SpaceX','脑机接口','折叠屏'];
+
+function isTech(t){ return TECH_KW.some(k=>t.toLowerCase().includes(k.toLowerCase())); }
+
+function fmtNum(n){ if(!n)return''; if(n>=1e8)return(n/1e8).toFixed(1)+'亿'; if(n>=1e4)return(n/1e4).toFixed(0)+'万'; return n+''; }
+
+// ─── RENDER ──────────────────────
+function render(){
+    const el=document.getElementById('list');
+    const cAll=document.getElementById('cAll');
+    const cTech=document.getElementById('cTech');
+
+    if(!topics.length){
+        el.innerHTML='<li class="error-msg">暂无数据，请点击「刷新话题」重试</li>';
+        cAll.textContent='0'; cTech.textContent='0';
+        return;
+    }
+
+    cAll.textContent=topics.length;
+    cTech.textContent=topics.filter(t=>t.is_tech).length;
+
+    document.getElementById('srcLabel').textContent=topics[0].source||'未知';
+
+    el.innerHTML=topics.map((t,i)=>{
+        const cls=i<3?'top3':'normal';
+        const techTag=t.is_tech?'<span class="tag tag-tech">科技</span>':'';
+        const virals=(t.viral_titles||[]).slice(0,3).map(v=>`<span class="viral-chip" onclick="event.stopPropagation();pickV('${v.replace(/'/g,"\\'")}')">${v}</span>`).join('');
+        return `<li class="topic-item" onclick="openM(${i})">
+            <div class="rank ${cls}">${i+1}</div>
+            <div class="topic-body">
+                <div class="t-title">${t.title}${techTag}</div>
+                ${virals?'<div class="viral-row">'+virals+'</div>':''}
+                <div class="t-meta">
+                    <span class="tag tag-source">${t.source||''}</span>
+                    ${t.hot_value?'<span class="hot-val">🔥'+fmtNum(t.hot_value)+'</span>':''}
+                </div>
+            </div>
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();location.href='/editor?topic='+encodeURIComponent('${t.title.replace(/'/g,"\\'")}')">写文章 →</button>
+        </li>`;
+    }).join('');
+}
+
+// ─── FETCH with TIMEOUT ──────────
+function doFetch(){
+    const btn=document.getElementById('btnFetch');
+    const st=document.getElementById('statusText');
+    const el=document.getElementById('list');
+    
+    btn.disabled=true; btn.textContent='⏳ 抓取中...';
+    st.textContent='正在连接网络...';
+    el.innerHTML='<li class="loading-state"><span class="spinner"></span> 正在获取最新热点...</li>';
+
+    // AbortController with 12 second timeout
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),12000);
+
+    fetch('/api/topics/fetch',{signal:controller.signal})
+        .then(r=>{
+            clearTimeout(timer);
+            if(!r.ok)throw new Error('HTTP '+r.status);
+            return r.json();
+        })
+        .then(d=>{
+            clearTimeout(timer);
+            btn.disabled=false; btn.textContent='🔄 刷新话题';
+            
+            if(d.success && d.data && d.data.length){
+                st.textContent='✅ 更新于 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+                // Ensure each item has required fields
+                topics=d.data.map(t=>({
+                    title:t.title||'',
+                    hot_value:t.hot_value||0,
+                    source:t.source||'unknown',
+                    is_tech:t.is_tech||isTech(t.title||''),
+                    viral_titles:t.viral_titles||[],
+                }));
+                render();
+            }else{
+                st.textContent='⚠️ 数据为空，使用内置话题';
+                topics=[...FALLBACK]; render();
+            }
+        })
+        .catch(err=>{
+            clearTimeout(timer);
+            btn.disabled=false; btn.textContent='🔄 刷新话题';
+            st.textContent='⚠️ 网络超时或失败，显示内置话题';
+            console.error('Fetch error:',err);
+            topics=[...FALLBACK]; render();
+        });
+}
+
+// ─── MODAL ───────────────────────
+function openM(i){
+    const t=topics[i];
+    if(!t)return;
+    document.getElementById('mTopic').value=t.title;
+    document.getElementById('mOverlay').classList.add('show');
+    pickedTitle=t.viral_titles?t.viral_titles[0]:'';
+    const vl=document.getElementById('vtList');
+    vl.innerHTML=(t.viral_titles||[]).map((v,j)=>`<div class="vt-opt${j===0?' sel':''}" onclick="selVT(this,'${v.replace(/'/g,"\\'")}')">${v}</div>`).join('');
+}
+function closeM(){document.getElementById('mOverlay').classList.remove('show');}
+function selVT(el,t){document.querySelectorAll('.vt-opt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');pickedTitle=t;}
+function pickV(t){pickedTitle=t;}
+
+function doGen(){
+    const topic=document.getElementById('mTopic').value;
+    if(!topic){alert('请先选择话题');return;}
+    // Navigate to editor with topic as URL param
+    location.href='/editor?topic='+encodeURIComponent(topic);
+    closeM();
+}
+
+// ─── INIT: show fallback instantly, then try network ──────────
+function init(){
+    // Show embedded data IMMEDIATELY (no waiting for network)
+    topics=[...FALLBACK];
+    render();
+    document.getElementById('statusText').textContent='💡 显示内置话题，正在后台更新...';
+
+    // Then try to fetch fresh data in background
+    setTimeout(doFetch,300);
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+﻿{
+  "configured": true,
+  "appid_masked": "wx05**********c50b",
+  "secret_masked": "3efa************************2726",
+  "token_test": {
+    "ok": false,
+    "response": {
+      "errcode": 40164,
+      "errmsg": "invalid ip 59.37.125.106 ipv6 ::ffff:59.37.125.106, not in whitelist rid: 69def48d-0d58ddd4-4f886437"
+    }
+  },
+  "draft_api_test": null,
+  "material_api_test": null
+}

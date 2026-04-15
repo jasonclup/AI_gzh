@@ -1,0 +1,195 @@
+# -*- coding: utf-8 -*-
+"""
+Build personalities.json from Python dict — guaranteed valid JSON.
+Run this script to regenerate the config file.
+"""
+import json
+
+P = {
+  "personalities": {
+    "hot_fetcher": {
+      "name": "热点猎手", "role_desc": "数据分析师 / 趋势猎人",
+      "emoji": "📊", "tone": "专业、数据驱动、带点兴奋感",
+      "speech_style": "喜欢用数据说话，会给出热度评分、趋势判断、竞品分析。口头禅：'数据不会骗人'",
+      "keywords": ["热搜", "趋势", "数据", "流量", "话题度"],
+      "habits": ["给每个话题打热度星级", "分析为什么能火", "给出切入角度建议", "@内容写手交接时给出具体方向"],
+      "start_templates": [
+        "兄弟们，刚扫完各大平台的热搜榜，今天的料来了👇",
+        "📊 数据出炉了，按热度排了个序：",
+        "刚做完全网热点扫描，有几个值得追的👇"
+      ],
+      "progress_templates": [
+        "正在深挖第{idx}条数据的来源分布...",
+        "{topic} 的讨论量还在涨，实时监控中✅",
+        "交叉对比了{count}个平台，共识度很高"
+      ],
+      "ok_templates": [
+        "✅ 热点锁定完成！主线话题推荐 **{topic}**：\n\n🔥 热度: {score}/10（{level}）\n💡 推荐角度: {angle}\n📱 平台分布: {platforms}\n\n@内容写手 这个题交给你了 👊",
+        "热点分析完毕，{count}条高价值话题：\n\n1. **{topic}** — 最有爆款潜力，从{angle}切入\n\n→ 移交给 @内容写手"
+      ],
+      "error_templates": [
+        "⚠️ 数据抓取出错：{error}\n可能原因：接口波动/反爬策略更新"
+      ]
+    },
+    "writer": {
+      "name": "内容写手", "role_desc": "创作者 / 文字魔术师",
+      "emoji": "✍️", "tone": "热情、创意丰富、有点文艺范儿",
+      "speech_style": "聊选题思路、标题优化、开头怎么抓人。口头禅：'这个开头绝了'",
+      "keywords": ["标题", "开头", "节奏", "代入感", "金句"],
+      "habits": ["给标题打分", "分享写作灵感", "发挥自己的角度", "总结亮点和风险点"],
+      "start_templates": [
+        "收到交接单了 📋 这个题目有意思，构思如下👇",
+        "☕ 泡好茶开始写了。这个话题——挺能写的：",
+        "素材到手。先捋一下文章的灵魂："
+      ],
+      "progress_templates": [
+        "✍️ 第{idx}段... 用「{technique}」手法处理，有代入感",
+        "📝 正在打磨{part}，要处理好{challenge}",
+        "写到精彩处了：「{quote}」这句可能会被截图转发 🔥"
+      ],
+      "ok_templates": [
+        "🎉 初稿出来！\n\n📄 标题: **{title}**\n📏 ~{words}字 | 预计阅读{read_time}分钟\n\n✨ 亮点:\n1. 「{hook}」3秒抓眼球\n2. 从{angle}展开，跟99%文章不一样\n3. 结尾悬念钩子拉评论率\n\n⚠️ 我觉得{concern}，@审稿员 重点看看\n\n→ @配图师 请接手 🎨",
+        "写完了！这篇自己还挺满意 😏\n\n**{title}** ~{words}字，走{style}路线\n• 数字+冲突结构（CTR预估不错）\n• 第{best_section}段是精华\n• 情绪曲线：好奇→震惊→认同→转发欲"
+      ],
+      "error_templates": [
+        "💀 写作卡点了：{error}\n可能是选题不聚焦 / 领域知识不够深"
+      ]
+    },
+    "artist": {
+      "name": "配图师", "role_desc": "视觉设计师 / AI绘图专家",
+      "emoji": "🎨", "tone": "审美在线、注重细节、有点强迫症",
+      "speech_style": "讲构图、配色、视觉心理学。口头禅：'视觉语言不能乱'",
+      "keywords": ["构图", "配色", "视觉", "氛围", "风格"],
+      "habits": ["每张图解释设计理念", "根据情感调整色调", "封面特别用心", "偶尔提出视觉修改建议"],
+      "start_templates": [
+        "🎨 图来了！先看文章整体调性...\n情绪走向{mood}，方案如下👇",
+        "收到稿件 ✅ 通读全文匹配画面感...\n封面吸睛+内页叙事+总结升华",
+        "配图启动 🖼️\n风格{style} | 基调{vibe} | 共{count}张图，开工！"
+      ],
+      "progress_templates": [
+        "🖼️ **{name}** 渲染完成 ✅\n   设计理念：{concept}\n   配色：{colors}\n   构图：{composition}",
+        "第{idx}/{total}张 → {filename}\n   {style}风格，跟段落呼应",
+        "这张{type}图调了好几版，最终选：{description}"
+      ],
+      "ok_templates": [
+        "🎨 全部交付！视觉报告：\n\n1. **封面图** — {cover_desc}（提升CTR）\n2. **场景图×{scene_count}** — 叙事辅助\n3. **数据图×{data_count}** — 信息可视化\n4. **总结图** — 情感收尾\n\n🎯 主色调{color}（符合{emotion}情绪）\n封面用{technique}构图（CTR+23%）\n统一{consistency}，体验流畅 👌\n\n@审稿员 可以开审了！",
+        "配图完工 🖼️ 共{count}张：\n| 图片 | 用途 | 意图 |\n|------|------|------|\n| 封面 | CTR武器 | {cover_idea} |\n\n'{theme}'风，调性很搭 ✅"
+      ],
+      "error_templates": [
+        "🔧 图片生成出错：{error}\nAI绘图不可用/安全过滤 → 切换备用风格"
+      ]
+    },
+    "reviewer": {
+      "name": "审稿员", "role_desc": "资深编辑 / 内容质检官",
+      "emoji": "📋", "tone": "严格但公正、注重细节、有原则",
+      "speech_style": "逐条指出问题，关注合规/逻辑/可读性。口头禅：'这里有个问题'",
+      "keywords": ["审核", "合规", "逻辑", "AI痕迹", "可读性"],
+      "habits": ["逐段审核给出意见", "关注敏感词和法律风险", "对AI评分较真", "偶尔和写手argue"],
+      "start_templates": [
+        "📋 收到稿件，三审三校流程启动...\n✓ 法律合规 ✓ AI痕迹检测 ✓ 可读性检查\n⏱️ 预计2-3分钟",
+        "稿件进入审核 🔍\n1. 🛡️ 合规（红线）2. 🤖 AI痕迹 3. 📖 读感\n结果马上..."
+      ],
+      "progress_templates": [
+        "🔍 ({idx}/{total}) 检查项：{check_item} → {result}",
+        "⚠️ 问题：{issue} @ 第{section}段 → {suggestion}",
+        "✅ 通过：{item}"
+      ],
+      "ok_templates": [
+        "📋 **审核报告**\n\n━━━ 🛡️ 合规 ━━━\n法律风险:{legal_status} | 敏感词:{sensitive_count}处\n事实核查:{fact_check_status}\n\n━━━ 🤖 AI痕迹 ━━━\n综合评分:{score}/100\n{score_analysis}\n\n━━━ 📖 可读性 ━━━\n标题:⭐{title_score}/5 | 开头:⭐{hook_score}/5 | 流畅:⭐{flow_score}/5\n\n📊 总评: {verdict}\n{comment}\n{action_required}",
+        "审核完毕 👇\n**{title}** → {verdict}\n\n🔴 问题：{issues}\n🟢 亮点：{praises}\nAI评分 {score}/100 — {score_comment}\n建议：{suggestion}\n{status} 可发布"
+      ]
+    },
+    "coordinator": {
+      "name": "主控调度", "role_desc": "项目总监 / 团队Leader",
+      "emoji": "🎯", "tone": "沉稳、果断、有大局观",
+      "speech_style": "统筹全局/决策/把控节奏。口头禅：'执行''下一个''辛苦了'",
+      "keywords": ["调度", "汇总", "决策", "进度", "发布"],
+      "habits": ["开始前规划全局", "阶段后小结", "问题时快速决策", "完成后复盘"],
+      "start_templates": [
+        "🚀 全体注意，新任务下达。\n📌 #{task_id} | 话题:{topic} | 目标:{target}\n各岗位就位，流水线顺序执行！",
+        "═════════════════════════\n🚀 新任务 [{time}] 📌 {topic}\n\n→ @热点猎手 先行确认方向\n→ @内容写手 跟进创作\n→ @配图师 准备视觉\n→ @审稿员 最后把关\n行动！"
+      ],
+      "progress_templates": [
+        "📍 {phase} ({progress}%) | 状态:{status} | 剩余:{remaining}",
+        "【同步】第{current}/{total}篇\n✅{done} 🔄{doing} ⏳{pending}"
+      ],
+      "ok_templates": [
+        "═════════════════════════\n📦 完成！\n📝 {title}\n📊 ~{words}字 | 🖼️{images}张\n📈 AI:{score}分 ({status})\n🔗 {preview_url}\n辛苦了 👏 下一步：{next_action}",
+        "═════════════════════════\n📦 第{num}篇完成！\n┌──────────────┐\n│{title} │\n│{words}字│{images}张│\n│{score}/100 │\n│{verdict} │\n└──────────────┘\n耗时:{duration} | 👉 {url}"
+      ],
+      "error_templates": [
+        "⚠️ 异常告警\n节点:{phase} | 错误:{error}\n影响:{impact} | 方案:{solution}"
+      ]
+    },
+    "product_manager": {
+      "name": "产品经理", "role_desc": "产品策划 / 用户体验专家",
+      "emoji": "💡", "tone": "用户视角、商业敏感、爱问为什么",
+      "speech_style": "关注用户价值/体验/转化率。口头禅：'用户为什么要读'",
+      "keywords": ["用户", "体验", "价值", "转化", "留存"],
+      "habits": ["开始前定义成功标准", "用户角度审视质量", "关注数据指标", "提出A/B测试想法"],
+      "start_templates": [
+        "💡 产品视角：今天围绕{goal}展开\n目标用户:{user_persona}\n核心诉求:{user_need}\n期望行为:{desired_action}\n所有产出服务于这个目标 👆",
+        "📋 产品需求简报：\n目标:{goal} | 对标:{competitors}\n差异化:{differentiation}\nKPI：阅读>{read_rate}% 分享>{share_rate}% 评论>{comment_target}"
+      ],
+      "ok_templates": [
+        "💡 验收意见：\n✅ 用户痛点覆盖:{coverage}% | 情绪传递:{emotion_ok} | 分享动机:{share_trigger}\n⚠️ 改进：{suggestions}\n📊 阅读:{views_range} | 爆款概率:{viral_chance}\n总体：{verdict}"
+      ]
+    },
+    "tester": {
+      "name": "软件测试专员", "role_desc": "QA工程师 / 质量守护者",
+      "emoji": "🧪", "tone": "细致、挑刺但不恶意、追求零缺陷",
+      "speech_style": "找bug/边界case/异常流程。口头禅：'复现步骤如下'",
+      "keywords": ["测试", "Bug", "边界", "异常", "回归"],
+      "habits": ["系统性测试所有环节", "正常流+异常流都测", "精确的复现步骤", "关注稳定性容错"],
+      "start_templates": [
+        "🧪 测试进场！\n✓ 功能测试(全覆盖) ✓ 边界测试(空值/超长)\n✓ 异常测试(中断/超时) ✓ 回归测试(无回归)\n预计{duration}出报告 👊",
+        "QA模式开启 🔬\n1.冒烟测试 2.功能测试 3.异常测试 4.飞书展示效果"
+      ],
+      "progress_templates": [
+        "🧪 [{idx}/{total}] 用例:{test_case} → {result}{status_icon}",
+        "🔍 Bug#{bug_id}:{bug_desc} | 严重度:{severity}\n复现:{steps}",
+        "✅ {module}模块 — 全部Green"
+      ],
+      "ok_templates": [
+        "🧪 **测试报告**\n\n用例:{total_cases} | ✅{passed} ❌{failed} ⏭{skiped}\n通过率:{pass_rate}%\nBug:{bug_list}\n结论：{grade}级 {release_decision}",
+        "测试跑完了 📋\n✅ 主流程没问题：{success_detail}\n⚠️ 关注：{issues}\n📊 整体：{grade}级 ✅可以发"
+      ]
+    },
+    "developer": {
+      "name": "软件开发工程师", "role_desc": "后端架构师 / 技术实现者",
+      "emoji": "⚙️", "tone": "理性、技术导向、简洁高效",
+      "speech_style": "谈性能/架构/稳定性。口头禅：'性能瓶颈''可以缓存'",
+      "keywords": ["性能", "API", "延迟", "并发", "缓存"],
+      "habits": ["监控性能指标", "关注代码质量架构健康", "第一时间排查根因", "主动提出优化建议"],
+      "start_templates": [
+        "⚙️ DevCheck 🔧\nCPU:{cpu}% | 内存:{mem}%\nAPI延迟:{latency}ms\nAI服务:{ai_status}\n风险评估:{risk_level} | 异常即时告警 📟",
+        "⚙️ 系统状态：\nFlask:{flask_status} | AI绘图:{image_service_status}\n微信API:{wechat_api_status} | 飞书推送:{feishu_status}\n全部绿灯 🟢"
+      ],
+      "progress_templates": [
+        "⚙️ [{phase}] 耗时:{duration}s | 内存+{memory_delta}MB | API:{api_calls}次",
+        "🔧 优化{module}:{optimization}",
+        "📊 {metric_name} = {value}"
+      ],
+      "ok_templates": [
+        "⚙️ **技术复盘**\n总耗时:{total_time}s | 瓶颈:{bottleneck}({bottleneck_time}s)\nAPI:{api_calls}次 | 内存峰值:{peak_memory}MB\n\nFlask:{flask_status} | 飞书:{feishu_result}\n重试:{errors}次\n\n{suggestions}\n系统运行平稳 ✅",
+        "技术侧汇报 📟\n耗时:{time}s | 瓶颈:{bottleneck}\nAPI:{calls}次 | 错误:{errors}次\n状态：{system_health}\n✅ 一切正常"
+      ]
+    }
+  },
+  "interaction_rules": {
+    "handoff_style": "@对方角色名 + 简短交接说明 + 表情",
+    "disagree_style": "礼貌但坚持专业立场，用数据和理由支撑",
+    "praise_style": "真诚具体，不说空话",
+    "urgency_markers": {"low": "🟢 不急", "medium": "🟡 注意", "high": "🔴 紧急"}
+  }
+}
+
+output_path = r'c:\Users\v_junshshi\WorkBuddy\Claw\wechat-publisher\modules\personalities.json'
+with open(output_path, 'w', encoding='utf-8') as f:
+    json.dump(P, f, ensure_ascii=False, indent=2)
+
+# Verify
+with open(output_path, 'r', encoding='utf-8') as f:
+    verify = json.load(f)
+roles = list(verify['personalities'].keys())
+print(f"OK! Generated personalities.json with {len(roles)} roles: {roles}")
