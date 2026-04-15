@@ -716,7 +716,10 @@ class ImageStyleAnalyzer:
         # === Step 4: 存档到持久化数据库 ===
         self._persist_to_style_db(results)
 
-        print(f'    [配图分析] 完成! 抽样{results["sampled_pages"]}页, 发现{results["total_images_found"]}张图')
+        # === Step 5: 清理临时文件（不下载图片，无残留） ===
+        self.cleanup_temp_files()
+
+        print(f'    [配图分析] 完成! 抽样{results["sampled_pages"]}页, 发现{results["total_images_found"]}张图(仅存元数据，无文件残留)')
 
         return results
 
@@ -1190,7 +1193,102 @@ class ImageStyleAnalyzer:
         db['inline_styles'] = db['inline_styles'][-30:]
 
         _save_image_style_db(db)
-        print(f'    [配图存档] 已写入 _image_style_db.json (历史记录{len(db["analysis_history"])}条)')
+
+        # === 完整图片目录归档（每张图的详细元数据） ===
+        self._save_image_catalog(analysis_result)
+
+        print(f'    [配图存档] 已写入 _image_style_db.json + 图片目录 (历史{len(db["analysis_history"])}条)')
+
+    def _save_image_catalog(self, analysis_result):
+        """
+        将每张图片的完整元数据存入独立目录文件
+        
+        原则：只存元数据(URL/尺寸/格式/位置)，不下载实际图片文件。
+        分析完成后无临时图片残留。
+        
+        存储位置: output/analysis/image_catalog_YYYYMMDD_HHMMSS.json
+        """
+        ts = analysis_result.get('timestamp', datetime.now().isoformat())
+        clean_ts = ts.replace(':', '-').replace('T', '_')[:19]
+        catalog_path = os.path.join(ANALYSIS_DIR, f'image_catalog_{clean_ts}.json')
+        
+        catalog = {
+            'version': '2.0',
+            'generated_at': ts,
+            'summary': {
+                'articles_analyzed': analysis_result.get('articles_analyzed', 0),
+                'sampled_pages': analysis_result.get('sampled_pages', 0),
+                'total_images_found': analysis_result.get('total_images_found', 0),
+            },
+            # 抽样文章列表
+            'article_samples': [],
+            # 封面图完整列表（含URL、尺寸、格式等所有元数据）
+            'cover_images': [],
+            # 段落配图完整列表
+            'inline_images': [],
+            # 策略发现
+            'strategy_findings': analysis_result.get('strategy_findings', []),
+        }
+
+        # 从抽样详情和原始结果中提取完整图片信息
+        for detail in analysis_result.get('sample_details', []):
+            catalog['article_samples'].append({
+                'title': detail.get('title', ''),
+                'url': detail.get('url', ''),
+                'category': detail.get('category', ''),
+                'image_count': detail.get('image_count', 0),
+                'has_cover': detail.get('has_cover', False),
+                'inline_count': detail.get('inline_count', 0),
+            })
+
+        # 提取封面图详情
+        cover_analysis = analysis_result.get('cover_analysis', {})
+        if cover_analysis.get('typical_examples'):
+            for ex in cover_analysis['typical_examples']:
+                catalog['cover_images'].append({
+                    'type': ex.get('type', ''),
+                    'src_url': ex.get('src', ''),           # 原始URL
+                    'detected_size': ex.get('size', ''),      # 尺寸
+                    'style_tags': ex.get('tags', []),          # 风格标签
+                    'source_article': ex.get('from_title', ''), # 来源文章
+                })
+
+        # 提取段落配图统计
+        inline_analysis = analysis_result.get('inline_analysis', {})
+        catalog['inline_summary'] = {
+            'total_sampled': inline_analysis.get('sample_count', 0),
+            'size_stats': inline_analysis.get('size_stats', {}),
+            'placement_pattern': inline_analysis.get('placement_pattern', {}),
+            'format_distribution': inline_analysis.get('format_distribution', {}),
+            'top_findings': inline_analysis.get('top_findings', [])[:10],
+        }
+
+        # 写入目录文件
+        os.makedirs(os.path.dirname(catalog_path), exist_ok=True)
+        with open(catalog_path, 'w', encoding='utf-8') as f:
+            json.dump(catalog, f, ensure_ascii=False, indent=2)
+        
+        print(f'    [图片目录] 已保存 {catalog["summary"]["total_images_found"]} 张图的元数据 → image_catalog_{clean_ts}.json')
+        
+    def cleanup_temp_files(self):
+        """清理分析过程中可能产生的临时文件（如果有）"""
+        # 当前实现不下载任何图片文件，此方法为预防性清理
+        # 如果未来有缓存图片的逻辑，在这里统一删除
+        import glob as _glob
+        patterns = [
+            os.path.join(ANALYSIS_DIR, '_temp_img_*'),
+            os.path.join(ANALYSIS_DIR, '_cache_*.*'),
+        ]
+        cleaned = 0
+        for pat in patterns:
+            for f in _glob.glob(pat):
+                try:
+                    os.remove(f)
+                    cleaned += 1
+                except:
+                    pass
+        if cleaned > 0:
+            print(f'    [清理] 已删除 {cleaned} 个临时文件')
 
 
 # ============================================================
