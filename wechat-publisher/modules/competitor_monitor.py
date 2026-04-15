@@ -262,6 +262,103 @@ class CompetitorMonitor:
 
     # ---- 核心方法 ----
 
+    def quick_check(self, topic_title: str) -> dict:
+        """
+        快速检查：给定话题标题，返回竞品覆盖情况和写作建议。
+        轻量版，不跑完整扫描，仅基于内置样本做关键词匹配。
+        """
+        import re
+
+        topic_lower = topic_title.lower()
+        covered_by = []
+        suggested_angles = []
+
+        for acc in self.accounts:
+            acc_articles = self._get_account_sample_articles(acc.get('name', ''))
+            matched = []
+            for article in acc_articles:
+                art_title = (article.get('title', '') or '').lower()
+                art_content = (article.get('full_content', '') or '').lower()
+                combined = f"{art_title} {art_content}"
+                if any(kw in combined for kw in self._extract_keywords(topic_lower)):
+                    matched.append({**article, 'account_name': acc.get('name', '')})
+                    break
+            if matched:
+                covered_by.extend(matched)
+
+        # 基于匹配结果生成角度建议
+        if not covered_by:
+            suggested_angles = [
+                {'angle': f'从普通用户视角解读"{topic_title[:30]}"', 'source_account': '系统建议'},
+                {'angle': f'结合个人经历谈对"{topic_title[:20]}"的真实感受', 'source_account': '系统建议'},
+                {'angle': f'用反直觉观点切入：为什么"{topic_title[:20]}"没那么重要？', 'source_account': '系统建议'},
+            ]
+        else:
+            seen_angles = set()
+            for item in covered_by[:5]:
+                features = item.get('writing_features', {})
+                angle_hint = features.get('narrative_angle', '')
+                if angle_hint and angle_hint not in seen_angles:
+                    suggested_angles.append({
+                        'angle': f'参考{item.get("account_name","")}的角度: {angle_hint}',
+                        'source_account': item.get('account_name', ''),
+                    })
+                    seen_angles.add(angle_hint)
+            if not suggested_angles:
+                suggested_angles = [{'angle': '用不同立场重新审视该话题', 'source_account': '系统建议'}]
+
+        # 覆盖度判断
+        total_accounts = len(self.accounts)
+        unique_covered = len(set(item.get('account_name', '') for item in covered_by))
+        coverage_ratio = unique_covered / max(total_accounts, 1)
+
+        if coverage_ratio >= 0.6:
+            coverage_level = 'high'
+        elif coverage_ratio >= 0.25:
+            coverage_level = 'medium'
+        else:
+            coverage_level = 'low'
+
+        writing_tips = {
+            'title_style_tip': '',
+            'opening_technique': '',
+            'avoid_pitfall': ''
+        }
+        if covered_by:
+            best_match = covered_by[0]
+            feat = best_match.get('writing_features', {})
+            title_patterns = feat.get('title_patterns', [])
+            if title_patterns:
+                writing_tips['title_style_tip'] = f'竞品常用: {", ".join(title_patterns[:2])}'
+            opening = feat.get('opening_style', '')
+            if opening:
+                writing_tips['opening_technique'] = opening[:80]
+            writing_tips['avoid_pitfall'] = '避免与竞品使用完全相同的切入点或论点结构'
+
+        return {
+            'topic': topic_title,
+            'coverage_level': coverage_level,
+            'covered_by': covered_by,
+            'suggested_angles': suggested_angles,
+            'writing_tips': writing_tips,
+        }
+
+    def _extract_keywords(self, text: str) -> list[str]:
+        import re
+        chinese_words = re.findall(r'[\u4e00-\u9fff]{2,}', text)
+        english_words = re.findall(r'[A-Za-z]{3,}', text)
+        return chinese_words + english_words
+
+    def _get_account_sample_articles(self, account_name: str) -> list[dict]:
+        articles = []
+        sample_data = getattr(self, '_sample_articles', None)
+        if sample_data is None:
+            return articles
+        for art in sample_data:
+            if art.get('account', '') == account_name or account_name == '':
+                articles.append(art)
+        return articles
+
     def run_full_scan(self):
         """
         执行一次完整扫描：
