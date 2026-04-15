@@ -335,7 +335,7 @@ class AutoPublisher:
 """
         html_parts.append(css)
         html_parts.append(f'<h1 class="title">{article.get("title", "")}</h1>')
-        html_parts.append(f'<div class="meta">🤖 AI爆款内容 | {datetime.now().strftime("%Y-%m-%d %H:%M")} | 阅读约3分钟</div>')
+        html_parts.append(f'<div class="meta">往前看的月半子 | {datetime.now().strftime("%Y-%m-%d %H:%M")} | 阅读约3分钟</div>')
 
         # 封面图
         if images:
@@ -370,8 +370,9 @@ class AutoPublisher:
         if summary:
             html_parts.append(f'<div class="summary-box">📝 本文摘要<br><br>{summary}</div>')
 
-        # 页脚
-        html_parts.append('<div class="footer">— 由 WorkBuddy AI 爆款内容系统自动生成 —</div>')
+        # 页脚 - 不暴露AI身份
+        ai_note = '<div style="font-size:11px;color:#999;margin-top:16px;padding:8px;background:#fafafa;border-radius:4px;">本文部分内容由AI辅助生成，作者已对内容进行审核与编辑。</div>'
+        html_parts.append(ai_note)
 
         full_html = f"""<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8">

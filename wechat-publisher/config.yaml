@@ -1,0 +1,43 @@
+# 微信公众号自动发布系统 - 配置文件
+
+# === AI 配置 ===
+AI_MODEL: "gpt-4o"  # 文章生成模型
+IMAGE_STYLE: "科技感、未来主义风格，无人持有产品的高质量概念图"
+
+# === 文章生成配置 ===
+ARTICLE_STYLE: "第一人称叙述，口语化，有娱乐性和吸引力"
+MIN_PARAGRAPHS: 5       # 最少段落数
+MAX_PARAGRAPHS: 10      # 最多段落数
+WORDS_PER_PARAGRAPH: [80, 800]  # 每段字数范围（扩大方差，避免AI特征）
+DAILY_ARTICLE_COUNT: [1, 1]      # 每天只发1篇，降低批量风险
+
+# === 图片配置 ===
+IMAGE_SIZE: "900x500"    # 公众号推荐配图尺寸
+IMAGES_PER_ARTICLE: 4   # 每篇文章总配图上限（含封面，范围 1-4）
+# 未来可扩展：优先抓取真实相关产品图/视频截图，其次再用 AI 配图兜底
+
+
+# === 热点抓取源 ===
+HOT_SOURCES:
+  - name: "今日头条"
+    url: "https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc"
+    enabled: true
+  - name: "百度热搜"
+    url: "https://top.baidu.com/board?tab=realtime"
+    enabled: true
+  - name: "Tophub微博"
+    url: "https://tophub.today/n/KqndgxeLl9"
+    enabled: false
+
+# === 微信公众号 API 配置（需要你填写）===
+WECHAT_APPID: "wx051879ac9afdc50b"
+WECHAT_SECRET: "3efa91b3e8515aa7dbdd97e3eb2c2726"
+WECHAT_TOKEN: ""
+
+# === Web 面板配置 ===
+WEB_HOST: "127.0.0.1"
+WEB_PORT: 8080
+WEB_DEBUG: true
+
+# === 输出目录（绝对路径，避免 Flask 工作目录不一致导致路径错乱）===
+OUTPUT_DIR: "C:/Users/v_junshshi/WorkBuddy/Claw/wechat-publisher/output"

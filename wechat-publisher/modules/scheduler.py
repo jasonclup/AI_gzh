@@ -10,6 +10,7 @@ import os
 import json
 import logging
 import threading
+import random
 import schedule as scheduler
 from datetime import datetime, timedelta
 from typing import Dict, List
@@ -34,11 +35,9 @@ class PublishScheduler:
         self.is_running = False
         self._thread = None
         
-        # 发布时间配置（默认早中晚各一个时段）
+        # 发布时间配置（每天1篇，随机偏移避免机器人特征）
         self.publish_times = [
-            "08:00",   # 早间
-            "12:30",   # 午间  
-            "18:30",   # 晚间
+            "09:00",   # 日间发布（唯一时段，会加随机偏移）
         ]
         
         # 任务历史记录
@@ -90,7 +89,16 @@ class PublishScheduler:
         2. 选择话题生成文章
         3. 生成配图
         4. 发布到公众号
+        
+        安全机制: 每次执行时增加0-90分钟随机偏移，避免固定时间发布被识别为机器人
         """
+        # 随机偏移 (0-90分钟)，模拟真人发文时间的不确定性
+        random_delay = random.randint(0, 5400)  # 最多90分钟
+        logger.info(f"定时任务 [{time_slot}] 触发，将在 {random_delay//60}分{random_delay%60}秒 后执行（反检测随机偏移）")
+        
+        import time
+        time.sleep(random_delay)
+        
         logger.info(f"===== 开始定时发布任务 [{time_slot}] =====")
         
         try:
@@ -125,7 +133,7 @@ class PublishScheduler:
                     topic=selected_topic['title'],
                     title=selected_topic['title'],
                     selected_title=selected_title,
-                    author_name="AI观察者"
+                    author_name="往前看的月半子"
                 )
                 
                 # 5. 生成配图
@@ -178,7 +186,7 @@ class PublishScheduler:
         article = self.article_gen.generate(
             topic=topic,
             title=title or topic,
-            author_name="AI观察者"
+            author_name="往前看的月半子"
         )
         
         # 生成配图
