@@ -1,0 +1,37 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-15T23:23:42.770289",
+  "summary": {
+    "articles_analyzed": 4,
+    "sampled_pages": 2,
+    "total_images_found": 0
+  },
+  "article_samples": [
+    {
+      "title": "猪价创20年新低 猪肉股逆势三连涨",
+      "url": "https://www.toutiao.com/trending/7628917669529390655/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "石油涨价正把国产车送上霸主地位吗",
+      "url": "https://www.toutiao.com/trending/7628948531541200447/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    }
+  ],
+  "cover_images": [],
+  "inline_images": [],
+  "strategy_findings": [],
+  "inline_summary": {
+    "total_sampled": 0,
+    "size_stats": {},
+    "placement_pattern": {},
+    "format_distribution": {},
+    "top_findings": []
+  }
+}

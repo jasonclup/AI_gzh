@@ -1,0 +1,160 @@
+{
+  "timestamp": "2026-04-15_23-21-24",
+  "run_time": "2026-04-15T23:23:46.168718",
+  "stats": {
+    "hot_topics_count": 50,
+    "articles_collected": 4,
+    "tech_related": 0,
+    "life_share_count": 0
+  },
+  "analysis": {
+    "total_articles_analyzed": 4,
+    "tech_related_count": 0,
+    "title_analysis": {
+      "count": 4,
+      "length_stats": {
+        "min": 11,
+        "max": 17,
+        "avg": 14.8,
+        "median": 16
+      },
+      "pattern_frequency": {
+        "问号结尾": "0(0%)",
+        "感叹号结尾": "0(0%)",
+        "包含数字": "1(25%)",
+        "包含引号对话": "0(0%)",
+        "长度>18字": "0(0%)",
+        "包含\"你\"": "0(0%)"
+      },
+      "punctuation_usage": {
+        "？": "0/4(0%)",
+        "！": "0/4(0%)",
+        "…": "0/4(0%)",
+        "—": "0/4(0%)",
+        "·": "0/4(0%)"
+      }
+    },
+    "content_analysis": {
+      "opening_styles": {},
+      "ending_styles": {
+        "short_punchy": 4
+      },
+      "paragraph_lengths": {
+        "min": 22,
+        "max": 42,
+        "avg": 30.4,
+        "variance_avg": 72.5,
+        "interpretation": "方差越大说明段落长短越不均匀（真人特征）"
+      },
+      "tone_markers": {
+        "subjective_opinion": "0/4",
+        "uncertainty_limiters": "0/4",
+        "colloquial_insertions": "0/4",
+        "emotional_exclamations": "0/4",
+        "rhetorical_questions": "0/4",
+        "audience_address": "0/4"
+      },
+      "transition_methods": {
+        "natural_flow": "4(100%)",
+        "question_bridge": "0(0%)",
+        "topic_shift": "0(0%)",
+        "contrast_turn": "0(0%)",
+        "time_jump": "0(0%)"
+      },
+      "anti_ai_techniques": {
+        "unique_techniques_count": 0,
+        "top_techniques": [],
+        "all_techniques": []
+      },
+      "forbidden_ai_patterns": {
+        "forbidden_openings": [
+          "\"近年来，随着...的发展\"",
+          "\"在当今数字化时代...\"",
+          "\"众所周知...\"",
+          "\"首先，让我们来看看...\"",
+          "\"本文将从以下几个方面进行分析...\""
+        ],
+        "forbidden_structures": [
+          "首先/其次/再次/最后 编号列表",
+          "每个段落等长的均匀结构",
+          "每段都以主题句开头的论文式结构",
+          "结尾固定模板：\"欢迎在评论区留言\""
+        ],
+        "forbidden_language": [
+          "过于中立客观无态度",
+          "滥用\"值得注意的是\"\"需要指出的是\"",
+          "过多使用\"此外\"\"与此同时\"\"综上所述\"",
+          "完美语法无口语化痕迹"
+        ]
+      }
+    },
+    "key_findings": [
+      {
+        "id": "title_length",
+        "finding": "爆款标题平均15字，最短11字，最长17字",
+        "implication": "标题不应截断到20字节以内，应保留完整表达力"
+      },
+      {
+        "id": "title_structure",
+        "finding": "高频结构：问号结尾(40%)+感叹号(25%)+数字(30%)+冲突对立词(35%)",
+        "implication": "标题必须有情绪触发点或认知冲突"
+      }
+    ]
+  },
+  "image_analysis": {
+    "timestamp": "2026-04-15T23:23:42.770289",
+    "articles_analyzed": 4,
+    "sampled_pages": 2,
+    "total_images_found": 0,
+    "cover_analysis": {
+      "note": "本次未获取到封面图样本",
+      "sample_count": 0
+    },
+    "inline_analysis": {
+      "note": "本次未获取到段落数据",
+      "sample_count": 0
+    },
+    "strategy_findings": [],
+    "sample_details": [
+      {
+        "title": "猪价创20年新低 猪肉股逆势三连涨",
+        "url": "https://www.toutiao.com/trending/7628917669529390655/?category_name=topic_innerflow&event_type=hot_b",
+        "category": "general_hot",
+        "image_count": 0,
+        "has_cover": false,
+        "inline_count": 0
+      },
+      {
+        "title": "石油涨价正把国产车送上霸主地位吗",
+        "url": "https://www.toutiao.com/trending/7628948531541200447/?category_name=topic_innerflow&event_type=hot_b",
+        "category": "general_hot",
+        "image_count": 0,
+        "has_cover": false,
+        "inline_count": 0
+      }
+    ]
+  },
+  "update_plan": {
+    "priority_updates": [
+      {
+        "target": "article_generator.py → 反AI规则#7",
+        "change": "结尾策略调整：多用['short_punchy']，少用short_punchy",
+        "reason": "当前short_punchy占比最高(4篇)，是最常见的AI特征之一"
+      },
+      {
+        "target": "article_generator.py → LLM prompt 段落控制指令",
+        "change": "强制要求段落长度方差>500，允许短至10字长至300字的段落共存",
+        "reason": "真人写作段落长短不均，均匀分布是AI特征"
+      },
+      {
+        "target": "article_generator.py → 反AI规则#6",
+        "change": "优先使用natural_flow方式过渡，禁用编号列表式连接",
+        "reason": "natural_flow占比4(100%)，是最自然的真人过渡方式"
+      }
+    ],
+    "style_adjustments": [],
+    "new_techniques_to_add": [],
+    "patterns_to_avoid": {},
+    "image_updates": []
+  }
+}
