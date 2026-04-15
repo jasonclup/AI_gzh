@@ -1,0 +1,37 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-16T01:23:32.096066",
+  "summary": {
+    "articles_analyzed": 10,
+    "sampled_pages": 2,
+    "total_images_found": 0
+  },
+  "article_samples": [
+    {
+      "title": "广州一小区电梯从15层坠至负2层",
+      "url": "https://www.toutiao.com/trending/7628865714862718985/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "5种不痛不痒的“隐匿癌”",
+      "url": "https://www.toutiao.com/trending/7628930218800676870/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    }
+  ],
+  "cover_images": [],
+  "inline_images": [],
+  "strategy_findings": [],
+  "inline_summary": {
+    "total_sampled": 0,
+    "size_stats": {},
+    "placement_pattern": {},
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
