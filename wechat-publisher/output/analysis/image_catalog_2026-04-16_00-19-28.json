@@ -1,0 +1,69 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-16T00:19:28.351435",
+  "summary": {
+    "articles_analyzed": 10,
+    "sampled_pages": 6,
+    "total_images_found": 0
+  },
+  "article_samples": [
+    {
+      "title": "如何看校长楼梯测试教学生远离下坡路",
+      "url": "https://www.toutiao.com/trending/7628814576192716843/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "你认为北京首钢豪华阵容能夺冠吗",
+      "url": "https://www.toutiao.com/trending/7628628751709896710/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "四度访华 桑切斯的破局之路",
+      "url": "https://www.toutiao.com/trending/7628990696594083337/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "“印度制造”为何成了空中楼阁",
+      "url": "https://www.toutiao.com/trending/7628961424877817385/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "何润东说靠项羽翻红多了工作邀约",
+      "url": "https://www.toutiao.com/trending/7628869646772453395/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "巴消息人士：巴外交部代表团前往伊朗",
+      "url": "https://www.toutiao.com/trending/7628742127974940678/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    }
+  ],
+  "cover_images": [],
+  "inline_images": [],
+  "strategy_findings": [],
+  "inline_summary": {
+    "total_sampled": 0,
+    "size_stats": {},
+    "placement_pattern": {},
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
