@@ -1,1 +1,2740 @@
-{"version": "1.0", "created_at": "2026-04-15T23:33:00", "description": "真人写作风格参考库 - 从互联网真实文章中提取的写作模式，供Agent生成文章时参考模仿", "styles": [{"id": "style_001", "name": "导师内省型 (Mentor Reflection)", "source_article": {"title": "2025年这一年，你最真实的学习状态和感受是什么？", "author": "人月聊IT", "platform": "腾讯云开发者社区", "url": "https://cloud.tencent.com.cn/developer/article/2612367"}, "characteristics": {"tone": "沉稳、内省、导师式，像过来人跟你聊天", "voice": "第一人称+经验分享口吻（'我意识到''让我发现''我在思考'）", "emotion": "理性乐观，有哲理性（引用道德经/第一性原理）", "structure": "总-分-总：引言定调→多维度递进展开→核心观点升华", "paragraph_pattern": ["每段一个明确主题，用小标题分隔", "段落较长(200-400字)，信息密度高", "喜欢加粗关键观点", "善用排比和列举法"], "vocabulary_features": {"high_frequency_words": ["显性化", "思维链", "闭环", "复盘", "长期主义", "第一性原理", "系统思维", "减法"], "sentence_patterns": ["XX是指...简单来说...", "我在思考...总结出两个关键点", "这一年...我也...同时我也在探索...", "从X年到现在已经X年"], "rhetoric_devices": ["下定义式解释概念", "归纳总结排比", "引用经典文献/名言", "数据佐证(19年博客/5500公里)"]}, "anti_ai_markers": ["❌ 不使用首先/其次/最后等编号词", "✅ 用自然过渡：'这个过程让我意识到''但我也发现了一个问题'", "❌ 段落长度不均匀，有的短(3行)有的长(10行)", "✅ 有真实个人经历细节(24年工作经验、45岁年龄)", "✅ 有独特个人观点组合(技术+哲学+职业发展)"]}, "sample_paragraphs": ["2025年对我来说，是一个在AI时代重新思考学习和成长方式的关键年份。这一年，我既感受到了AI带来的冲击和挑战，也在实践中找到了新的学习路径和成长方向。", "但我也发现了一个问题：在使用AI工具的过程中，很多人的思维能力在退化。后续我的研究转到了AI软件工程层面，即AI辅助编程的工作也需要有系统化，工程化的支撑。", "《道德经》里有一句话叫'为学日益，为道日损。损之又损，以至于无为。'当你到了45岁的时候，一定是逐渐开始做减法的阶段。"]}, {"id": "style_002", "name": "文学内省型 (Literary Introspection)", "source_article": {"title": "从迷茫到笃定：我的2025年个人成长与技术突破回顾", "author": "IvanCodes", "platform": "腾讯云开发者社区", "url": "https://cloud.tencent.cn/developer/article/2612548"}, "characteristics": {"tone": "诚恳、沉稳、强烈自我剖析色彩", "voice": "内心独白式叙述，像在跟自己对话后分享出来", "emotion": "从消极转为积极，通过努力获得掌控感的自信", "structure": "单段综述式→内部时间线递进（5个阶段）", "paragraph_pattern": ["长句群结构，用分号层层推进", "每个阶段一个关键词（探索期/聚焦期/夯实期/验证期/升华期）", "高度凝练，不废话"], "vocabulary_features": {"high_frequency_words": ["对齐坐标", "认知漏洞", "工程拼图", "验证边界", "结构性能力", "正反馈", "笃定"], "sentence_patterns": ["这一年更像...的过程", "从早期...到意识到...再用...把...补齐", "迷茫逐渐退场，方向也越来越笃定"], "rhetoric_devices": ["隐喻化表达（成长=对齐坐标，技能短板=认知漏洞）", "动宾搭配有力（追求/转向/补齐/验证/拓展）"]}, "anti_ai_markers": ["❌ 没有任何模板套话", "✅ 大量个性化隐喻（对齐坐标/工程拼图）", "✅ 情绪弧线清晰（迷茫→尝试→聚焦→补齐→笃定）", "✅ 用分号连接的长句体现思维的连贯性而非AI的列表式"]}, "sample_paragraphs": ["这一年更像一场慢慢对齐坐标的过程：从早期追求快速正反馈的前后端尝试，到意识到需要结构性能力后转向大数据主线，再用持续创作把认知漏洞一一补齐；随后补上数据库与云原生这两块工程拼图，用证书和竞赛在标准与高压里验证边界，最后走进线下技术现场、加入技术社群，把视野从写代码拓展到参与生态，迷茫逐渐退场，方向也越来越笃定。"]}, {"id": "style_003", "name": "体验评测型 (Hands-on Review)", "source_article": {"title": "使用AI手机两个月之后，我想聊聊现阶段的体验", "author": "天极网", "platform": "腾讯新闻", "url": "https://news.qq.com/rain/a/20240318A05FED00"}, "characteristics": {"tone": "亲切、平实、数码爱好者深度交流风", "voice": "体验派第一人称（'笔者''我'），强调亲身购买使用经历", "emotion": "理性中立带批判性思维——既不吹也不黑，有好说好有坏说坏", "structure": "开篇行业背景→具体功能体验→优缺点对比→展望总结", "paragraph_pattern": ["小标题分段（先聊...再聊...写在最后）", "大量微场景举例（打卡/地铁/快递等具体场景）", "先抑后扬的辩证态度"], "vocabulary_features": {"high_frequency_words": ["肉眼可见", "潜移默化", "点赞", "搞笑的一幕", "种草文案", "明显感受到", "零星的", "有9成是"], "sentence_patterns": ["我认为它们所提供的...中有X成是基于...", "这些方面的改变的确在...是我要给点赞的部分", "如果说...那当前的...显然还有很长的路要走", "不可否认的是...并且也涌现了像是..."], "rhetoric_devices": ["微场景举例论证法（正面例子vs反面例子）", "程度副词增强表现力", "口语化表达与专业术语混搭"]}, "anti_ai_markers": ["❌ 不用套话开头，直接切入主题", "✅ 有真实使用细节（两个月时间、多台手机、具体功能名）", "✅ 敢于指出产品缺点（'搞笑的一幕''明显错误'）", "✅ 口语化表达（'大爆''不用也罢''说实话'）", "✅ 观点来自实际体验而非理论推演"]}, "sample_paragraphs": ["在体验了几台AI手机之后，我认为它们所提供的AI功能中，有9成是基于大模型善于总结和摘要以及AIGC的生成式特性所研发的。", "AI小爱同学的确总结了我说的长对话中的具体事项，但当我要求小爱同学把这些具体事项添加到日常安排时，出现了很搞笑的一幕。", "如果说AI在我们工作中的使命是帮助我们完成机械化的各种事项，让我们可以专注于创意，解放我们的创造力，那当前的AI手机显然还有很长的路要走。但不可否认的是，各家的端侧AI都在以肉眼可见的速度进步着。"]}, {"id": "style_004", "name": "观点整合型 (Opinion Synthesis)", "source_article": {"title": "翻看了大佬们的言论，我对AI的感觉只剩下这一点", "author": "笔记侠", "platform": "36氪", "url": "https://www.36kr.com/p/2253557113368454"}, "characteristics": {"tone": "宏观视野下的理性乐观与权威感", "voice": "整合者视角——搬运大佬言论+自己的解读串联", "emotion": "积极强力（革命/引爆/颠覆）+审慎警示（担忧/失控）双色调", "structure": "历史回顾→现状评价→实操指导→争议探讨→未来展望→哲学升华（6段闭环）", "paragraph_pattern": ["设问引导的小标题（'你想成为谁？''如何设计安全带？'）", "引用+解读模式：人物身份+金句+简评", "结尾诗词/名言升华"], "vocabulary_features": {"high_frequency_words": ["如火如荼", "引爆", "井喷期", "赋能", "协同共生", "涌现", "颠覆", "腐朽倒退"], "sentence_patterns": ["到底谁说得对？我们到底应该如何看待XX？", "站在各自的立场上，或许大家说的都对", "人类与AI的关系，或许就像中国哲学的阴阳之理"], "rhetoric_devices": ["生动的比喻（婴儿到少年/车与安全带）", "设问句抓注意力", "经典诗词引用收尾"]}, "anti_ai_markers": ["❌ 虽然是整合文但有明确的个人选材逻辑和编排思路", "✅ 引用的都是真实人物真实语录（非编造）", "✅ 有独特的比喻系统（AI=少年/安全带=监管框架）", "⚠️ 这种风格对素材真实性要求极高，不适合纯AI生成"]}, "sample_paragraphs": ["现在的AI，可以用如火如荼来形容。不仅微软、谷歌等硅谷巨头在研究AI，国内如阿里、华为、腾讯等企业也相继发布了AI大模型。", "如果车都不存在，如何设计安全带？如果都没有发明飞机，怎么设计安全的喷气式引擎？", "历史上每一次的技术革命，都会引发大规模的争论。站在各自的立场上，或许大家说的都对。就像苏轼的诗句'横看成岭侧成峰，远近高低各不同'。"]}], "cross_style_common_rules": {"what_makes_it_human": ["有真实的个人经历或体验细节（不是泛泛而谈）", "有独特的比喻和隐喻系统（不是陈词滥调）", "有明确的态度和情绪弧线（不是中立无立场）", "敢于表达负面看法或自我批评（不是一味正能量）", "段落长短不均（不是AI式的均匀分布）", "过渡自然流畅（不用首先其次最后等标记词）", "有口语化/个性化表达（不是教科书语言）", "引用的数据/案例可追溯（不是编造数字）"], "what_ai_always_does_wrong": ["❌ '首先...其次...最后...' — AI标志性指纹", "❌ '综上所述/总而言之' — 标准AI结尾", "❌ 所有段落长度几乎一样", "❌ 态度永远中立客观没有偏好", "❌ 结尾永远是'欢迎评论区讨论'", "❌ 喜欢用'值得注意的是/不容否认的是'", "❌ 过度使用排比句和对仗工整的句子", "❌ 缺少具体的个人经历细节"], "recommended_writing_approach_for_our_account": {"primary_style": "体验评测型 + 导师内省型混合（最适合科技赛道公众号）", "writing_checklist_before_publish": ["是否有至少1处个人经历/体验细节？（如'我用了一周''昨天试了下'）", "是否有至少1个独特的比喻或类比？", "是否表达了明确的态度/喜好/吐槽？（不能只有信息没有观点）", "是否避免了所有AI套话词？（首先/其次/总之/综上所述/值得注意的是）", "段落数量是否在4-8段之间且长短不一？", "结尾是否不是套路化的？（禁止'欢迎留言讨论'）", "是否标注了AI辅助声明？"]}}, "update_plan": {"frequency": "每周采集一次新的真人写作样本", "target_sources": ["虎嗅/36氪/钛媒体 - 深度科技评论", "知乎专栏 - 个人技术博客/年度总结类", "微信公众号 - 科技领域个人博主（非官方号）", "少数派/什么值得买 - 产品体验评测", "即刻/AppSo - 轻量级科技观点"], "min_samples_per_update": "3-5篇新样本"}}
+{
+  "version": "1.0",
+  "created_at": "2026-04-15T23:33:00",
+  "description": "真人写作风格参考库 - 从互联网真实文章中提取的写作模式，供Agent生成文章时参考模仿",
+  "styles": [
+    {
+      "id": "style_001",
+      "name": "导师内省型 (Mentor Reflection)",
+      "source_article": {
+        "title": "2025年这一年，你最真实的学习状态和感受是什么？",
+        "author": "人月聊IT",
+        "platform": "腾讯云开发者社区",
+        "url": "https://cloud.tencent.com.cn/developer/article/2612367"
+      },
+      "characteristics": {
+        "tone": "沉稳、内省、导师式，像过来人跟你聊天",
+        "voice": "第一人称+经验分享口吻（'我意识到''让我发现''我在思考'）",
+        "emotion": "理性乐观，有哲理性（引用道德经/第一性原理）",
+        "structure": "总-分-总：引言定调→多维度递进展开→核心观点升华",
+        "paragraph_pattern": [
+          "每段一个明确主题，用小标题分隔",
+          "段落较长(200-400字)，信息密度高",
+          "喜欢加粗关键观点",
+          "善用排比和列举法"
+        ],
+        "vocabulary_features": {
+          "high_frequency_words": [
+            "显性化",
+            "思维链",
+            "闭环",
+            "复盘",
+            "长期主义",
+            "第一性原理",
+            "系统思维",
+            "减法"
+          ],
+          "sentence_patterns": [
+            "XX是指...简单来说...",
+            "我在思考...总结出两个关键点",
+            "这一年...我也...同时我也在探索...",
+            "从X年到现在已经X年"
+          ],
+          "rhetoric_devices": [
+            "下定义式解释概念",
+            "归纳总结排比",
+            "引用经典文献/名言",
+            "数据佐证(19年博客/5500公里)"
+          ]
+        },
+        "anti_ai_markers": [
+          "❌ 不使用首先/其次/最后等编号词",
+          "✅ 用自然过渡：'这个过程让我意识到''但我也发现了一个问题'",
+          "❌ 段落长度不均匀，有的短(3行)有的长(10行)",
+          "✅ 有真实个人经历细节(24年工作经验、45岁年龄)",
+          "✅ 有独特个人观点组合(技术+哲学+职业发展)"
+        ]
+      },
+      "sample_paragraphs": [
+        "2025年对我来说，是一个在AI时代重新思考学习和成长方式的关键年份。这一年，我既感受到了AI带来的冲击和挑战，也在实践中找到了新的学习路径和成长方向。",
+        "但我也发现了一个问题：在使用AI工具的过程中，很多人的思维能力在退化。后续我的研究转到了AI软件工程层面，即AI辅助编程的工作也需要有系统化，工程化的支撑。",
+        "《道德经》里有一句话叫'为学日益，为道日损。损之又损，以至于无为。'当你到了45岁的时候，一定是逐渐开始做减法的阶段。"
+      ]
+    },
+    {
+      "id": "style_002",
+      "name": "文学内省型 (Literary Introspection)",
+      "source_article": {
+        "title": "从迷茫到笃定：我的2025年个人成长与技术突破回顾",
+        "author": "IvanCodes",
+        "platform": "腾讯云开发者社区",
+        "url": "https://cloud.tencent.cn/developer/article/2612548"
+      },
+      "characteristics": {
+        "tone": "诚恳、沉稳、强烈自我剖析色彩",
+        "voice": "内心独白式叙述，像在跟自己对话后分享出来",
+        "emotion": "从消极转为积极，通过努力获得掌控感的自信",
+        "structure": "单段综述式→内部时间线递进（5个阶段）",
+        "paragraph_pattern": [
+          "长句群结构，用分号层层推进",
+          "每个阶段一个关键词（探索期/聚焦期/夯实期/验证期/升华期）",
+          "高度凝练，不废话"
+        ],
+        "vocabulary_features": {
+          "high_frequency_words": [
+            "对齐坐标",
+            "认知漏洞",
+            "工程拼图",
+            "验证边界",
+            "结构性能力",
+            "正反馈",
+            "笃定"
+          ],
+          "sentence_patterns": [
+            "这一年更像...的过程",
+            "从早期...到意识到...再用...把...补齐",
+            "迷茫逐渐退场，方向也越来越笃定"
+          ],
+          "rhetoric_devices": [
+            "隐喻化表达（成长=对齐坐标，技能短板=认知漏洞）",
+            "动宾搭配有力（追求/转向/补齐/验证/拓展）"
+          ]
+        },
+        "anti_ai_markers": [
+          "❌ 没有任何模板套话",
+          "✅ 大量个性化隐喻（对齐坐标/工程拼图）",
+          "✅ 情绪弧线清晰（迷茫→尝试→聚焦→补齐→笃定）",
+          "✅ 用分号连接的长句体现思维的连贯性而非AI的列表式"
+        ]
+      },
+      "sample_paragraphs": [
+        "这一年更像一场慢慢对齐坐标的过程：从早期追求快速正反馈的前后端尝试，到意识到需要结构性能力后转向大数据主线，再用持续创作把认知漏洞一一补齐；随后补上数据库与云原生这两块工程拼图，用证书和竞赛在标准与高压里验证边界，最后走进线下技术现场、加入技术社群，把视野从写代码拓展到参与生态，迷茫逐渐退场，方向也越来越笃定。"
+      ]
+    },
+    {
+      "id": "style_003",
+      "name": "体验评测型 (Hands-on Review)",
+      "source_article": {
+        "title": "使用AI手机两个月之后，我想聊聊现阶段的体验",
+        "author": "天极网",
+        "platform": "腾讯新闻",
+        "url": "https://news.qq.com/rain/a/20240318A05FED00"
+      },
+      "characteristics": {
+        "tone": "亲切、平实、数码爱好者深度交流风",
+        "voice": "体验派第一人称（'笔者''我'），强调亲身购买使用经历",
+        "emotion": "理性中立带批判性思维——既不吹也不黑，有好说好有坏说坏",
+        "structure": "开篇行业背景→具体功能体验→优缺点对比→展望总结",
+        "paragraph_pattern": [
+          "小标题分段（先聊...再聊...写在最后）",
+          "大量微场景举例（打卡/地铁/快递等具体场景）",
+          "先抑后扬的辩证态度"
+        ],
+        "vocabulary_features": {
+          "high_frequency_words": [
+            "肉眼可见",
+            "潜移默化",
+            "点赞",
+            "搞笑的一幕",
+            "种草文案",
+            "明显感受到",
+            "零星的",
+            "有9成是"
+          ],
+          "sentence_patterns": [
+            "我认为它们所提供的...中有X成是基于...",
+            "这些方面的改变的确在...是我要给点赞的部分",
+            "如果说...那当前的...显然还有很长的路要走",
+            "不可否认的是...并且也涌现了像是..."
+          ],
+          "rhetoric_devices": [
+            "微场景举例论证法（正面例子vs反面例子）",
+            "程度副词增强表现力",
+            "口语化表达与专业术语混搭"
+          ]
+        },
+        "anti_ai_markers": [
+          "❌ 不用套话开头，直接切入主题",
+          "✅ 有真实使用细节（两个月时间、多台手机、具体功能名）",
+          "✅ 敢于指出产品缺点（'搞笑的一幕''明显错误'）",
+          "✅ 口语化表达（'大爆''不用也罢''说实话'）",
+          "✅ 观点来自实际体验而非理论推演"
+        ]
+      },
+      "sample_paragraphs": [
+        "在体验了几台AI手机之后，我认为它们所提供的AI功能中，有9成是基于大模型善于总结和摘要以及AIGC的生成式特性所研发的。",
+        "AI小爱同学的确总结了我说的长对话中的具体事项，但当我要求小爱同学把这些具体事项添加到日常安排时，出现了很搞笑的一幕。",
+        "如果说AI在我们工作中的使命是帮助我们完成机械化的各种事项，让我们可以专注于创意，解放我们的创造力，那当前的AI手机显然还有很长的路要走。但不可否认的是，各家的端侧AI都在以肉眼可见的速度进步着。"
+      ]
+    },
+    {
+      "id": "style_004",
+      "name": "观点整合型 (Opinion Synthesis)",
+      "source_article": {
+        "title": "翻看了大佬们的言论，我对AI的感觉只剩下这一点",
+        "author": "笔记侠",
+        "platform": "36氪",
+        "url": "https://www.36kr.com/p/2253557113368454"
+      },
+      "characteristics": {
+        "tone": "宏观视野下的理性乐观与权威感",
+        "voice": "整合者视角——搬运大佬言论+自己的解读串联",
+        "emotion": "积极强力（革命/引爆/颠覆）+审慎警示（担忧/失控）双色调",
+        "structure": "历史回顾→现状评价→实操指导→争议探讨→未来展望→哲学升华（6段闭环）",
+        "paragraph_pattern": [
+          "设问引导的小标题（'你想成为谁？''如何设计安全带？'）",
+          "引用+解读模式：人物身份+金句+简评",
+          "结尾诗词/名言升华"
+        ],
+        "vocabulary_features": {
+          "high_frequency_words": [
+            "如火如荼",
+            "引爆",
+            "井喷期",
+            "赋能",
+            "协同共生",
+            "涌现",
+            "颠覆",
+            "腐朽倒退"
+          ],
+          "sentence_patterns": [
+            "到底谁说得对？我们到底应该如何看待XX？",
+            "站在各自的立场上，或许大家说的都对",
+            "人类与AI的关系，或许就像中国哲学的阴阳之理"
+          ],
+          "rhetoric_devices": [
+            "生动的比喻（婴儿到少年/车与安全带）",
+            "设问句抓注意力",
+            "经典诗词引用收尾"
+          ]
+        },
+        "anti_ai_markers": [
+          "❌ 虽然是整合文但有明确的个人选材逻辑和编排思路",
+          "✅ 引用的都是真实人物真实语录（非编造）",
+          "✅ 有独特的比喻系统（AI=少年/安全带=监管框架）",
+          "⚠️ 这种风格对素材真实性要求极高，不适合纯AI生成"
+        ]
+      },
+      "sample_paragraphs": [
+        "现在的AI，可以用如火如荼来形容。不仅微软、谷歌等硅谷巨头在研究AI，国内如阿里、华为、腾讯等企业也相继发布了AI大模型。",
+        "如果车都不存在，如何设计安全带？如果都没有发明飞机，怎么设计安全的喷气式引擎？",
+        "历史上每一次的技术革命，都会引发大规模的争论。站在各自的立场上，或许大家说的都对。就像苏轼的诗句'横看成岭侧成峰，远近高低各不同'。"
+      ]
+    }
+  ],
+  "cross_style_common_rules": {
+    "what_makes_it_human": [
+      "有真实的个人经历或体验细节（不是泛泛而谈）",
+      "有独特的比喻和隐喻系统（不是陈词滥调）",
+      "有明确的态度和情绪弧线（不是中立无立场）",
+      "敢于表达负面看法或自我批评（不是一味正能量）",
+      "段落长短不均（不是AI式的均匀分布）",
+      "过渡自然流畅（不用首先其次最后等标记词）",
+      "有口语化/个性化表达（不是教科书语言）",
+      "引用的数据/案例可追溯（不是编造数字）"
+    ],
+    "what_ai_always_does_wrong": [
+      "❌ '首先...其次...最后...' — AI标志性指纹",
+      "❌ '综上所述/总而言之' — 标准AI结尾",
+      "❌ 所有段落长度几乎一样",
+      "❌ 态度永远中立客观没有偏好",
+      "❌ 结尾永远是'欢迎评论区讨论'",
+      "❌ 喜欢用'值得注意的是/不容否认的是'",
+      "❌ 过度使用排比句和对仗工整的句子",
+      "❌ 缺少具体的个人经历细节"
+    ],
+    "recommended_writing_approach_for_our_account": {
+      "primary_style": "体验评测型 + 导师内省型混合（最适合科技赛道公众号）",
+      "writing_checklist_before_publish": [
+        "是否有至少1处个人经历/体验细节？（如'我用了一周''昨天试了下'）",
+        "是否有至少1个独特的比喻或类比？",
+        "是否表达了明确的态度/喜好/吐槽？（不能只有信息没有观点）",
+        "是否避免了所有AI套话词？（首先/其次/总之/综上所述/值得注意的是）",
+        "段落数量是否在4-8段之间且长短不一？",
+        "结尾是否不是套路化的？（禁止'欢迎留言讨论'）",
+        "是否标注了AI辅助声明？"
+      ]
+    }
+  },
+  "update_plan": {
+    "frequency": "每周采集一次新的真人写作样本",
+    "target_sources": [
+      "虎嗅/36氪/钛媒体 - 深度科技评论",
+      "知乎专栏 - 个人技术博客/年度总结类",
+      "微信公众号 - 科技领域个人博主（非官方号）",
+      "少数派/什么值得买 - 产品体验评测",
+      "即刻/AppSo - 轻量级科技观点"
+    ],
+    "min_samples_per_update": "3-5篇新样本"
+  },
+  "collection_history": [
+    {
+      "round_time": "2026-04-16 03:34",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 03:34",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 03:56",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 03:57",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 03:57",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:01",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:02",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:02",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:17",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:18",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:18",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:18",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:20",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:21",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:22",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:22",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:25",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:25",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:29",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:29",
+      "target_count": 5,
+      "actual_count": 3,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(1篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/p/3767970803221251",
+        "https://36kr.com/p/3766710136570368",
+        "https://sspai.com/prime/story/inside-release-notes-260415"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 3,
+        "high_quality": 2,
+        "avg_realness": 170.66666666666666,
+        "avg_ai_risk": 16.666666666666668,
+        "top_tones": [
+          "理性冷静(3)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0429.md"
+    },
+    {
+      "round_time": "2026-04-16 04:30",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:34",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:34",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:34",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:35",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:36",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:36",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:36",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:37",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:58",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:59",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 04:59",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:03",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:26",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:26",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:27",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:27",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:27",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:33",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:33",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:33",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:35",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:36",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:36",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:36",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:48",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 05:49",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:00",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:00",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:01",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:01",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:04",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:04",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:05",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:28",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:29",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:31",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:31",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:31",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:35",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:35",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:35",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:38",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:38",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:38",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:50",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:50",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 06:51",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 07:02",
+      "target_count": 5,
+      "actual_count": 1,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(1篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768672676774657"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 1,
+        "high_quality": 0,
+        "avg_realness": 8.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0702.md"
+    },
+    {
+      "round_time": "2026-04-16 07:06",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 07:06",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 07:07",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 07:07",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 07:30",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768674456650497",
+        "https://36kr.com/newsflashes/3768667893121799"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 10.0,
+        "avg_ai_risk": 5.0,
+        "top_tones": [
+          "理性冷静(2)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0730.md"
+    },
+    {
+      "round_time": "2026-04-16 07:33",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768711365935874",
+        "https://36kr.com/newsflashes/3768216601051651"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 8.5,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "热情推荐(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0733.md"
+    },
+    {
+      "round_time": "2026-04-16 07:38",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768677169103360",
+        "https://36kr.com/newsflashes/3768703106351620"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 9.0,
+        "avg_ai_risk": 5.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "热情推荐(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0738.md"
+    },
+    {
+      "round_time": "2026-04-16 07:40",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768217308529412",
+        "https://36kr.com/newsflashes/3768213695136256"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 11.5,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "热情推荐(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0740.md"
+    },
+    {
+      "round_time": "2026-04-16 07:52",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768730956759814",
+        "https://36kr.com/newsflashes/3768720143057669"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 6.5,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "热情推荐(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0752.md"
+    },
+    {
+      "round_time": "2026-04-16 08:01",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/p/3768734631527176",
+        "https://36kr.com/newsflashes/3768738778120963"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 156.5,
+        "avg_ai_risk": 15.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "轻松幽默(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0801.md"
+    },
+    {
+      "round_time": "2026-04-16 08:06",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768736624984577",
+        "https://36kr.com/newsflashes/3768733731062534"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 8.5,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "内省深沉(1)",
+          "理性冷静(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0806.md"
+    },
+    {
+      "round_time": "2026-04-16 08:29",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768750906606087",
+        "https://36kr.com/newsflashes/3768762366607873"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 8.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "热情推荐(1)",
+          "理性冷静(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0829.md"
+    },
+    {
+      "round_time": "2026-04-16 08:32",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768754399609351",
+        "https://36kr.com/newsflashes/3768752941384199"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 7.5,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "轻松幽默(1)",
+          "理性冷静(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0832.md"
+    },
+    {
+      "round_time": "2026-04-16 08:37",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768755752321799",
+        "https://36kr.com/newsflashes/3768748632588805"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 1,
+        "avg_realness": 12.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "热情推荐(2)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0837.md"
+    },
+    {
+      "round_time": "2026-04-16 08:38",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768757883552259",
+        "https://36kr.com/newsflashes/3768747861836291"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 9.5,
+        "avg_ai_risk": 5.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "热情推荐(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0838.md"
+    },
+    {
+      "round_time": "2026-04-16 08:51",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768779853922823",
+        "https://36kr.com/newsflashes/3768768375292416"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 9.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(2)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0851.md"
+    },
+    {
+      "round_time": "2026-04-16 08:59",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768778559718147",
+        "https://36kr.com/newsflashes/3768780208669184"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 8.5,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(1)",
+          "轻松幽默(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0859.md"
+    },
+    {
+      "round_time": "2026-04-16 09:05",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768785509827331",
+        "https://36kr.com/newsflashes/3768784624058889"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 10.0,
+        "avg_ai_risk": 5.0,
+        "top_tones": [
+          "理性冷静(2)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0905.md"
+    },
+    {
+      "round_time": "2026-04-16 09:28",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768813945225728",
+        "https://36kr.com/newsflashes/3768788237632006"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 1,
+        "avg_realness": 13.0,
+        "avg_ai_risk": 5.0,
+        "top_tones": [
+          "理性冷静(2)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0928.md"
+    },
+    {
+      "round_time": "2026-04-16 09:31",
+      "target_count": 5,
+      "actual_count": 2,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(2篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768786321261060",
+        "https://36kr.com/newsflashes/3768781761856260"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 2,
+        "high_quality": 0,
+        "avg_realness": 10.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "轻松幽默(1)",
+          "理性冷静(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0931.md"
+    },
+    {
+      "round_time": "2026-04-16 09:36",
+      "target_count": 5,
+      "actual_count": 1,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(1篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [
+        "https://36kr.com/newsflashes/3768833491550722"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 1,
+        "high_quality": 0,
+        "avg_realness": 10.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "轻松幽默(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0936.md"
+    },
+    {
+      "round_time": "2026-04-16 09:37",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 09:37",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 09:37",
+      "target_count": 5,
+      "actual_count": 0,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(0篇)"
+      ],
+      "collected_urls": [],
+      "analyses_summary": {},
+      "status": "no_new_articles"
+    },
+    {
+      "round_time": "2026-04-16 09:49",
+      "target_count": 5,
+      "actual_count": 1,
+      "sources_used": [
+        "知乎(0篇)",
+        "微信公众号(0篇)",
+        "36氪(0篇)",
+        "少数派(1篇)"
+      ],
+      "collected_urls": [
+        "https://sspai.com/post/108692"
+      ],
+      "analyses_summary": {
+        "total_analyzed": 1,
+        "high_quality": 1,
+        "avg_realness": 35.0,
+        "avg_ai_risk": 0.0,
+        "top_tones": [
+          "理性冷静(1)"
+        ]
+      },
+      "status": "success",
+      "report_file": "collection_report_20260416_0949.md"
+    }
+  ],
+  "updated_at": "2026-04-16 09:50:02",
+  "total_samples": 75,
+  "style_profiles": {
+    "知乎": {
+      "sample_count": 6,
+      "tone_distribution": {
+        "理性冷静": 3,
+        "热情推荐": 3
+      },
+      "common_features": [
+        {
+          "feature": "口语表达",
+          "freq": 6
+        },
+        {
+          "feature": "数字细节",
+          "freq": 4
+        },
+        {
+          "feature": "感叹/反问",
+          "freq": 6
+        },
+        {
+          "feature": "个人经历",
+          "freq": 1
+        },
+        {
+          "feature": "第一人称",
+          "freq": 1
+        }
+      ]
+    },
+    "少数派": {
+      "sample_count": 11,
+      "tone_distribution": {
+        "理性冷静": 3,
+        "轻松幽默": 2,
+        "热情推荐": 6
+      },
+      "common_features": [
+        {
+          "feature": "口语表达",
+          "freq": 11
+        },
+        {
+          "feature": "感叹/反问",
+          "freq": 7
+        },
+        {
+          "feature": "第一人称",
+          "freq": 3
+        },
+        {
+          "feature": "省略/插入语",
+          "freq": 3
+        },
+        {
+          "feature": "个人经历",
+          "freq": 5
+        },
+        {
+          "feature": "数字细节",
+          "freq": 1
+        },
+        {
+          "feature": "独特比喻",
+          "freq": 2
+        }
+      ]
+    },
+    "微信公众号(@未知作者)": {
+      "sample_count": 3,
+      "tone_distribution": {
+        "热情推荐": 1,
+        "理性冷静": 1,
+        "轻松幽默": 1
+      },
+      "common_features": [
+        {
+          "feature": "口语表达",
+          "freq": 3
+        },
+        {
+          "feature": "感叹/反问",
+          "freq": 2
+        },
+        {
+          "feature": "数字细节",
+          "freq": 1
+        },
+        {
+          "feature": "省略/插入语",
+          "freq": 2
+        },
+        {
+          "feature": "个人经历",
+          "freq": 1
+        }
+      ]
+    },
+    "36氪": {
+      "sample_count": 55,
+      "tone_distribution": {
+        "理性冷静": 36,
+        "轻松幽默": 8,
+        "内省深沉": 2,
+        "热情推荐": 9
+      },
+      "common_features": [
+        {
+          "feature": "口语表达",
+          "freq": 55
+        },
+        {
+          "feature": "数字细节",
+          "freq": 47
+        },
+        {
+          "feature": "省略/插入语",
+          "freq": 11
+        },
+        {
+          "feature": "感叹/反问",
+          "freq": 3
+        },
+        {
+          "feature": "独特比喻",
+          "freq": 1
+        },
+        {
+          "feature": "个人经历",
+          "freq": 1
+        },
+        {
+          "feature": "第一人称",
+          "freq": 1
+        }
+      ]
+    }
+  },
+  "articles": [
+    {
+      "title": "2026年各大科技巨头对AI的趋势预测",
+      "url": "https://zhuanlan.zhihu.com/p/2011108769992577031",
+      "source": "知乎",
+      "author": "",
+      "word_count": 5188,
+      "collected_at": "2026-04-16 00:17",
+      "fingerprint": "49ae14f26e2f"
+    },
+    {
+      "title": "具透 Plus：Windows 预览体验计划新变化；Linux 系统的「年龄验证」闹剧",
+      "url": "https://sspai.com/prime/story/inside-release-notes-260415",
+      "source": "少数派",
+      "author": "",
+      "word_count": 4811,
+      "collected_at": "2026-04-16 00:18",
+      "fingerprint": "0bed6b2a6805"
+    },
+    {
+      "title": "1年收入740万，这位独立开发者是怎么做到的？",
+      "url": "https://zhuanlan.zhihu.com/p/2000247614344537118",
+      "source": "知乎",
+      "author": "",
+      "word_count": 1541,
+      "collected_at": "2026-04-16 00:29",
+      "fingerprint": "7f2a42658766"
+    },
+    {
+      "title": "国内目前独立开发者收入如何？可以养活自己以及家人吗？",
+      "url": "https://www.zhihu.com/tardis/bd/ans/3339409162",
+      "source": "知乎",
+      "author": "",
+      "word_count": 3345,
+      "collected_at": "2026-04-16 00:29",
+      "fingerprint": "a40b8159c764"
+    },
+    {
+      "title": "【电影药方展】52部地球影单@世界环境日",
+      "url": "https://mp.weixin.qq.com/s/qk4agmsiFwkckGO6TDzr_A",
+      "source": "微信公众号(@未知作者)",
+      "author": "未知作者",
+      "word_count": 13401,
+      "collected_at": "2026-04-16 00:29",
+      "fingerprint": "30286126172c"
+    },
+    {
+      "title": "鸿蒙仓颉编程语言挑战赛三等奖作品：基于仓颉语言的AI智能办公协同平台实战",
+      "url": "https://mp.weixin.qq.com/s/AB9jGl6s1MpFDNAAb0qlhw",
+      "source": "微信公众号(@未知作者)",
+      "author": "未知作者",
+      "word_count": 3233,
+      "collected_at": "2026-04-16 00:29",
+      "fingerprint": "3cf6870f78e7"
+    },
+    {
+      "title": "氪星晚报｜高德首款具身机器人将亮相；日产发布转型计划：削减20%车型，冲刺中美百万销量；随着战略转向，OpenAI的8520亿美元估值遭投资者质疑",
+      "url": "https://36kr.com/p/3766487517594377",
+      "source": "36氪",
+      "author": "",
+      "word_count": 2466,
+      "collected_at": "2026-04-16 00:29",
+      "fingerprint": "673bb7c9a82e"
+    },
+    {
+      "title": "2025智能手表保姆级选购指南 | 智能手表怎么选？华为、苹果、华米、OPPO等主流品牌手表深度对比评测",
+      "url": "https://zhuanlan.zhihu.com/p/518663010",
+      "source": "知乎",
+      "author": "",
+      "word_count": 937,
+      "collected_at": "2026-04-16 00:50",
+      "fingerprint": "c5090b4252f0"
+    },
+    {
+      "title": "男士智能手表别瞎买！2025年这8款实测爆款，从商务到户外全搞定！",
+      "url": "https://zhuanlan.zhihu.com/p/1961379738594566384",
+      "source": "知乎",
+      "author": "",
+      "word_count": 2896,
+      "collected_at": "2026-04-16 00:50",
+      "fingerprint": "ed850b18482b"
+    },
+    {
+      "title": "华为Mate 70 Air 轻薄旗舰：Air 的手感，Mate 的体验",
+      "url": "https://mp.weixin.qq.com/s/WyVI_JiRYYMm7UbVsvYeOw",
+      "source": "微信公众号(@未知作者)",
+      "author": "未知作者",
+      "word_count": 3292,
+      "collected_at": "2026-04-16 00:50",
+      "fingerprint": "20bca5b9fdd1"
+    },
+    {
+      "title": "宁德时代、智元、银河通用联合投资，六维力传感器头部企业「蓝点触控」完成超亿元C+轮融资 | 36氪首发",
+      "url": "https://36kr.com/p/3766434507440903",
+      "source": "36氪",
+      "author": "",
+      "word_count": 2282,
+      "collected_at": "2026-04-16 00:51",
+      "fingerprint": "352a560a51e3"
+    },
+    {
+      "title": "iPhone 17用了一个月，我的实际体验，跟他们说的完全不一样",
+      "url": "https://zhuanlan.zhihu.com/p/1970095286182474064",
+      "source": "知乎",
+      "author": "",
+      "word_count": 1320,
+      "collected_at": "2026-04-16 00:53",
+      "fingerprint": "7b96cd0bc596"
+    },
+    {
+      "title": "《明末》团队解散背后，国产单机究竟还缺什么？",
+      "url": "https://36kr.com/p/3766718158324489",
+      "source": "36氪",
+      "author": "",
+      "word_count": 4737,
+      "collected_at": "2026-04-16 00:55",
+      "fingerprint": "6d00827f6355"
+    },
+    {
+      "title": "最前线｜追觅生态企业娲宝科技发布宠物智能项圈，布局“项圈+宠粮”数据闭环",
+      "url": "https://36kr.com/p/3767424500171271",
+      "source": "36氪",
+      "author": "",
+      "word_count": 653,
+      "collected_at": "2026-04-16 00:58",
+      "fingerprint": "a508cad8742e"
+    },
+    {
+      "title": "网易互娱架构调整，市场负责人王怡调任海外",
+      "url": "https://36kr.com/p/3766722584822537",
+      "source": "36氪",
+      "author": "",
+      "word_count": 550,
+      "collected_at": "2026-04-16 01:21",
+      "fingerprint": "e5e84c205d58"
+    },
+    {
+      "title": "粗门完成数千万A+轮融资，在AI时代让更多人“出门”｜36氪首发",
+      "url": "https://36kr.com/p/3766710136570368",
+      "source": "36氪",
+      "author": "",
+      "word_count": 1765,
+      "collected_at": "2026-04-16 01:24",
+      "fingerprint": "06ce1c84c8fc"
+    },
+    {
+      "title": "「美股例外」何时休？",
+      "url": "https://36kr.com/p/3766410231726855",
+      "source": "36氪",
+      "author": "",
+      "word_count": 3735,
+      "collected_at": "2026-04-16 01:54",
+      "fingerprint": "da4c6ceaa254"
+    },
+    {
+      "title": "氪星晚报｜Snap宣布将裁员约1000人；字节启动新一轮期权回购；苹果CEO库克斥资106万美元增持耐克",
+      "url": "https://36kr.com/p/3767970803221251",
+      "source": "36氪",
+      "author": "",
+      "word_count": 2277,
+      "collected_at": "2026-04-16 01:59",
+      "fingerprint": "139f2740e53d"
+    },
+    {
+      "title": "8点1氪丨许家印一审当庭认罪悔罪；交管部门回应新能源车牌绿色变白色；生成内容涉黄，哩布哩布AI回应",
+      "url": "https://36kr.com/p/3767326268392199",
+      "source": "36氪",
+      "author": "",
+      "word_count": 9421,
+      "collected_at": "2026-04-16 02:31",
+      "fingerprint": "e3bf185ef9aa"
+    },
+    {
+      "title": "最前线 | 远见智存发布HBM3/3e高带宽存储芯片，带宽迈入800GB/s级别",
+      "url": "https://36kr.com/p/3765986197684736",
+      "source": "36氪",
+      "author": "",
+      "word_count": 1320,
+      "collected_at": "2026-04-16 02:31",
+      "fingerprint": "28b69ab40f4a"
+    },
+    {
+      "title": "开局收获上万差评的游戏：《红色沙漠》为何能这么快翻身？",
+      "url": "https://sspai.com/post/108679",
+      "source": "少数派",
+      "author": "",
+      "word_count": 6057,
+      "collected_at": "2026-04-16 02:31",
+      "fingerprint": "d41ff7116194"
+    },
+    {
+      "title": "一日一技｜Liquid Glass 液态变磨砂",
+      "url": "https://sspai.com/post/108656",
+      "source": "少数派",
+      "author": "",
+      "word_count": 1027,
+      "collected_at": "2026-04-16 02:31",
+      "fingerprint": "a2cf2602f2d5"
+    },
+    {
+      "title": "科大讯飞发布AstronClaw智能体矩阵",
+      "url": "https://36kr.com/newsflashes/3768090609206025",
+      "source": "36氪",
+      "author": "",
+      "word_count": 205,
+      "collected_at": "2026-04-16 02:33",
+      "fingerprint": "bbb97bcf9404"
+    },
+    {
+      "title": "东风天元智舱Plus平台搭载黑芝麻智能武当C1296芯片，打造首个本土舱驾一体量产化平台",
+      "url": "https://36kr.com/newsflashes/3768084359971328",
+      "source": "36氪",
+      "author": "",
+      "word_count": 167,
+      "collected_at": "2026-04-16 02:33",
+      "fingerprint": "8250656ee8a0"
+    },
+    {
+      "title": "从一夜无眠到夜夜香甜：睡个好觉并不难",
+      "url": "https://sspai.com/post/107146",
+      "source": "少数派",
+      "author": "",
+      "word_count": 9515,
+      "collected_at": "2026-04-16 02:33",
+      "fingerprint": "3a87385c72f3"
+    },
+    {
+      "title": "社区速递 137 | 派友挑战不沉迷手机的周末、未来视野显示器与 MT6000 路由器",
+      "url": "https://sspai.com/post/108632",
+      "source": "少数派",
+      "author": "",
+      "word_count": 8825,
+      "collected_at": "2026-04-16 02:33",
+      "fingerprint": "3f795d81df91"
+    },
+    {
+      "title": "猪价大降超30%，处7年低点",
+      "url": "https://36kr.com/newsflashes/3768080264168198",
+      "source": "36氪",
+      "author": "",
+      "word_count": 211,
+      "collected_at": "2026-04-16 02:55",
+      "fingerprint": "0cc6f61c092e"
+    },
+    {
+      "title": "美格智能：拟3亿元投建AI研发及先进制造产业项目",
+      "url": "https://36kr.com/newsflashes/3768070409437704",
+      "source": "36氪",
+      "author": "",
+      "word_count": 160,
+      "collected_at": "2026-04-16 02:55",
+      "fingerprint": "ecfe35ef36ec"
+    },
+    {
+      "title": "想在国内折腾全屋 Matter？这可能是一场属于极客的「苦修」",
+      "url": "https://sspai.com/post/108005",
+      "source": "少数派",
+      "author": "",
+      "word_count": 3547,
+      "collected_at": "2026-04-16 02:55",
+      "fingerprint": "a3b4d46a0396"
+    },
+    {
+      "title": "首销优惠即将截止！少数派麦金獭无感膜 10 大常见问题解答",
+      "url": "https://sspai.com/post/108594",
+      "source": "少数派",
+      "author": "",
+      "word_count": 2493,
+      "collected_at": "2026-04-16 02:55",
+      "fingerprint": "8a01f2032774"
+    },
+    {
+      "title": "英国广播公司据悉将裁员2000人",
+      "url": "https://36kr.com/newsflashes/3768045260997382",
+      "source": "36氪",
+      "author": "",
+      "word_count": 174,
+      "collected_at": "2026-04-16 03:00",
+      "fingerprint": "f3e903514443"
+    },
+    {
+      "title": "宁德时代：拟设立时代资源集团，注册资本300亿元",
+      "url": "https://36kr.com/newsflashes/3768041441280775",
+      "source": "36氪",
+      "author": "",
+      "word_count": 233,
+      "collected_at": "2026-04-16 03:00",
+      "fingerprint": "93c18d2f55a1"
+    },
+    {
+      "title": "派评 | 近期值得关注的 App",
+      "url": "https://sspai.com/post/108589",
+      "source": "少数派",
+      "author": "",
+      "word_count": 1583,
+      "collected_at": "2026-04-16 03:00",
+      "fingerprint": "e555c47117d3"
+    },
+    {
+      "title": "城市漫步指南：在浓油赤酱中寻找江南底蕴",
+      "url": "https://sspai.com/post/108558",
+      "source": "少数派",
+      "author": "",
+      "word_count": 5364,
+      "collected_at": "2026-04-16 03:00",
+      "fingerprint": "42f529b0f1b3"
+    },
+    {
+      "title": "海南矿业锂矿增储遭合资方公开质疑，公司回应：不存在此问题，目前在进行沟通交流",
+      "url": "https://36kr.com/newsflashes/3768030102700803",
+      "source": "36氪",
+      "author": "",
+      "word_count": 155,
+      "collected_at": "2026-04-16 03:24",
+      "fingerprint": "7dda1e67044f"
+    },
+    {
+      "title": "宁德时代：2025年度每10股派69.57元，分红总额超304亿元",
+      "url": "https://36kr.com/newsflashes/3768024936432132",
+      "source": "36氪",
+      "author": "",
+      "word_count": 157,
+      "collected_at": "2026-04-16 03:24",
+      "fingerprint": "8e7026956006"
+    },
+    {
+      "title": "摩根士丹利一季度净营收205.8亿美元",
+      "url": "https://36kr.com/newsflashes/3768017989911042",
+      "source": "36氪",
+      "author": "",
+      "word_count": 163,
+      "collected_at": "2026-04-16 03:33",
+      "fingerprint": "19da0115780a"
+    },
+    {
+      "title": "氪星晚报｜Snap宣布将裁员约1000人；字节启动新一轮期权回购；苹果CEO库克斥资106万美元增持耐克",
+      "url": "https://36kr.com/p/3767970803221251",
+      "source": "36氪",
+      "author": "",
+      "word_count": 2398,
+      "collected_at": "2026-04-16 04:30",
+      "fingerprint": "28465f55fba8"
+    },
+    {
+      "title": "粗门完成数千万A+轮融资，在AI时代让更多人“出门”｜36氪首发",
+      "url": "https://36kr.com/p/3766710136570368",
+      "source": "36氪",
+      "author": "",
+      "word_count": 1851,
+      "collected_at": "2026-04-16 04:30",
+      "fingerprint": "86cf10e474d5"
+    },
+    {
+      "title": "具透 Plus：Windows 预览体验计划新变化；Linux 系统的「年龄验证」闹剧",
+      "url": "https://sspai.com/prime/story/inside-release-notes-260415",
+      "source": "少数派",
+      "author": "",
+      "word_count": 5109,
+      "collected_at": "2026-04-16 04:30",
+      "fingerprint": "49a9d33bd52c"
+    },
+    {
+      "title": "美股三大指数收盘涨跌不一，纳指11连涨创收盘新高",
+      "url": "https://36kr.com/newsflashes/3768672676774657",
+      "source": "36氪",
+      "author": "",
+      "word_count": 197,
+      "collected_at": "2026-04-16 07:02",
+      "fingerprint": "6155c5f9e2cb"
+    },
+    {
+      "title": "互联互通工具持续丰富，公募大力布局香港市场ETF",
+      "url": "https://36kr.com/newsflashes/3768674456650497",
+      "source": "36氪",
+      "author": "",
+      "word_count": 239,
+      "collected_at": "2026-04-16 07:30",
+      "fingerprint": "75e507e35c2c"
+    },
+    {
+      "title": "绩优基金一季报密集披露：多只基金规模大增，看多AI相关产业链",
+      "url": "https://36kr.com/newsflashes/3768667893121799",
+      "source": "36氪",
+      "author": "",
+      "word_count": 205,
+      "collected_at": "2026-04-16 07:30",
+      "fingerprint": "7a2102c04838"
+    },
+    {
+      "title": "华盛锂电向香港联交所递交H股发行上市申请并刊发申请资料",
+      "url": "https://36kr.com/newsflashes/3768711365935874",
+      "source": "36氪",
+      "author": "",
+      "word_count": 154,
+      "collected_at": "2026-04-16 07:33",
+      "fingerprint": "cec40b755368"
+    },
+    {
+      "title": "谷歌被指在安卓应用分发领域实施垄断控制",
+      "url": "https://36kr.com/newsflashes/3768216601051651",
+      "source": "36氪",
+      "author": "",
+      "word_count": 196,
+      "collected_at": "2026-04-16 07:33",
+      "fingerprint": "a74a96f658fa"
+    },
+    {
+      "title": "年内同业存单发行规模同比减少2.46万亿元",
+      "url": "https://36kr.com/newsflashes/3768677169103360",
+      "source": "36氪",
+      "author": "",
+      "word_count": 200,
+      "collected_at": "2026-04-16 07:38",
+      "fingerprint": "118cc33135a9"
+    },
+    {
+      "title": "美国启动非法关税退款流程，已有上亿美元申请待处理",
+      "url": "https://36kr.com/newsflashes/3768703106351620",
+      "source": "36氪",
+      "author": "",
+      "word_count": 174,
+      "collected_at": "2026-04-16 07:38",
+      "fingerprint": "96861966df55"
+    },
+    {
+      "title": "微软加倍押注AI，大胆下注采购3万块英伟达GPU",
+      "url": "https://36kr.com/newsflashes/3768217308529412",
+      "source": "36氪",
+      "author": "",
+      "word_count": 153,
+      "collected_at": "2026-04-16 07:40",
+      "fingerprint": "4514295ca584"
+    },
+    {
+      "title": "联合利华以448亿美元出售食品业务，并以12亿美元收购Grüns",
+      "url": "https://36kr.com/newsflashes/3768213695136256",
+      "source": "36氪",
+      "author": "",
+      "word_count": 184,
+      "collected_at": "2026-04-16 07:40",
+      "fingerprint": "ea13548df2f8"
+    },
+    {
+      "title": "追觅科技旗下AI视觉机器人品牌NAVO亮相广交会",
+      "url": "https://36kr.com/newsflashes/3768730956759814",
+      "source": "36氪",
+      "author": "",
+      "word_count": 154,
+      "collected_at": "2026-04-16 07:52",
+      "fingerprint": "da72af765c89"
+    },
+    {
+      "title": "中信建投：Anthropic最强模型Mythos推出，重点推荐谷歌链",
+      "url": "https://36kr.com/newsflashes/3768720143057669",
+      "source": "36氪",
+      "author": "",
+      "word_count": 244,
+      "collected_at": "2026-04-16 07:52",
+      "fingerprint": "e0a1f9b6f5f9"
+    },
+    {
+      "title": "8点1氪丨美国将退还超1万亿元关税；多家银行密集停发信用卡；滴露回应使用宠物消毒液后5只幼猫死亡",
+      "url": "https://36kr.com/p/3768734631527176",
+      "source": "36氪",
+      "author": "",
+      "word_count": 8902,
+      "collected_at": "2026-04-16 08:01",
+      "fingerprint": "3f782cdaadc1"
+    },
+    {
+      "title": "中国工程机械工业协会：3月销售各类平地机1007台 同比增长19.6%",
+      "url": "https://36kr.com/newsflashes/3768738778120963",
+      "source": "36氪",
+      "author": "",
+      "word_count": 173,
+      "collected_at": "2026-04-16 08:01",
+      "fingerprint": "6a30512e0fc3"
+    },
+    {
+      "title": "挪威主权财富基金称无意减持美国资产，仍将一半投资配置于美国",
+      "url": "https://36kr.com/newsflashes/3768736624984577",
+      "source": "36氪",
+      "author": "",
+      "word_count": 186,
+      "collected_at": "2026-04-16 08:06",
+      "fingerprint": "6026512ea050"
+    },
+    {
+      "title": "中信建投：生猪养殖板块将存在分化，效率高、成本低的企业将赢得竞争优势",
+      "url": "https://36kr.com/newsflashes/3768733731062534",
+      "source": "36氪",
+      "author": "",
+      "word_count": 236,
+      "collected_at": "2026-04-16 08:06",
+      "fingerprint": "c7da3dc7a90e"
+    },
+    {
+      "title": "华立科技：2025年国内游戏游艺行业整体处于阶段性调整期",
+      "url": "https://36kr.com/newsflashes/3768750906606087",
+      "source": "36氪",
+      "author": "",
+      "word_count": 165,
+      "collected_at": "2026-04-16 08:29",
+      "fingerprint": "8ee6d5c521b0"
+    },
+    {
+      "title": "郑栅洁主任赴怀柔国家实验室调研能源科技创新工作",
+      "url": "https://36kr.com/newsflashes/3768762366607873",
+      "source": "36氪",
+      "author": "",
+      "word_count": 329,
+      "collected_at": "2026-04-16 08:29",
+      "fingerprint": "e165799a6324"
+    },
+    {
+      "title": "宠物经济概念股集体大涨，5只个股2025年度净利润增长",
+      "url": "https://36kr.com/newsflashes/3768754399609351",
+      "source": "36氪",
+      "author": "",
+      "word_count": 195,
+      "collected_at": "2026-04-16 08:32",
+      "fingerprint": "9591ef1cf560"
+    },
+    {
+      "title": "特朗普：若美联储主席鲍威尔任期届满后仍留任，将对其解职",
+      "url": "https://36kr.com/newsflashes/3768752941384199",
+      "source": "36氪",
+      "author": "",
+      "word_count": 190,
+      "collected_at": "2026-04-16 08:32",
+      "fingerprint": "6bff8afc3557"
+    },
+    {
+      "title": "摩根大通CEO杰米·戴蒙出售价值4000万美元摩根大通股票",
+      "url": "https://36kr.com/newsflashes/3768755752321799",
+      "source": "36氪",
+      "author": "",
+      "word_count": 218,
+      "collected_at": "2026-04-16 08:37",
+      "fingerprint": "fdf3edfac4f5"
+    },
+    {
+      "title": "亚洲富豪挟250亿美元涌入AI领域，面对高估值毫无惧色",
+      "url": "https://36kr.com/newsflashes/3768748632588805",
+      "source": "36氪",
+      "author": "",
+      "word_count": 229,
+      "collected_at": "2026-04-16 08:37",
+      "fingerprint": "ab35e4e47c95"
+    },
+    {
+      "title": "华泰证券：Bloom Energy大单呼应AI缺电主线，看好三条投资主线",
+      "url": "https://36kr.com/newsflashes/3768757883552259",
+      "source": "36氪",
+      "author": "",
+      "word_count": 260,
+      "collected_at": "2026-04-16 08:38",
+      "fingerprint": "c24e05090418"
+    },
+    {
+      "title": "多重利好叠加提振预期，消费板块能否苦尽甘来",
+      "url": "https://36kr.com/newsflashes/3768747861836291",
+      "source": "36氪",
+      "author": "",
+      "word_count": 282,
+      "collected_at": "2026-04-16 08:38",
+      "fingerprint": "def3a7e6e3ec"
+    },
+    {
+      "title": "公募南下布局提速，年内已有47只港股新基金成立",
+      "url": "https://36kr.com/newsflashes/3768779853922823",
+      "source": "36氪",
+      "author": "",
+      "word_count": 166,
+      "collected_at": "2026-04-16 08:51",
+      "fingerprint": "506790559ce0"
+    },
+    {
+      "title": "中信证券：坚定看好存储产业趋势 推荐存储原厂及贴近原厂的设计公司",
+      "url": "https://36kr.com/newsflashes/3768768375292416",
+      "source": "36氪",
+      "author": "",
+      "word_count": 218,
+      "collected_at": "2026-04-16 08:51",
+      "fingerprint": "fd98c23f75f1"
+    },
+    {
+      "title": "中信证券：坚定看好存储产业趋势，核心推荐存储原厂及贴近原厂的设计公司",
+      "url": "https://36kr.com/newsflashes/3768778559718147",
+      "source": "36氪",
+      "author": "",
+      "word_count": 220,
+      "collected_at": "2026-04-16 09:00",
+      "fingerprint": "4ba497b5657a"
+    },
+    {
+      "title": "印度航空报告年度亏损超24亿美元，寻求股东支持",
+      "url": "https://36kr.com/newsflashes/3768780208669184",
+      "source": "36氪",
+      "author": "",
+      "word_count": 170,
+      "collected_at": "2026-04-16 09:00",
+      "fingerprint": "74ce2732bbec"
+    },
+    {
+      "title": "医药行业迎政策东风，相关板块或正步入长期配置窗口",
+      "url": "https://36kr.com/newsflashes/3768785509827331",
+      "source": "36氪",
+      "author": "",
+      "word_count": 221,
+      "collected_at": "2026-04-16 09:05",
+      "fingerprint": "bb40d686eaf1"
+    },
+    {
+      "title": "特朗普签发多项输油管道许可，以促进美加之间的石油运输",
+      "url": "https://36kr.com/newsflashes/3768784624058889",
+      "source": "36氪",
+      "author": "",
+      "word_count": 172,
+      "collected_at": "2026-04-16 09:05",
+      "fingerprint": "e8409616ea61"
+    },
+    {
+      "title": "韩国：第一季度来韩外国游客达476万人次，中国游客约占三分之一",
+      "url": "https://36kr.com/newsflashes/3768813945225728",
+      "source": "36氪",
+      "author": "",
+      "word_count": 184,
+      "collected_at": "2026-04-16 09:28",
+      "fingerprint": "42de4d80d94a"
+    },
+    {
+      "title": "车企账期整体性回落，行业主动告别“内卷”、修复供应链生态",
+      "url": "https://36kr.com/newsflashes/3768788237632006",
+      "source": "36氪",
+      "author": "",
+      "word_count": 310,
+      "collected_at": "2026-04-16 09:28",
+      "fingerprint": "ee472a5b9ba4"
+    },
+    {
+      "title": "外国持有美国国债规模创一年来最大增幅并创纪录新高",
+      "url": "https://36kr.com/newsflashes/3768786321261060",
+      "source": "36氪",
+      "author": "",
+      "word_count": 170,
+      "collected_at": "2026-04-16 09:31",
+      "fingerprint": "897d30b2eb52"
+    },
+    {
+      "title": "中信证券：稀土管制开启中国高端陶瓷历史机遇期",
+      "url": "https://36kr.com/newsflashes/3768781761856260",
+      "source": "36氪",
+      "author": "",
+      "word_count": 162,
+      "collected_at": "2026-04-16 09:31",
+      "fingerprint": "5c3826692586"
+    },
+    {
+      "title": "国家统计局：3月份一线城市新建商品住宅销售价格环比由上月持平转为上涨0.2%",
+      "url": "https://36kr.com/newsflashes/3768833491550722",
+      "source": "36氪",
+      "author": "",
+      "word_count": 277,
+      "collected_at": "2026-04-16 09:36",
+      "fingerprint": "2cddcb85f42f"
+    },
+    {
+      "title": "派早报：Keychron 推出轻量化鼠标 G3、微软推出新模型等",
+      "url": "https://sspai.com/post/108692",
+      "source": "少数派",
+      "author": "",
+      "word_count": 720,
+      "collected_at": "2026-04-16 09:50",
+      "fingerprint": "13fa84cef51c"
+    }
+  ],
+  "ai_fingerprint_blacklist": [],
+  "real_writing_features": []
+}

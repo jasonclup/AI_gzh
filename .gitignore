@@ -9,10 +9,23 @@ build/
 venv/
 .env
 
+# === 调试/临时文件（绝不入库）===
+_*
+!_run_full_pipeline.py
+!_run_full_pipeline_v2.py
+!_run_full_pipeline_v3.py
+!_auto_publish.py
+
 # 输出产物（可重新生成）
 output/*.png
 output/*.html
 output/*.log
+output/publish_runs/draft_*.json
+output/articles/v6_*.md
+output/v6_*.md
+
+# AI生成图片（大文件）
+generated-images/
 
 # 竞品分析数据（体积大，JSON会持续增长）
 wechat-publisher/data/competitor_analysis/*.json
@@ -45,6 +58,16 @@ credentials*
 secrets*
 
 # WorkBuddy内部（本地配置，不含代码）
+.codebuddy/automations/
 .workbuddy/automations/
 .workbuddy/memory/
 .workbuddy/teams/
+
+# HTML调试文件
+*_debug*.html
+*_raw.html
+*_test_raw.html
+*.txt
+!README.md
+!LICENSE
+!docs/*.md
