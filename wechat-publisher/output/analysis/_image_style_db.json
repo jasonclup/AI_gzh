@@ -74,6 +74,21 @@
       "sources": {
         "云存储CDN": 3
       }
+    },
+    {
+      "timestamp": "2026-04-16T08:55:02.897242",
+      "sample_count": 3,
+      "top_types": {
+        "unknown": 3
+      },
+      "top_tags": [
+        "CDN托管",
+        "PNG格式",
+        "科技类文章配图"
+      ],
+      "sources": {
+        "云存储CDN": 3
+      }
     }
   ],
   "inline_styles": [
@@ -119,6 +134,16 @@
     },
     {
       "timestamp": "2026-04-16T07:57:55.710127",
+      "sample_count": 36,
+      "avg_width": 0,
+      "placement": {
+        "文章前部(1-3张)": 6,
+        "文章中部(4-6张)": 12,
+        "文章后部(7张+)": 18
+      }
+    },
+    {
+      "timestamp": "2026-04-16T08:55:02.897242",
       "sample_count": 36,
       "avg_width": 0,
       "placement": {
@@ -237,6 +262,13 @@
     {
       "timestamp": "2026-04-16T07:57:55.710127",
       "articles_analyzed": 11,
+      "sampled_pages": 8,
+      "total_images_found": 39,
+      "findings_count": 5
+    },
+    {
+      "timestamp": "2026-04-16T08:55:02.897242",
+      "articles_analyzed": 25,
       "sampled_pages": 8,
       "total_images_found": 39,
       "findings_count": 5

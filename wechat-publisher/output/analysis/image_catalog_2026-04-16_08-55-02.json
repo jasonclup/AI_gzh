@@ -1,0 +1,130 @@
+{
+  "version": "2.0",
+  "generated_at": "2026-04-16T08:55:02.897242",
+  "summary": {
+    "articles_analyzed": 25,
+    "sampled_pages": 8,
+    "total_images_found": 39
+  },
+  "article_samples": [
+    {
+      "title": "家电巨头美的“猛攻”机器人",
+      "url": "https://www.toutiao.com/trending/7628752841896853510/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "tech_hot_news",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "港股通标的证券名单调整，调入禾赛-W",
+      "url": "https://www.36kr.com/newsflashes/3768789989507845",
+      "category": "tech_media",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "印度航空报告年度亏损超24亿美元，寻求股东支持",
+      "url": "https://www.36kr.com/newsflashes/3768780208669184",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "两市融资余额增加101.82亿元",
+      "url": "https://www.36kr.com/newsflashes/3768786868437769",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    },
+    {
+      "title": "媒体：日本拒不返还文物是反面典型",
+      "url": "https://www.toutiao.com/trending/7629135516709178926/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "1.65亿人为何选择广东",
+      "url": "https://www.toutiao.com/trending/7628214816087326762/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "你如何看待父母托举孩子",
+      "url": "https://www.toutiao.com/trending/7628514196021215274/?category_name=topic_innerflow&event_type=hot_b",
+      "category": "general_hot",
+      "image_count": 0,
+      "has_cover": false,
+      "inline_count": 0
+    },
+    {
+      "title": "MiniMax宣布云端沙箱Hermes“MaxHermes”上线",
+      "url": "https://www.36kr.com/newsflashes/3768780394857225",
+      "category": "tech_media",
+      "image_count": 13,
+      "has_cover": true,
+      "inline_count": 12
+    }
+  ],
+  "cover_images": [
+    {
+      "type": "unknown",
+      "src_url": "//staticx.36krcdn.com/36kr-web/static/aly.e9118f2f.png",
+      "detected_size": "",
+      "style_tags": [
+        "CDN托管",
+        "PNG格式",
+        "科技类文章配图"
+      ],
+      "source_article": ""
+    }
+  ],
+  "inline_images": [],
+  "strategy_findings": [
+    {
+      "id": "cover_dominant_type",
+      "finding": "封面图最常见类型是「unknown」，占比 3/3 (100%)",
+      "recommendation": "生成封面时应优先考虑unknown风格"
+    },
+    {
+      "id": "cover_source",
+      "finding": "爆款文章封面主要来源：云存储CDN",
+      "recommendation": "大量使用外部CDN → 说明有专业制图流程"
+    },
+    {
+      "id": "image_density",
+      "finding": "平均每篇文章约 1.4 张段落配图",
+      "recommendation": "低密度配图(<2张/篇)→可能需要在关键段落增加配图"
+    },
+    {
+      "id": "placement_preference",
+      "finding": "配图主要集中在：文章后部(7张+)",
+      "recommendation": "确保文章前1/3处至少有一张吸引眼球的配图"
+    },
+    {
+      "id": "top_style_tags",
+      "finding": "最高频配图风格标签: CDN托管(3), PNG格式(3), 科技类文章配图(3)",
+      "recommendation": "这些标签应作为AI生成配图时的prompt参考"
+    }
+  ],
+  "inline_summary": {
+    "total_sampled": 36,
+    "size_stats": {
+      "widths": [],
+      "heights": []
+    },
+    "placement_pattern": {
+      "文章前部(1-3张)": 6,
+      "文章中部(4-6张)": 12,
+      "文章后部(7张+)": 18
+    },
+    "format_distribution": {},
+    "top_findings": []
+  }
+}
